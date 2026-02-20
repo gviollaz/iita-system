@@ -37,7 +37,8 @@ Reviewed-By: [usuario humano]
 1. Leer `AGENTS.md` (contexto general)
 2. Verificar `docs/bugs/BUGS-CONOCIDOS.md` si el issue esta documentado
 3. Verificar `docs/proposals/PROPUESTAS-PENDIENTES.md` si ya hay propuesta
-4. Verificar `proposals/changes/` si ya hay una propuesta de cambio para lo que vas a hacer
+4. Verificar `proposals/features/INDEX.md` si hay un RFC relacionado con lo que vas a hacer
+5. Verificar `proposals/changes/` si ya hay una propuesta de cambio puntual
 
 ## Despues de hacer cambios
 
@@ -47,6 +48,7 @@ Reviewed-By: [usuario humano]
 4. Si se hizo operacion de datos: documentar en `docs/operations/DATA-OPERATIONS.md` con query de rollback
 5. Si se resolvio bug: moverlo a "Resueltos" en `docs/bugs/BUGS-CONOCIDOS.md`
 6. Si se ejecuto una propuesta de `proposals/changes/`: moverla a `proposals/changes/archive/` con estado `ejecutada`
+7. Si se implemento un RFC de `proposals/features/`: actualizar el estado a `implementada` en el RFC y en `INDEX.md`
 
 ## Propuestas de cambio (para IAs con acceso limitado)
 

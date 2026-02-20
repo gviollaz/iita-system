@@ -169,6 +169,41 @@ pendiente → en_revision → aprobada → ejecutada
 
 Las propuestas aprobadas se ejecutan desde Claude Code (que tiene acceso a todos los repos) o manualmente por gviollaz. Una vez ejecutada, se mueve a `proposals/changes/archive/` con el resultado.
 
+## Como participar en propuestas de mejora (RFCs)
+
+Ademas de las propuestas de cambio de codigo (puntuales), hay **propuestas de mejora** que son ideas mas grandes que requieren discusion y planificacion. Estan en `proposals/features/`.
+
+### Como contribuir a un RFC existente
+
+1. Abrir el RFC en `proposals/features/RFC-XXX-nombre.md`
+2. Ir a la seccion **"Hilo de discusion"** al final del archivo
+3. Agregar tu comentario con el formato:
+   ```
+   ### YYYY-MM-DD - [Tu nombre o IA + modelo]
+
+   Tu comentario, analisis, propuesta de implementacion, etc.
+   ```
+4. **NO borrar** comentarios anteriores, solo agregar nuevos
+5. Si tomas una decision, marcarla con `**DECISION:**` al inicio
+
+### Como crear un RFC nuevo
+
+1. Copiar `proposals/features/TEMPLATE.md`
+2. Renombrar a `RFC-XXX-descripcion-corta.md` (siguiente numero disponible)
+3. Completar todas las secciones
+4. Agregar al indice en `proposals/features/INDEX.md`
+5. Estado inicial: `borrador` o `en_discusion`
+
+### RFCs activos (Febrero 2026)
+
+| RFC | Titulo | Prioridad |
+|-----|--------|-----------|
+| RFC-001 | Preprocesamiento de imagenes y archivos | P1 |
+| RFC-002 | Evaluacion y aprobacion automatica de IA | P1 |
+| RFC-003 | Control de generacion de respuestas | P1 |
+| RFC-004 | Mensajes masivos de marketing | P2 |
+| RFC-005 | Alertas de ventana 24hs | P1 |
+
 ## Donde encontrar cada cosa
 
 | Necesitas... | Ve a... |
@@ -181,7 +216,8 @@ Las propuestas aprobadas se ejecutan desde Claude Code (que tiene acceso a todos
 | Bugs conocidos | `docs/bugs/BUGS-CONOCIDOS.md` |
 | Features y roadmap | `docs/features/FEATURES.md` y `ROADMAP.md` |
 | Propuestas pendientes | `docs/proposals/PROPUESTAS-PENDIENTES.md` |
-| Propuestas de cambio de codigo | `proposals/changes/` |
+| Propuestas de mejora (RFCs) | `proposals/features/INDEX.md` — ideas grandes, colaborativas |
+| Propuestas de cambio de codigo | `proposals/changes/` — cambios puntuales listos para aplicar |
 | Migraciones | `docs/operations/MIGRATIONS-LOG.md` |
 | Operaciones de datos | `docs/operations/DATA-OPERATIONS.md` |
 | Rollbacks | `docs/operations/ROLLBACK-PROCEDURES.md` |

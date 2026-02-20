@@ -36,8 +36,10 @@ CRM que gestiona comunicaciones con alumnos y leads a traves de WhatsApp, Instag
 | [docs/features/FEATURES.md](docs/features/FEATURES.md) | Features implementados, en progreso y planificados |
 | [docs/features/ROADMAP.md](docs/features/ROADMAP.md) | Prioridades y plan de trabajo por fases |
 | [docs/proposals/PROPUESTAS-PENDIENTES.md](docs/proposals/PROPUESTAS-PENDIENTES.md) | Mejoras propuestas pero no implementadas |
+| [proposals/features/INDEX.md](proposals/features/INDEX.md) | Propuestas de mejora (RFCs) — ideas grandes, colaborativas |
+| [proposals/features/TEMPLATE.md](proposals/features/TEMPLATE.md) | Template para nuevas propuestas de mejora |
 | [proposals/changes/](proposals/changes/) | Propuestas de cambio de codigo (creadas por IAs con acceso limitado) |
-| [proposals/changes/TEMPLATE.md](proposals/changes/TEMPLATE.md) | Template para nuevas propuestas |
+| [proposals/changes/TEMPLATE.md](proposals/changes/TEMPLATE.md) | Template para propuestas de cambio de codigo |
 
 ### Operaciones y datos
 | Archivo | Descripcion |
