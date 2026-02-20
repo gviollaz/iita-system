@@ -37,6 +37,7 @@ Reviewed-By: [usuario humano]
 1. Leer `AGENTS.md` (contexto general)
 2. Verificar `docs/bugs/BUGS-CONOCIDOS.md` si el issue esta documentado
 3. Verificar `docs/proposals/PROPUESTAS-PENDIENTES.md` si ya hay propuesta
+4. Verificar `proposals/changes/` si ya hay una propuesta de cambio para lo que vas a hacer
 
 ## Despues de hacer cambios
 
@@ -45,6 +46,28 @@ Reviewed-By: [usuario humano]
 3. Si se aplico migracion: documentar en `docs/operations/MIGRATIONS-LOG.md`
 4. Si se hizo operacion de datos: documentar en `docs/operations/DATA-OPERATIONS.md` con query de rollback
 5. Si se resolvio bug: moverlo a "Resueltos" en `docs/bugs/BUGS-CONOCIDOS.md`
+6. Si se ejecuto una propuesta de `proposals/changes/`: moverla a `proposals/changes/archive/` con estado `ejecutada`
+
+## Propuestas de cambio (para IAs con acceso limitado)
+
+No todas las IAs tienen acceso a todos los repositorios del proyecto. Si estas trabajando en `iita-system` y necesitas proponer un cambio que afecta a otro repo (frontend React, Make.com) o a la base de datos de Supabase:
+
+1. **Crea un archivo** en `proposals/changes/YYYY-MM-DD-descripcion-corta.md`
+2. **Usa el template** que esta en `proposals/changes/TEMPLATE.md`
+3. **Incluye codigo real** listo para aplicar, no pseudocodigo
+4. **Identificate** con tu nombre de IA y modelo en el campo "Autor IA"
+
+Las propuestas son revisadas por gviollaz o por Claude Code (que tiene acceso a todos los repos). Ver detalles completos en `AGENTS.md` seccion "Como proponer cambios".
+
+### Repos destino posibles
+
+| Repo destino en la propuesta | Significado |
+|------------------------------|-------------|
+| `iitacrm` | Cambio en el frontend React (`IITA-Proyectos/iitacrm`) |
+| `iita-make-scenarios` | Cambio en escenarios Make.com (`gviollaz/iita-make-scenarios`) |
+| `supabase-migration` | Migracion SQL para aplicar en Supabase |
+| `supabase-edge-function` | Cambio en Edge Functions para deployar en Supabase |
+| `iita-system` | Cambio en este mismo repo (docs, schema, etc.) — aplicar directo |
 
 ## Nomenclatura de base de datos
 

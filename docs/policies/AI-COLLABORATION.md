@@ -139,6 +139,50 @@ Actualizar la documentacion relevante antes de hacer el commit:
 
 ---
 
+## IAs con Acceso Limitado (ChatGPT, Gemini, Copilot, etc.)
+
+Muchas IAs solo pueden ver un repositorio a la vez. Si solo tenes acceso a `iita-system`:
+
+### Lo que SI podes hacer directamente
+
+1. **Leer** toda la documentacion, schema SQL, Edge Functions, propuestas.
+2. **Actualizar documentacion:** bugs, features, changelog, data-dictionary, ERD.
+3. **Crear propuestas de cambio** en `proposals/changes/` para codigo que no podes modificar directamente.
+4. **Analizar** el sistema y documentar hallazgos, bugs, o mejoras.
+
+### Lo que NO podes hacer (usa propuestas)
+
+1. **Modificar codigo React** → Crea propuesta con repo destino `iitacrm`
+2. **Modificar escenarios Make.com** → Crea propuesta con repo destino `iita-make-scenarios`
+3. **Ejecutar migraciones SQL** → Crea propuesta con repo destino `supabase-migration`
+4. **Deployar Edge Functions** → Crea propuesta con repo destino `supabase-edge-function`
+
+### Flujo completo para IAs con acceso limitado
+
+```
+1. Lee AGENTS.md (contexto completo del proyecto)
+2. Lee la documentacion relevante a tu tarea
+3. Trabaja en tu tarea:
+   a. Si es documentacion → modifica directamente en iita-system
+   b. Si es codigo/SQL → crea propuesta en proposals/changes/
+4. Identificate siempre (Autor IA + modelo)
+5. Actualiza CHANGELOG.md si corresponde
+```
+
+### Ejemplo concreto
+
+Si ChatGPT detecta un bug en el frontend y quiere proponer un fix:
+
+1. Documenta el bug en `docs/bugs/BUGS-CONOCIDOS.md`
+2. Crea `proposals/changes/2026-02-21-fix-nombre-del-bug.md` con:
+   - Descripcion del problema
+   - Archivo y linea a modificar en `iitacrm`
+   - Codigo exacto del fix
+   - Como verificar
+3. gviollaz o Claude Code revisan la propuesta y la ejecutan
+
+---
+
 ## Lo que Ninguna IA Debe Hacer
 
 1. **No** hacer push a produccion sin revision humana.
@@ -147,3 +191,5 @@ Actualizar la documentacion relevante antes de hacer el commit:
 4. **No** crear credenciales o tokens de acceso.
 5. **No** ignorar bugs conocidos o propuestas pendientes relevantes al trabajo actual.
 6. **No** inventar datos para pruebas en la DB de produccion.
+7. **No** marcar una propuesta de cambio como "aprobada" o "ejecutada" — solo humanos o Claude Code pueden hacerlo.
+8. **No** omitir la identificacion de autor IA en ningun cambio o propuesta.
