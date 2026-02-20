@@ -4,6 +4,18 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-02-20] — Reporte tecnico integral de hallazgos
+
+**Autor:** gviollaz | **IA:** ChatGPT GPT-5.2-Codex
+
+### Agregado
+- Nuevo reporte tecnico integral en `docs/analysis/2026-02-20-reporte-hallazgos-arquitectura-seguridad-crm-ia.md`
+- Analisis detallado de arquitectura, seguridad, calidad de datos, deuda tecnica y plan 30-60-90
+- Matriz de riesgo priorizada (P0/P1/P2) con recomendaciones accionables
+
+### Observaciones
+- Se documenta referencia rota detectada en README hacia `docs/make-pipeline/scenarios-analysis.md` (archivo no presente en el repo)
+
 ## [2026-02-20] — Repositorio unificado + Fix media
 
 **Autor:** gviollaz | **IA:** Claude Opus 4.6 via Claude Code
