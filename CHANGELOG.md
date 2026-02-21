@@ -4,6 +4,24 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-02-21] — Documentacion del sistema legacy
+
+**Autor:** gviollaz | **IA:** Claude Opus 4.6 via Claude.ai
+
+### Agregado
+- Documentacion tecnica completa del sistema legacy **Chatbot IITA 2.0** en `docs/legacy-system/`
+  - `README.md` con vision general, motivos de reemplazo, comparacion legacy vs actual, referencia al repo fuente
+  - `chatbot-v2-documentacion-completa.md` con arquitectura, modelos Django, APIs Flask, diagramas Mermaid, deployment
+- Referencia al repo legacy `IITA-Proyectos/chatbot` en AGENTS.md y README.md
+- Seccion "Historia: migracion desde el sistema legacy" en `docs/architecture/system-overview.md`
+- Entrada "Sistema legacy" en tabla de referencia de AGENTS.md
+
+### Decisiones
+- El codigo fuente del sistema anterior NO se incluye en `iita-system` — se mantiene en su repo original (`IITA-Proyectos/chatbot`, archivado desde nov 2025)
+- Solo se incluye la documentacion tecnica (MD con diagramas Mermaid), no el PDF ni la wiki (mismo contenido en formatos menos utiles para GitHub)
+
+---
+
 ## [2026-02-20] — Repositorio unificado + Fix media
 
 **Autor:** gviollaz | **IA:** Claude Opus 4.6 via Claude Code
