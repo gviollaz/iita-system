@@ -23,6 +23,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-027: Optimizacion inteligente de horarios de envio — analisis de patrones por persona y global (deseado)
 - FEAT-028: Silenciar IA por persona — modo "canal manual" desde flujo de aprobacion (deseado, P1)
 - FEAT-029: Composicion de mensajes con asistente IA on-demand y adjuntos (deseado, P1)
+- FEAT-030: Dashboard de costos operativos — tracking de gastos de IA, Make.com, canales, storage (deseado)
+- FEAT-031: Banco de respuestas pre-generadas para leads nuevos — reduce costos y mejora velocidad (deseado)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---

@@ -126,8 +126,10 @@
 | 8.6 | Rate limiting y control de consumo de IA | Make.com + DB | P2 | FEAT-024 |
 | 8.7 | Mensajeria alternativa fuera de ventana (terceros, fallback SMS/email) | Make.com + DB + Integraciones | P2 | FEAT-026 |
 | 8.8 | Optimizacion inteligente de horarios de envio | Make.com + DB + Frontend | P2 | FEAT-027 |
+| 8.9 | Dashboard de costos operativos (IA, Make.com, canales, storage) | Frontend + DB + Make.com | P2 | FEAT-030 |
+| 8.10 | Banco de respuestas pre-generadas para leads nuevos | Make.com + DB + Frontend | P2 | FEAT-031 |
 
-**Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La vista de mapa requiere datos de ubicacion enriquecidos en `person_soft_data`. El rate limiting de IA puede implementarse antes que los nuevos canales, ya que es independiente. La mensajeria alternativa (FEAT-026) tiene riesgos de TOS — empezar con fallbacks oficiales (email/SMS) antes de explorar opciones no oficiales. La optimizacion de horarios (FEAT-027) puede empezar con reglas globales simples y luego agregar analisis per-persona.
+**Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La vista de mapa requiere datos de ubicacion enriquecidos en `person_soft_data`. El rate limiting de IA (FEAT-024) y el dashboard de costos (FEAT-030) comparten tabla de tracking y pueden implementarse juntos. La mensajeria alternativa (FEAT-026) tiene riesgos de TOS — empezar con fallbacks oficiales (email/SMS). El banco de respuestas (FEAT-031) reduce costos de IA significativamente para leads nuevos y se complementa con el tracking de costos.
 
 ---
 

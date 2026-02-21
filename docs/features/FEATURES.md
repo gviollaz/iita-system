@@ -354,3 +354,55 @@
   - El borrador generado NO se envia automaticamente, se retorna al frontend para edicion
   - Endpoint para enviar mensaje con adjuntos (subir a Storage + crear interaccion saliente)
 - **Notas:** Actualmente la IA solo genera respuestas reactivas (ante mensaje entrante). Esta feature le da al operador el poder de invocar la IA on-demand, con contexto completo, para componer mensajes proactivos personalizados. Es especialmente util para seguimiento de leads, informacion de cursos, y recontacto. La IA puede usar el mismo modelo que ya se usa en el pipeline (GPT-4o o Claude) pero con un prompt distinto orientado a composicion asistida.
+
+---
+
+### FEAT-030 | Dashboard de Costos Operativos (IA, Make.com, Canales)
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Frontend + Supabase + Make.com
+- **Descripcion:** Implementar un sistema de tracking y visualizacion de costos operativos del sistema. Registrar y mostrar costos de: (1) llamadas a APIs de IA (OpenAI, Claude) — por modelo, por cantidad de tokens, por tipo de uso (respuesta reactiva, composicion on-demand, enriquecimiento), (2) operaciones de Make.com — por escenario, por cantidad de ejecuciones, (3) envios por canal — costo de templates WA, SMS via Twilio, etc., (4) almacenamiento — Supabase Storage, base de datos. El dashboard debe mostrar costos acumulados por dia/semana/mes, tendencia temporal, costo promedio por conversacion, costo promedio por lead convertido, y alertas cuando se acerque a umbrales de presupuesto.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** FEAT-024 (Rate limiting IA — comparte tabla de tracking de uso)
+- **Backend requerido:**
+  - Tabla `cost_tracking` con registros por evento: `(timestamp, source, category, model, tokens_in, tokens_out, cost_usd, metadata)`
+  - Sources: `openai`, `anthropic`, `make`, `whatsapp`, `twilio`, `supabase`
+  - Categories: `ai_reactive` (respuesta a mensaje), `ai_proactive` (composicion on-demand), `ai_enrichment` (enriquecimiento de datos), `channel_send` (envio por canal), `automation` (ejecucion Make.com), `storage`
+  - RPC para estadisticas agregadas: costo por periodo, por source, por category
+  - Make.com registra costo despues de cada llamada a IA (tokens usados * precio por token)
+  - Webhook o proceso batch para importar costos de Make.com (API de Make.com reporta operaciones consumidas)
+- **Frontend requerido:**
+  - Nueva seccion en Dashboard o pagina dedicada "Costos"
+  - Grafico de costos acumulados por dia/semana/mes
+  - Desglose por categoria (IA, canales, automatizaciones, storage)
+  - Costo promedio por conversacion y por lead convertido
+  - Alertas de presupuesto configurables (ej: "alerta si IA supera $50/dia")
+  - Tabla detallada con filtros por fecha, source, category
+- **Notas:** Los costos de IA se pueden calcular en Make.com despues de cada llamada (OpenAI devuelve tokens usados en la respuesta; para Claude usar estimacion por caracteres). Los costos de Make.com se obtienen via su API de billing. Los costos de WA templates son conocidos (~$0.05-0.15 por conversacion segun region). Empezar trackeando solo costos de IA (el mas variable y costoso) y luego agregar los demas.
+
+---
+
+### FEAT-031 | Banco de Respuestas Pre-generadas para Leads Nuevos
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase + Frontend
+- **Descripcion:** Crear un banco de respuestas pre-generadas y aprobadas para los tipos de consulta mas frecuentes de leads nuevos (primera interaccion). En lugar de generar una respuesta IA personalizada para cada nuevo lead — que es costoso y lento — el sistema busca en el banco de respuestas una que coincida con el tema de la consulta y la usa directamente (o con minimas personalizaciones como el nombre). Para leads con historial, se sigue usando generacion personalizada. Esto reduce costos de IA, acelera el tiempo de respuesta, y garantiza calidad consistente en las primeras respuestas.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** FEAT-024 (Rate limiting IA — reduce consumo), FEAT-030 (Costos — reduce gasto en IA)
+- **Backend requerido:**
+  - Tabla `response_templates`: `(id, category, topic, trigger_keywords[], template_body, variables[], times_used, avg_approval_rate, is_active, created_at, updated_at, created_by)`
+  - Categories: `consulta_curso`, `consulta_precio`, `consulta_inscripcion`, `consulta_horario`, `saludo_generico`, `consulta_certificado`, etc.
+  - Variables soportadas: `{nombre}`, `{curso}`, `{precio}`, `{fecha_inicio}`, `{sede}`, etc.
+  - RPC `find_matching_template(message_body, conversation_id)`: busca la mejor respuesta en el banco, usando keywords y/o embeddings semanticos
+  - Logica de decision en Make.com:
+    - Si es lead nuevo (primera interaccion) Y hay template que matchea → usar template (gratis, rapido)
+    - Si es lead nuevo Y no hay template → generar con IA (como ahora)
+    - Si es lead con historial (2+ interacciones) → siempre generar personalizado con IA
+  - Tracking de uso: cuantas veces se uso cada template, tasa de aprobacion, para ir mejorando el banco
+- **Frontend requerido:**
+  - Pagina de administracion del banco de respuestas: CRUD de templates con preview
+  - Sugerencia automatica: cuando la IA genera una respuesta para un lead nuevo que se aprueba, ofrecer "Guardar como template" para alimentar el banco
+  - Estadisticas del banco: templates mas usados, tasa de aprobacion, ahorro estimado vs generacion IA
+- **Notas:** El banco se puede alimentar de dos formas: (1) manualmente — un operador crea templates para las consultas mas frecuentes, (2) automaticamente — cuando una respuesta IA para un lead nuevo se aprueba sin editar, se sugiere guardarla como template. Con el tiempo el banco crece organicamente. El matching puede empezar simple (keywords) y evolucionar a semantico (embeddings). Considerar que las respuestas del banco aun pasan por el flujo de aprobacion (no se envian automaticamente sin revision).
