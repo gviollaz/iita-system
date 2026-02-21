@@ -1,0 +1,120 @@
+# =============================================================================
+# IITA System — Auto-sync Subtrees
+# =============================================================================
+# This workflow syncs the CRM frontend and Make.com scenarios subtrees
+# from their original repositories into this monorepo.
+#
+# Triggers:
+#   - Manual (workflow_dispatch) — run anytime from GitHub Actions tab
+#   - Daily at 06:00 UTC (cron)
+#   - When called by other repos via repository_dispatch
+#
+# To trigger from another repo (e.g., after push to iitacrm):
+#   curl -X POST \
+#     -H "Authorization: token $GITHUB_TOKEN" \
+#     -H "Accept: application/vnd.github.v3+json" \
+#     https://api.github.com/repos/gviollaz/iita-system/dispatches \
+#     -d '{"event_type": "sync-subtrees", "client_payload": {"source": "iitacrm"}}'
+# =============================================================================
+
+name: Sync Subtrees
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Which subtree to sync (all, crm-frontend, make-scenarios)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - crm-frontend
+          - make-scenarios
+
+  schedule:
+    # Daily at 06:00 UTC (03:00 Argentina time)
+    - cron: '0 6 * * *'
+
+  repository_dispatch:
+    types: [sync-subtrees]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout iita-system
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history needed for subtree operations
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine what to sync
+        id: what
+        run: |
+          SOURCE="${{ github.event.inputs.source || github.event.client_payload.source || 'all' }}"
+          echo "source=$SOURCE" >> $GITHUB_OUTPUT
+          echo "Will sync: $SOURCE"
+
+      - name: Sync CRM Frontend
+        if: steps.what.outputs.source == 'all' || steps.what.outputs.source == 'crm-frontend'
+        run: |
+          if [ -d "apps/crm-frontend" ]; then
+            echo "Pulling latest from IITA-Proyectos/iitacrm..."
+            git subtree pull --prefix=apps/crm-frontend \
+              https://github.com/IITA-Proyectos/iitacrm.git main \
+              --squash -m "sync: auto-update crm-frontend from IITA-Proyectos/iitacrm" \
+              || echo "Already up to date or merge conflict — skipping"
+          else
+            echo "apps/crm-frontend/ not found. Run setup-subtrees.sh first."
+            exit 1
+          fi
+
+      - name: Sync Make Scenarios
+        if: steps.what.outputs.source == 'all' || steps.what.outputs.source == 'make-scenarios'
+        run: |
+          if [ -d "automations/make-scenarios" ]; then
+            echo "Pulling latest from gviollaz/iita-make-scenarios..."
+            git subtree pull --prefix=automations/make-scenarios \
+              https://github.com/gviollaz/iita-make-scenarios.git main \
+              --squash -m "sync: auto-update make-scenarios from gviollaz/iita-make-scenarios" \
+              || echo "Already up to date or merge conflict — skipping"
+          else
+            echo "automations/make-scenarios/ not found. Run setup-subtrees.sh first."
+            exit 1
+          fi
+
+      - name: Push changes
+        run: |
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo "Pushing sync commits..."
+            git push origin main
+          else
+            echo "No changes to push — already in sync."
+          fi
+
+      - name: Summary
+        run: |
+          echo "## Subtree Sync Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trigger:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Source:** ${{ steps.what.outputs.source }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Latest commits in subtrees" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          if [ -d "apps/crm-frontend" ]; then
+            echo "crm-frontend: $(git log --oneline -1 -- apps/crm-frontend)" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ -d "automations/make-scenarios" ]; then
+            echo "make-scenarios: $(git log --oneline -1 -- automations/make-scenarios)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo '```' >> $GITHUB_STEP_SUMMARY
