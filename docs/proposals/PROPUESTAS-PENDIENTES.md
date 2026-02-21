@@ -1,6 +1,6 @@
 # Propuestas Pendientes
 
-**Fecha:** 2026-02-20
+**Fecha:** 2026-02-21
 **Autor:** Equipo IITA + AI
 
 ---
@@ -100,3 +100,30 @@ ORDER BY duplicados DESC;
 ```
 
 **Razon por la que no se implemento:** Requiere un script cuidadoso que maneje las dependencias (interacciones, system_conversation, etc.) sin perder datos. Se implemento la prevencion (trigger) pero la limpieza de datos historicos queda pendiente. Se debe ejecutar como operacion de datos documentada en DATA-OPERATIONS.md.
+
+---
+
+## Propuesta #7 - Enriquecimiento IA con Contexto Instagram
+
+**Problema:** El análisis IA de conversaciones de Instagram no tiene acceso al contexto completo del perfil del contacto.
+
+**Estado:** Documentada en detalle en [PROPUESTA-7-enriquecimiento-ia-contexto-instagram.md](PROPUESTA-7-enriquecimiento-ia-contexto-instagram.md).
+
+---
+
+## Propuesta #8 - Exportación de Contactos VCF desde el CRM (NUEVA)
+
+**Problema:** La exportación de contactos para importar en teléfonos se hace manualmente con queries SQL y scripts Python. No hay interfaz, los prefijos se definen ad-hoc, y requiere conocimientos técnicos.
+
+**Propuesta:** Implementar un módulo de exportación en el CRM con:
+1. Selector visual de etiquetas (checkboxes con cantidades).
+2. Filtro por ubicación (Salta/interior/todos).
+3. Tabla de prefijos estándar persistida en `export_prefix_config`.
+4. Generación de VCF 3.0 con nombres prefijados (ej: `RBE María López`, `MKO-RBE Simona`).
+5. Soporte para VCF y CSV Google Contacts.
+
+**Antecedentes:**
+- 2026-02-14/15: Exportación manual Python (PYP, PYO, PYA, PYG, PYIA) — CSV.
+- 2026-02-21: Exportación manual Robótica/Videojuegos/Marketing (RBE, RAP, RAO, VJO, VJP, MKO, MKP) — VCF. Incluyó corrección de tags online/presencial (OP-004).
+
+**Documentación completa:** [PROPUESTA-8-exportacion-contactos-vcf.md](PROPUESTA-8-exportacion-contactos-vcf.md)
