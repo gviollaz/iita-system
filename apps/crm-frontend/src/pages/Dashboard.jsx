@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { post, unwrap } from '@/lib/api'
 import { fmtNum, fmtShort, fmtMin, todayStr } from '@/lib/utils'
 import { Card, Btn, Loading, Toast, TabBar, Badge } from '@/components/ui'
-import { MiniLineChart, MiniBarChart, MiniPieChart } from '@/components/Charts'
+import { MiniLineChart, MiniBarChart, MiniPieChart, MiniMultiLineChart } from '@/components/Charts'
 import { useIsMobile } from '@/lib/useIsMobile'
 
 export default function Dashboard() {
@@ -14,12 +14,14 @@ export default function Dashboard() {
         tabs={[
           { k: 'overview', l: isMobile ? '📊 Resumen' : '📊 Resumen general' },
           { k: 'analysis', l: isMobile ? '📋 Análisis' : '📋 Análisis por canal' },
+          { k: 'courses', l: isMobile ? '📚 Cursos' : '📚 Análisis por curso' },
         ]}
         active={dashTab}
         onChange={setDashTab}
       />
       {dashTab === 'overview' && <DashOverview isMobile={isMobile} />}
       {dashTab === 'analysis' && <DashAnalysis isMobile={isMobile} />}
+      {dashTab === 'courses' && <DashCourses isMobile={isMobile} />}
     </div>
   )
 }
@@ -413,6 +415,242 @@ function DashAnalysis({ isMobile }) {
                         <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--ac)' }}>{totals.ai_responses}</td>
                         <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--red)' }}>{totals.pending_now}</td>
                         <td colSpan={6}></td>
+                      </tr>
+                    </tfoot>
+                  )}
+                </table>
+              </div>
+            )}
+          </Card>
+        </>
+      )}
+    </>
+  )
+}
+
+function DashCourses({ isMobile }) {
+  const [dateFrom, setDateFrom] = useState(() => {
+    const d = new Date(); d.setDate(d.getDate() - 7)
+    return d.toISOString().split('T')[0]
+  })
+  const [dateTo, setDateTo] = useState(todayStr())
+  const [rows, setRows] = useState([])
+  const [evolution, setEvolution] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [loaded, setLoaded] = useState(false)
+
+  const doAnalysis = async () => {
+    setLoading(true); setError('')
+    try {
+      const dtTo = new Date(dateTo)
+      dtTo.setDate(dtTo.getDate() + 1)
+      const dateToExcl = dtTo.toISOString().split('T')[0]
+
+      const [d, evo] = await Promise.all([
+        post({ endpoint: 'course_analysis', params: { date_from: dateFrom, date_to: dateToExcl } }),
+        post({ endpoint: 'course_daily_evolution', params: { date_from: dateFrom, date_to: dateToExcl } }),
+      ])
+      setRows(unwrap(d))
+      setEvolution(unwrap(evo))
+      setLoaded(true)
+    } catch (e) { setError(e.message) }
+    setLoading(false)
+  }
+
+  // Transform evolution data into series format for MultiLineChart
+  const buildEvolutionChart = () => {
+    if (!evolution.length) return { series: [], labels: [] }
+    const days = [...new Set(evolution.map(e => e.dia))].sort()
+    const cursoMap = {}
+    evolution.forEach(e => {
+      if (!cursoMap[e.curso]) cursoMap[e.curso] = {}
+      cursoMap[e.curso][e.dia] = Number(e.cantidad)
+    })
+    // Get top N courses by total volume (to keep chart readable)
+    const cursoTotals = Object.entries(cursoMap).map(([name, dayMap]) => ({
+      name,
+      total: Object.values(dayMap).reduce((s, v) => s + v, 0),
+    })).sort((a, b) => b.total - a.total)
+    const topN = cursoTotals.slice(0, isMobile ? 5 : 8)
+    const series = topN.map(c => ({
+      name: c.name,
+      data: days.map(d => cursoMap[c.name]?.[d] || 0),
+    }))
+    const labels = days.map(d => d)
+    return { series, labels }
+  }
+  const evoChart = loaded ? buildEvolutionChart() : { series: [], labels: [] }
+
+  const activeRows = rows.filter(r => r.nuevos || r.pendientes_anteriores || r.respondidos || r.rechazados || r.pendientes_finales)
+
+  const totals = activeRows.reduce((a, r) => ({
+    pendientes_anteriores: a.pendientes_anteriores + (r.pendientes_anteriores || 0),
+    nuevos: a.nuevos + (r.nuevos || 0),
+    respondidos: a.respondidos + (r.respondidos || 0),
+    rechazados: a.rechazados + (r.rechazados || 0),
+    pendientes_finales: a.pendientes_finales + (r.pendientes_finales || 0),
+  }), { pendientes_anteriores: 0, nuevos: 0, respondidos: 0, rechazados: 0, pendientes_finales: 0 })
+
+  const chartData = activeRows
+    .filter(r => r.nuevos > 0)
+    .map((r, i) => ({
+      label: r.curso,
+      value: r.nuevos,
+      color: ['var(--ac)', 'var(--grn)', 'var(--ylw)', 'var(--blu)', 'var(--red)', '#a29bfe', '#fd79a8', '#55efc4'][i % 8],
+    }))
+
+  const kpis = [
+    { label: 'Pend. anteriores', value: totals.pendientes_anteriores, color: 'var(--ylw)', bg: 'var(--ylwBg)' },
+    { label: 'Nuevos', value: totals.nuevos, color: 'var(--blu)', bg: 'var(--bluBg)' },
+    { label: 'Respondidos', value: totals.respondidos, color: 'var(--grn)', bg: 'var(--grnBg)' },
+    { label: 'Rechazados', value: totals.rechazados, color: 'var(--red)', bg: 'var(--redBg)' },
+    { label: 'Pend. finales', value: totals.pendientes_finales, color: 'var(--ac)', bg: 'var(--acBg)' },
+  ]
+
+  return (
+    <>
+      <Card style={{ marginBottom: 20, padding: isMobile ? 12 : 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>🔍 Rango de fechas</div>
+        {isMobile ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+              <div>
+                <label style={{ fontSize: 12, color: 'var(--t2)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Desde</label>
+                <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%' }} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, color: 'var(--t2)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Hasta</label>
+                <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%' }} />
+              </div>
+            </div>
+            <Btn primary onClick={doAnalysis} style={{ width: '100%', padding: '12px 0', fontSize: 15 }}>Analizar</Btn>
+          </div>
+        ) : (
+          <div className="fr" style={{ gap: 8 }}>
+            <div><label style={{ fontSize: 10, color: 'var(--t2)', display: 'block' }}>Desde</label><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} /></div>
+            <div><label style={{ fontSize: 10, color: 'var(--t2)', display: 'block' }}>Hasta</label><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} /></div>
+            <Btn primary onClick={doAnalysis}>Analizar</Btn>
+          </div>
+        )}
+        {error && <div style={{ color: 'var(--red)', fontSize: 13, marginTop: 8 }}>{error}</div>}
+      </Card>
+
+      {loading && <Loading />}
+      {loaded && !loading && (
+        <>
+          {/* KPI summary cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(5, 1fr)',
+            gap: isMobile ? 10 : 12,
+            marginBottom: isMobile ? 16 : 20,
+          }}>
+            {kpis.map((k, i) => (
+              <Card key={i} style={{ padding: isMobile ? '14px 12px' : 14, textAlign: isMobile ? 'left' : 'center' }}>
+                <div style={{ fontSize: isMobile ? 26 : 22, fontWeight: 800, color: k.color, lineHeight: 1, marginBottom: 4 }}>
+                  {fmtNum(k.value)}
+                </div>
+                <div style={{ fontSize: isMobile ? 13 : 11, color: 'var(--t2)', fontWeight: 500 }}>{k.label}</div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Evolution line chart */}
+          {evoChart.series.length > 0 && (
+            <Card style={{ marginBottom: isMobile ? 12 : 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>
+                📈 Evolución diaria por curso — {dateFrom}{dateFrom !== dateTo ? ` a ${dateTo}` : ''}
+              </div>
+              <MiniMultiLineChart series={evoChart.series} labels={evoChart.labels} height={isMobile ? 200 : 280} />
+            </Card>
+          )}
+
+          {/* Bar chart of "Nuevos" by course */}
+          {chartData.length > 0 && (
+            <Card style={{ marginBottom: isMobile ? 12 : 20 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>
+                Nuevos mensajes por curso — {dateFrom}{dateFrom !== dateTo ? ` a ${dateTo}` : ''}
+              </div>
+              <MiniBarChart data={chartData} />
+            </Card>
+          )}
+
+          {/* Detail table */}
+          <Card style={{ overflow: 'hidden', padding: isMobile ? 10 : 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 12 }}>
+              Detalle por curso — {dateFrom}{dateFrom !== dateTo ? ` a ${dateTo}` : ''}
+            </div>
+
+            {isMobile ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {activeRows.map(r => (
+                  <div key={r.curso} style={{ background: 'var(--s2)', borderRadius: 10, padding: '14px 12px' }}>
+                    <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--t1)', marginBottom: 10 }}>{r.curso}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                      <div style={{ background: 'var(--s3)', borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 11, color: 'var(--t2)', fontWeight: 600, marginBottom: 2 }}>Pend.ant.</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ylw)', lineHeight: 1 }}>{r.pendientes_anteriores || 0}</div>
+                      </div>
+                      <div style={{ background: 'var(--s3)', borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 11, color: 'var(--t2)', fontWeight: 600, marginBottom: 2 }}>Nuevos</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--blu)', lineHeight: 1 }}>{r.nuevos || 0}</div>
+                      </div>
+                      <div style={{ background: 'var(--s3)', borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 11, color: 'var(--t2)', fontWeight: 600, marginBottom: 2 }}>Respondidos</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--grn)', lineHeight: 1 }}>{r.respondidos || 0}</div>
+                      </div>
+                      <div style={{ background: 'var(--s3)', borderRadius: 8, padding: '8px 10px' }}>
+                        <div style={{ fontSize: 11, color: 'var(--t2)', fontWeight: 600, marginBottom: 2 }}>Pend.finales</div>
+                        <div style={{ fontSize: 20, fontWeight: 800, color: r.pendientes_finales ? 'var(--ac)' : 'var(--grn)', lineHeight: 1 }}>{r.pendientes_finales || 0}</div>
+                      </div>
+                    </div>
+                    {r.rechazados > 0 && (
+                      <div style={{ marginTop: 8, fontSize: 12, color: 'var(--red)' }}>
+                        Rechazados: {r.rechazados}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {activeRows.length === 0 && (
+                  <div style={{ textAlign: 'center', color: 'var(--t3)', padding: 20 }}>Sin actividad en el período</div>
+                )}
+              </div>
+            ) : (
+              <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                <table>
+                  <thead><tr>
+                    <th>Curso</th>
+                    <th style={{ textAlign: 'right' }}>Pend.ant.</th>
+                    <th style={{ textAlign: 'right' }}>Nuevos</th>
+                    <th style={{ textAlign: 'right' }}>Respondidos</th>
+                    <th style={{ textAlign: 'right' }}>Rechazados</th>
+                    <th style={{ textAlign: 'right' }}>Pend.finales</th>
+                  </tr></thead>
+                  <tbody>
+                    {activeRows.map(r => (
+                      <tr key={r.curso}>
+                        <td style={{ fontWeight: 500, color: 'var(--t1)' }}>{r.curso}</td>
+                        <td style={{ textAlign: 'right', color: r.pendientes_anteriores ? 'var(--ylw)' : 'var(--t3)' }}>{r.pendientes_anteriores || 0}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600, color: 'var(--blu)' }}>{r.nuevos || 0}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600, color: 'var(--grn)' }}>{r.respondidos || 0}</td>
+                        <td style={{ textAlign: 'right', color: r.rechazados ? 'var(--red)' : 'var(--t3)' }}>{r.rechazados || 0}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600, color: r.pendientes_finales ? 'var(--ac)' : 'var(--grn)' }}>{r.pendientes_finales || 0}</td>
+                      </tr>
+                    ))}
+                    {activeRows.length === 0 && (
+                      <tr><td colSpan={6} style={{ textAlign: 'center', color: 'var(--t3)', padding: 20 }}>Sin actividad en el período</td></tr>
+                    )}
+                  </tbody>
+                  {activeRows.length > 1 && (
+                    <tfoot>
+                      <tr style={{ borderTop: '2px solid var(--ac)' }}>
+                        <td style={{ fontWeight: 700, color: 'var(--t1)' }}>TOTAL</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--ylw)' }}>{totals.pendientes_anteriores}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--blu)' }}>{totals.nuevos}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--grn)' }}>{totals.respondidos}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--red)' }}>{totals.rechazados}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--ac)' }}>{totals.pendientes_finales}</td>
                       </tr>
                     </tfoot>
                   )}
