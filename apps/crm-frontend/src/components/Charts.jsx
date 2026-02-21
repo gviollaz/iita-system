@@ -67,6 +67,69 @@ export function MiniBarChart({ data }) {
   )
 }
 
+const MULTI_COLORS = ['var(--ac)', 'var(--grn)', 'var(--ylw)', 'var(--blu)', 'var(--red)', '#a29bfe', '#fd79a8', '#55efc4', '#e17055', '#00cec9', '#6c5ce7', '#ffeaa7']
+
+export function MiniMultiLineChart({ series, labels, width = 700, height = 260 }) {
+  // series: [{ name, data: [values per label], color? }]
+  // labels: ['2026-02-14', '2026-02-15', ...]
+  if (!series || !series.length || !labels || !labels.length) return <div style={{ color: 'var(--t3)', textAlign: 'center', padding: 20 }}>Sin datos</div>
+
+  const allVals = series.flatMap(s => s.data)
+  const maxV = Math.max(...allVals, 1)
+  const minV = 0
+  const range = maxV - minV || 1
+  const pad = { t: 20, r: 20, b: 50, l: 55 }
+  const w = width - pad.l - pad.r
+  const h = height - pad.t - pad.b
+
+  const getX = (i) => pad.l + (i / (labels.length - 1 || 1)) * w
+  const getY = (v) => pad.t + h - ((v - minV) / range) * h
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', height: 'auto' }}>
+        {/* Grid lines */}
+        {[0, 1, 2, 3, 4, 5].map(i => {
+          const y = pad.t + (h / 5) * i
+          const val = maxV - ((maxV - minV) / 5) * i
+          return (
+            <g key={i}>
+              <line x1={pad.l} x2={width - pad.r} y1={y} y2={y} stroke="var(--bdr)" strokeDasharray="3,3" />
+              <text x={pad.l - 8} y={y + 4} textAnchor="end" fill="var(--t3)" fontSize="10">{fmtNum(Math.round(val))}</text>
+            </g>
+          )
+        })}
+        {/* X-axis labels */}
+        {labels.filter((_, i) => i % Math.ceil(labels.length / 8) === 0 || i === labels.length - 1).map((l, i) => {
+          const idx = labels.indexOf(l)
+          return <text key={i} x={getX(idx)} y={pad.t + h + 18} textAnchor="middle" fill="var(--t3)" fontSize="9">{l.slice(5)}</text>
+        })}
+        {/* Lines */}
+        {series.map((s, si) => {
+          const color = s.color || MULTI_COLORS[si % MULTI_COLORS.length]
+          const pts = s.data.map((v, i) => ({ x: getX(i), y: getY(v) }))
+          const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x},${p.y}`).join(' ')
+          return (
+            <g key={si}>
+              <path d={line} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" opacity=".85" />
+              {pts.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={color} opacity=".7" />)}
+            </g>
+          )
+        })}
+      </svg>
+      {/* Legend */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginTop: 8, justifyContent: 'center' }}>
+        {series.map((s, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11 }}>
+            <div style={{ width: 14, height: 3, borderRadius: 2, background: s.color || MULTI_COLORS[i % MULTI_COLORS.length], flexShrink: 0 }} />
+            <span style={{ color: 'var(--t2)' }}>{s.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function MiniPieChart({ data, size = 170 }) {
   if (!data || !data.length) return null
   const total = data.reduce((s, d) => s + d.value, 0) || 1

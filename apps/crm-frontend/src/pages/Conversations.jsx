@@ -21,6 +21,8 @@ export default function Conversations() {
   const [branchF, setBranchF] = useState('')
   const [providerF, setProviderF] = useState('')
   const [channelF, setChannelF] = useState('')
+  const [cursoF, setCursoF] = useState('')
+  const [cursos, setCursos] = useState([])
   const [statusF, setStatusF] = useState('')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
@@ -66,7 +68,7 @@ export default function Conversations() {
         setHasMore(false)
       }
     } catch (e) { /* silent fail */ }
-  }, [search, branchF, providerF, channelF, statusF, dateFrom, dateTo])
+  }, [search, branchF, providerF, channelF, cursoF, statusF, dateFrom, dateTo])
 
   const personFields = [
     { k: 'first_name', l: 'Nombre', type: 'text' },
@@ -83,7 +85,7 @@ export default function Conversations() {
   // Quick filter helpers
   const applyQuickFilter = (quickName, status, from, to) => {
     setStatusF(status); setDateFrom(from); setDateTo(to)
-    setProviderF(''); setChannelF(''); setBranchF(''); setSearch('')
+    setProviderF(''); setChannelF(''); setBranchF(''); setSearch(''); setCursoF('')
     setActiveQuick(quickName)
     setAutoLoad(c => c + 1)
   }
@@ -184,6 +186,7 @@ export default function Conversations() {
     p_channel_id: channelF ? Number(channelF) : null,
     p_branch_id: branchF ? Number(branchF) : null,
     p_status: statusF || null,
+    p_tag_curso: cursoF || null,
     p_limit: PAGE_SIZE,
     p_offset: offset,
     p_date_from: dateFrom ? dateFrom + 'T00:00:00' : null,
@@ -250,13 +253,15 @@ export default function Conversations() {
   useEffect(() => {
     ;(async () => {
       try {
-        const [b, ch] = await Promise.all([
+        const [b, ch, co] = await Promise.all([
           post({ endpoint: 'branches' }),
           post({ endpoint: 'channels' }),
+          post({ endpoint: 'course_options' }),
         ])
         setBranches(b || [])
         setChannels(ch || [])
         setProviders(extractProviders(ch))
+        setCursos(co || [])
         setInited(true)
       } catch (e) { setError(e.message) }
     })()
@@ -278,7 +283,7 @@ export default function Conversations() {
       }
     } catch (e) { setError(e.message) }
     setLoading(false)
-  }, [search, branchF, providerF, channelF, statusF, dateFrom, dateTo])
+  }, [search, branchF, providerF, channelF, cursoF, statusF, dateFrom, dateTo])
 
   const loadMoreConvos = useCallback(async () => {
     if (loadingMoreRef.current || !hasMoreRef.current) return
@@ -299,7 +304,7 @@ export default function Conversations() {
     } catch (e) { setError(e.message) }
     loadingMoreRef.current = false
     setLoadingMore(false)
-  }, [search, branchF, providerF, channelF, statusF, dateFrom, dateTo])
+  }, [search, branchF, providerF, channelF, cursoF, statusF, dateFrom, dateTo])
 
   const handleListScroll = useCallback(() => {
     const el = listRef.current
@@ -342,8 +347,8 @@ export default function Conversations() {
   }, [chatData])
 
   const filteredChannels = providerF ? channels.filter(c => (c.channel_providers?.name || '') === providerF) : channels
-  const clearFilters = () => { setSearch(''); setBranchF(''); setProviderF(''); setChannelF(''); setStatusF(''); setDateFrom(''); setDateTo(''); setActiveQuick(null) }
-  const hasFilters = search || branchF || providerF || channelF || statusF || dateFrom || dateTo
+  const clearFilters = () => { setSearch(''); setBranchF(''); setProviderF(''); setChannelF(''); setCursoF(''); setStatusF(''); setDateFrom(''); setDateTo(''); setActiveQuick(null) }
+  const hasFilters = search || branchF || providerF || channelF || cursoF || statusF || dateFrom || dateTo
 
   // On mobile: show list OR chat, not both
   const showSidebar = !isMobile || !selected
@@ -394,6 +399,7 @@ export default function Conversations() {
                   <select value={branchF} onChange={e => setBranchF(e.target.value)} style={{ flex: 1 }}><option value="">Todas las sedes</option>{branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}</select>
                   <select value={statusF} onChange={e => { setStatusF(e.target.value); setActiveQuick(null) }} style={{ flex: 1 }}><option value="">Todos los estados</option><option value="unanswered">⚠️ Sin responder</option><option value="answered">✅ Respondidas</option><option value="ai_pending">🤖 IA pendiente</option><option value="ai_approved">✅ IA aprobadas</option></select>
                 </div>
+                <select value={cursoF} onChange={e => setCursoF(e.target.value)} style={{ width: '100%' }}><option value="">📚 Todos los cursos</option>{cursos.map(c => <option key={c.curso} value={c.curso}>{c.curso} ({c.cantidad})</option>)}</select>
                 <div className="fr">
                   <div style={{ flex: 1 }}><label style={{ fontSize: isMobile ? 12 : 10, color: 'var(--t2)', fontWeight: 600 }}>Desde</label><input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%' }} /></div>
                   <div style={{ flex: 1 }}><label style={{ fontSize: isMobile ? 12 : 10, color: 'var(--t2)', fontWeight: 600 }}>Hasta</label><input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%' }} /></div>
@@ -409,6 +415,7 @@ export default function Conversations() {
               <div style={{ fontSize: isMobile ? 13 : 11, color: 'var(--ac)', display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
                 🔽 Filtros activos
                 {providerF && <Badge bg="var(--grnBg)" color="var(--grn)">{providerF}</Badge>}
+                {cursoF && <Badge bg="var(--acBg)" color="var(--ac)">📚 {cursoF}</Badge>}
                 {statusF && <Badge bg="var(--ylwBg)" color="var(--ylw)">{statusF}</Badge>}
                 {(dateFrom || dateTo) && <Badge bg="var(--bluBg)" color="var(--blu)">{dateFrom || '...'} → {dateTo || '...'}</Badge>}
               </div>

@@ -6,6 +6,8 @@
 
 CRM que gestiona comunicaciones con alumnos y leads a traves de WhatsApp, Instagram, Messenger y Email. Incluye generacion de respuestas por IA y un dashboard de gestion.
 
+Este sistema reemplazo al **Chatbot IITA 2.0** (Django + Flask, desplegado en VM propia) en febrero 2026. Los datos fueron migrados desde el sistema anterior a Supabase. Ver [docs/legacy-system/](docs/legacy-system/) para la documentacion tecnica del sistema anterior.
+
 ## Indice maestro de documentacion
 
 ### Para empezar
@@ -61,6 +63,12 @@ CRM que gestiona comunicaciones con alumnos y leads a traves de WhatsApp, Instag
 |---------|-------------|
 | [docs/make-pipeline/pipeline-overview.md](docs/make-pipeline/pipeline-overview.md) | Pipeline de 8 etapas de Make.com |
 | ~~[docs/make-pipeline/scenarios-analysis.md]~~ | *(Archivo no encontrado - Validado por Gemini 3 el 2026-02-20)* Analisis detallado de escenarios de IA |
+
+### Sistema legacy (Chatbot IITA 2.0)
+| Archivo | Descripcion |
+|---------|-------------|
+| [docs/legacy-system/README.md](docs/legacy-system/README.md) | Vision general del sistema anterior, por que se reemplazo, que se migro |
+| [docs/legacy-system/chatbot-v2-documentacion-completa.md](docs/legacy-system/chatbot-v2-documentacion-completa.md) | Documentacion tecnica completa: arquitectura, modelos, APIs, diagramas |
 
 ### Historial de cambios
 | Archivo | Descripcion |
