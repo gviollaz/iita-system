@@ -11,8 +11,8 @@
 
 - **Estado:** Implementado
 - **Componente:** Frontend (Dashboard.jsx) + Supabase (RPCs de analytics)
-- **Descripcion:** Panel principal con indicadores clave de gestion: total de conversaciones, mensajes por dia, distribusion por canal, leads mas activos, conversaciones sin responder.
-- **Endpoints:** `stats`, `msgs_per_day`, `volume_by_channel`, `volume_by_provider`, `top_leads`, `unanswered`, `channel_analysis`
+- **Descripcion:** Panel principal con indicadores clave de gestion: total de conversaciones, mensajes por dia, distribusion por canal, leads mas activos. *(Nota Gemini 3: Los endpoints 'unanswered' y 'volume_by_provider' fueron retirados del dashboard en el codigo fuente)*.
+- **Endpoints:** `stats`, `msgs_per_day`, `volume_by_channel`, `top_leads`, `branches`, `channels`, `channel_analysis`
 
 ---
 
@@ -21,7 +21,7 @@
 - **Estado:** Implementado
 - **Componente:** Frontend (Conversations.jsx) + Supabase (get_chat_detail, get_conversations)
 - **Descripcion:** Vista de chat que muestra las conversaciones con mensajes, media adjunta, respuestas de IA y evaluacion. Soporta filtros por canal, estado y fecha.
-- **Endpoints:** `get_conversations`, `get_chat_detail`, `approve_ai_response`
+- **Endpoints:** `get_conversations`, `get_chat_detail`, `approve_ai_response`, `branches`, `channels`
 
 ---
 
@@ -29,8 +29,17 @@
 
 - **Estado:** Implementado
 - **Componente:** Frontend (People.jsx) + Supabase (RPCs de personas)
-- **Descripcion:** Lista paginada de personas/leads con busqueda por texto, perfil completo con historial de conversaciones y contactos por canal.
-- **Endpoints:** `persons_list`, `person_full`, `person_conversations`, `search_persons`, `update_person`
+- **Descripcion:** Lista paginada de personas/leads con busqueda por texto, perfil completo con historial de conversaciones y contactos por canal. *(Nota Gemini 3: La arquitectura del frontend migro para usar la vista enriquecida como principal en vez de listados separados)*.
+- **Endpoints:** `persons_enriched`, `person_full`, `persons_filter_options`, `update_person`, `send_to_person`
+
+---
+
+### FEAT-018 | Monitoreo de Salud (Health)
+
+- **Estado:** Implementado (No documentado previamente)
+- **Componente:** Frontend (Health.jsx) + Supabase 
+- **Descripcion:** Panel de monitoreo del estado de los canales y conexion a base de datos. *(Agregado por auditoria de codigo fuente - Gemini 3)*.
+- **Endpoints:** `channel_health`
 
 ---
 

@@ -34,16 +34,16 @@
 
 ---
 
-## Fase 2 - Bugs P0 en Make.com
+## Fase 2 - Bugs P0 en Make.com (Completada)
 
-**Objetivo:** Corregir perdida de datos activa en los flujos de entrada.
+**Objetivo:** Corregir perdida de datos activa en los flujos de entrada. *(Auditoria Gemini 3: Tareas completadas en repositorio)*
 
 | # | Tarea | Escenario | Prioridad | Ref |
 |---|-------|-----------|-----------|-----|
-| 2.1 | Fix caption WA Cloud API | 4097069, mod 8 | P0 | BUG-001 |
-| 2.2 | Fix media ID WA Coexistence | 4161348, mod 6 | P0 | BUG-002 |
-| 2.3 | Fix video.id por video.caption en WA Coexistence | 4161348, mod 7 | P0 | BUG-003 |
-| 2.4 | Desactivar escenario media analysis (apunta a DB dev) | 4105815 | P0 | BUG-004 |
+| 2.1 | ~~Fix caption WA Cloud API~~ *(Validado en repo - Gemini 3)* | 4097069, mod 8 | P0 | BUG-R005 |
+| 2.2 | ~~Fix media ID WA Coexistence~~ *(Validado en repo - Gemini 3)* | 4161348, mod 6 | P0 | BUG-R006 |
+| 2.3 | ~~Fix video.id por video.caption en WA Coexistence~~ *(Validado en repo - Gemini 3)* | 4161348, mod 7 | P0 | BUG-R007 |
+| 2.4 | ~~Desactivar escenario media analysis (apunta a DB dev)~~ *(Falso positivo: se usa 4132732)* | 4105815 | P0 | BUG-R008 |
 
 **Proceso:** Usar `make_sync.py prepare-fix` -> editar JSONs -> `make_sync.py diff` -> `make_sync.py import`
 
@@ -59,7 +59,7 @@
 | 3.2 | Verificar aprobacion CRM -> webhook Make.com end-to-end | CRM + Make | P1 | - |
 | 3.3 | Agregar person_name al flujo Instagram | Make.com | P1 | BUG-005 |
 | 3.4 | Agregar ad_id a todos los flujos de entrada | Make.com | P1 | BUG-006 |
-| 3.5 | Agregar status "new" en flujo WA Coexistence | Make.com | P1 | BUG-007 |
+| 3.5 | ~~Agregar status "new" en flujo WA Coexistence~~ *(Falso positivo - Gemini 3)* | Make.com | P1 | BUG-R009 |
 | 3.6 | Fix echo text hardcoded | Make.com | P1 | BUG-008 |
 
 ---

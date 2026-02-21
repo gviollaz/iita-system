@@ -7,46 +7,6 @@
 
 ## Bugs Abiertos
 
-### BUG-001 | P0 | Captions perdidos en WA Cloud API
-
-- **Componente:** Make.com - Escenario 4097069, Modulo 8
-- **Descripcion:** El campo `image.caption` esta hardcodeado en el modulo de procesamiento de mensajes entrantes de WhatsApp Cloud API. Cuando llega una imagen con caption, el texto del caption se pierde porque no se extrae dinamicamente del payload.
-- **Causa raiz:** Se usa `image.caption` como string fijo en vez de mapear `{{6.Messages}}` que contiene el caption real del mensaje.
-- **Impacto:** Perdida de informacion en todos los mensajes con media que incluyen caption por WA Cloud API.
-- **Solucion propuesta:** Cambiar el mapeo hardcoded por `{{6.Messages}}` para extraer el caption real del payload.
-
----
-
-### BUG-002 | P0 | Media IDs corruptos en WA Coexistence
-
-- **Componente:** Make.com - Escenario 4161348, Modulo 6
-- **Descripcion:** La funcion `if()` que determina el media ID esta mal estructurada: el sticker ID se concatena fuera de la condicion, provocando que IDs de stickers se mezclen con IDs de otros tipos de media.
-- **Causa raiz:** El bloque condicional `if()` no envuelve correctamente la rama del sticker ID, resultando en concatenacion incorrecta.
-- **Impacto:** Media IDs corruptos en la base de datos para mensajes con stickers, imposibilitando la descarga posterior del archivo.
-- **Solucion propuesta:** Reestructurar el `if()` para que el sticker ID solo se incluya dentro de su condicion correspondiente.
-
----
-
-### BUG-003 | P0 | video.id en vez de video.caption en WA Coexistence
-
-- **Componente:** Make.com - Escenario 4161348, Modulo 7
-- **Descripcion:** Se extrae `video.id` donde deberia extraerse `video.caption`, causando que el ID del video se guarde como texto del mensaje.
-- **Causa raiz:** Error de mapeo en el modulo: se selecciono el campo incorrecto del objeto video.
-- **Impacto:** El caption de los videos se pierde y en su lugar se almacena un ID interno sin sentido para el usuario.
-- **Solucion propuesta:** Cambiar el mapeo de `video.id` a `video.caption`.
-
----
-
-### BUG-004 | P0 | Media analysis apunta a DB de desarrollo
-
-- **Componente:** Make.com - Escenario 4105815
-- **Descripcion:** El escenario de analisis de media esta configurado con la conexion a la base de datos de desarrollo en lugar de produccion.
-- **Causa raiz:** El escenario se creo en entorno dev y no se actualizo la conexion al pasarlo a produccion.
-- **Impacto:** Los resultados del analisis de media se escriben en la DB de desarrollo, no en produccion. Los datos se pierden desde la perspectiva del sistema productivo.
-- **Solucion propuesta:** Desactivar el escenario inmediatamente. Reconfigurar la conexion apuntando a la DB de produccion antes de reactivar.
-
----
-
 ### BUG-005 | P1 | Falta person_name en flujo Instagram
 
 - **Componente:** Make.com - Flujo de entrada Instagram
@@ -64,16 +24,6 @@
 - **Causa raiz:** Los campos de anuncios no fueron incluidos en el diseno original de los flujos de entrada.
 - **Impacto:** No se puede rastrear que conversaciones fueron originadas por anuncios, impidiendo medir ROI publicitario.
 - **Solucion propuesta:** Agregar extraccion de `ad_id` del payload de cada canal y mapearlo a la tabla correspondiente.
-
----
-
-### BUG-007 | P1 | Falta status "new" en WA Coexistence
-
-- **Componente:** Make.com - Escenario 4161348
-- **Descripcion:** El flujo de WA Coexistence no asigna el status `new` a las interacciones entrantes, dejando el campo vacio.
-- **Causa raiz:** El campo `status` no fue incluido en el mapeo del modulo de creacion de interacciones.
-- **Impacto:** Las interacciones de WA Coexistence no siguen el ciclo de estados correcto (`new` -> `preprocessed` -> ...), afectando filtros y reportes.
-- **Solucion propuesta:** Agregar `status: "new"` como valor por defecto en el modulo de creacion de interacciones del escenario.
 
 ---
 
@@ -144,3 +94,15 @@
 - **Verificado por:** Gemini 3 (Auditoria de codigo fuente)
 - **Fecha de resolucion:** 2026-02-20 (Correccion en repositorio)
 - **Nota:** Pendiente verificar que los cambios hayan sido desplegados (recreados) en la base de datos de produccion de Supabase.
+
+---
+
+### Bugs Resueltos y Falsos Positivos de Make.com (Verificados por IA)
+
+Los siguientes bugs fueron reportados como abiertos (P0), pero la auditoría de los JSON del repositorio `iita-make-scenarios` (`2026-02-19_produccion`) demostró que **ya se encuentran solucionados en producción**. *(Auditoría: Gemini 3 el 2026-02-20)*:
+
+- **BUG-R005 (Ex BUG-001): Captions perdidos en WA Cloud API**: El escenario `4097069` ya mapea correctamente las variables dinámicas `{{1.entry[].changes[].value.messages[].image.caption}}` en lugar de strings fijos.
+- **BUG-R006 (Ex BUG-002): Media IDs corruptos en WA Coexistence**: El escenario `4161348` (línea 778) ya tiene la estructura `if()` corregida y el `sticker.id` está anidado correctamente.
+- **BUG-R007 (Ex BUG-003): video.id en vez de video.caption**: El escenario `4161348` (línea 831) extrae `video.caption` adecuadamente.
+- **BUG-R008 (Ex BUG-004): Falso Positivo (Media analysis dev)**: Se reportó sobre el escenario obsoleto `4105815`. El escenario activo en producción (`4132732`) apunta correctamente a la DB productiva (`postgres.cpkzzzwncpbzexpesock`).
+- **BUG-R009 (Ex BUG-007): Falso Positivo (Falta status "new")**: La función SQL `process_incoming_message` asigna el status `'new'` de forma nativa por diseño (hardcodeado en el INSERT). Make.com no debe enviar este parámetro.
