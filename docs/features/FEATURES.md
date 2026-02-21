@@ -266,3 +266,43 @@
   - RPC para estadisticas de vencimiento (mensajes vencidos agrupados por canal/periodo)
   - Monitoreo periodico (Make.com cada hora) con notificaciones externas para conversaciones criticas
 - **Notas:** Ver RFC-005 para el diseno tecnico detallado de la funcion `get_window_status()` y las opciones de implementacion en frontend. Las reglas deben ser extensibles para los canales futuros (FEAT-019 a FEAT-022). Considerar que canales como email no tienen restriccion de ventana.
+
+---
+
+### FEAT-026 | Mensajeria Alternativa Fuera de Ventana (Canales No Oficiales / Terceros)
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase + Integraciones externas
+- **Descripcion:** Implementar mecanismos alternativos para enviar mensajes fuera de la ventana de tiempo oficial de cada canal. Cuando la ventana de WhatsApp/Instagram/Messenger vence y no se puede usar un template oficial (o no conviene por costo), el sistema debe poder recurrir a vias alternativas para enviar una cantidad limitada de mensajes. Opciones a evaluar: (1) APIs de terceros o proveedores alternativos de mensajeria (ej: proveedores no oficiales de WA, plataformas de engagement), (2) web scraping controlado de interfaces web de mensajeria, (3) automatizacion de interfaz via herramientas tipo Puppeteer/Selenium, (4) envio por canal alternativo disponible (ej: si WA vencio pero tiene email, enviar por email), (5) SMS como fallback para mensajes urgentes. Tambien debe servir para iniciar campanas de marketing a contactos sin ventana abierta, complementando RFC-004.
+- **Dependencias:** FEAT-025 (Control de ventanas), FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** RFC-004 (Campanas de marketing — seleccion de canal por persona)
+- **Consideraciones:**
+  - **Riesgo de bloqueo:** El uso de APIs no oficiales o webscraping puede violar TOS de las plataformas y resultar en bloqueo de cuentas. Debe usarse con volumen bajo y con precauciones.
+  - **Volumen limitado:** Esta solucion es para pocos mensajes de alto valor (leads calientes, seguimiento critico), no para envios masivos.
+  - **Fallback inteligente:** El sistema debe elegir automaticamente la mejor via alternativa disponible: canal alternativo oficial (email/SMS) > template oficial > API de tercero > otros.
+  - **Registro completo:** Cada mensaje enviado por via alternativa debe quedar registrado en `interactions` con metadata del metodo usado.
+  - **Configuracion por canal:** Cada canal debe tener configurado cuales alternativas estan habilitadas y cuales no.
+- **Notas:** Evaluar proveedores como Twilio (SMS), herramientas de automatizacion web, y APIs no oficiales. Documentar riesgos de cada alternativa. Empezar con la opcion menos riesgosa (fallback a email/SMS) antes de explorar opciones mas agresivas.
+
+---
+
+### FEAT-027 | Optimizacion Inteligente de Horarios de Envio
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase + Frontend
+- **Descripcion:** Implementar un sistema que determine y administre los mejores horarios para enviar mensajes de seguimiento y campanas de marketing. El sistema debe: (1) analizar patrones de actividad historica por persona (a que hora suele escribir, a que hora responde mas rapido), (2) calcular horarios optimos globales por canal (ej: WA tiene mas engagement a las 10am y 7pm), (3) programar envios en la franja horaria optima en vez de enviar inmediatamente, (4) respetar horarios razonables (no enviar de madrugada), (5) permitir configurar reglas por persona o usar el default global.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** RFC-004 (Campanas — programacion de envios), FEAT-025 (Ventanas de tiempo)
+- **Backend requerido:**
+  - Tabla `send_time_preferences` con reglas por persona o globales (horario_inicio, horario_fin, dias_preferidos, zona_horaria)
+  - RPC de analisis: calcular horario optimo por persona basado en historial de `interactions` (hora de mensajes entrantes, tiempo de respuesta)
+  - RPC de analisis global: mejor horario por canal basado en agregados de todas las interacciones
+  - Cola de envio con scheduling: los mensajes no se envian inmediatamente sino que se programan para el proximo horario optimo
+- **Frontend requerido:**
+  - Visualizacion del horario optimo por persona en su perfil (heatmap de actividad)
+  - Configuracion de reglas globales de horarios (admin)
+  - En campanas: opcion "Enviar en horario optimo" vs "Enviar ahora"
+  - Estadisticas de engagement por franja horaria
+- **Notas:** Empezar con reglas globales simples (no enviar antes de 8am ni despues de 10pm, zona horaria Argentina). Luego agregar analisis por persona cuando haya suficiente historial. El heatmap de actividad puede calcularse con un query sobre `interactions` agrupado por hora del dia y dia de la semana.
