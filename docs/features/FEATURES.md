@@ -459,3 +459,69 @@
   - Dashboard de ROI: gasto en ads vs leads generados vs inscriptos, por curso y por campana
   - Vinculacion visual: en el perfil de una persona, mostrar si llego via ad pago y de que campana
 - **Notas:** Meta Marketing API requiere un App de Facebook verificada y tokens de acceso de larga duracion. Los Custom Audiences permiten subir listas de contactos (hash de email/telefono) para targeting preciso. Las reglas automaticas basadas en calendario academico (`course_editions.start_date`) permiten que las campanas se disparen sin intervencion manual. El tracking de `ad_id` ya existe parcialmente en el pipeline (BUG-006 menciona que falta en algunos flujos). Considerar integracion con Google Ads como fase futura.
+
+---
+
+### FEAT-034 | Enriquecimiento de Datos desde Fuentes Externas (LinkedIn, APIs, Web Scraping)
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase + Scripts
+- **Descripcion:** Implementar herramientas para enriquecer automaticamente los datos de leads y personas con informacion de fuentes externas. Fuentes a considerar: (1) LinkedIn — perfil profesional, cargo, empresa, habilidades (via scraping controlado, API oficial, o servicios como Proxycurl/PhantomBuster), (2) APIs de enriquecimiento de datos (Clearbit, Hunter.io, Apollo.io) — email, empresa, perfil social, (3) busqueda web automatizada — Google Search API para encontrar perfiles publicos, (4) redes sociales publicas — informacion de perfil de Instagram/Facebook si es publica. Los datos obtenidos se almacenan en `person_soft_data` con la fuente claramente identificada. El proceso puede correr en batch (enriquecer todos los leads pendientes) o on-demand (enriquecer un lead especifico desde su perfil en el CRM).
+- **Dependencias:** FEAT-008 (Enriquecimiento con IA — infraestructura existente en `person_soft_data`)
+- **Relacionado:** FEAT-009 (Personas Enriquecidas — los filtros ya soportan datos de `person_soft_data`)
+- **Backend requerido:**
+  - Tabla `enrichment_sources`: configuracion de fuentes externas habilitadas, API keys, limites de uso, costo por consulta
+  - Tabla `enrichment_queue`: cola de leads pendientes de enriquecer, con prioridad y fuente objetivo
+  - Campos en `person_soft_data`: nuevas keys como `linkedin_url`, `linkedin_cargo`, `linkedin_empresa`, `linkedin_habilidades`, `enrichment_source`, `enrichment_date`
+  - Escenarios Make.com por fuente:
+    - LinkedIn enrichment: recibe persona, busca por nombre+email, extrae datos del perfil
+    - API enrichment: llama a Clearbit/Apollo/Hunter con email, guarda resultados
+    - Web search enrichment: busca en Google, parsea resultados relevantes
+  - Cron batch: procesa cola de enriquecimiento en background (respetando rate limits de cada fuente)
+  - Deduplicacion: si ya tiene datos de esa fuente con menos de X dias, no re-enriquecer
+- **Frontend requerido:**
+  - En perfil de persona: boton "Enriquecer datos" con selector de fuente
+  - Seccion de datos externos en el perfil: mostrar datos de LinkedIn, empresa, etc.
+  - Pagina de admin: configuracion de fuentes, API keys, limites
+  - Proceso batch: "Enriquecer todos los leads sin datos de LinkedIn" con progreso
+- **Notas:** LinkedIn es la fuente mas valiosa pero tambien la mas dificil de acceder. Opciones: (a) LinkedIn API oficial (requiere partnership, limitada), (b) servicios de terceros como Proxycurl ($0.01/perfil), PhantomBuster, (c) scraping manual (riesgo de bloqueo). Empezar con las fuentes mas faciles (APIs de enriquecimiento por email) y luego avanzar a LinkedIn. El enriquecimiento por IA (FEAT-008) ya existe y extrae datos de las conversaciones; esta feature agrega datos de fuentes externas que complementan.
+
+---
+
+### FEAT-035 | Importacion de Datos desde Moodle y Otras Fuentes Externas
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Make.com + Supabase + Frontend + Scripts
+- **Descripcion:** Implementar un sistema de importacion de datos desde fuentes externas, principalmente Moodle (plataforma de cursos online de IITA) y archivos CSV/Excel de otras fuentes. El caso principal es importar alumnos de Moodle: estos son personas que ya completaron cursos y deben estar en el CRM como clientes/alumnos con su historial academico. El sistema debe: (1) conectarse a Moodle via API o exportacion de datos para obtener listado de alumnos, cursos completados, notas, fechas, (2) importar archivos CSV/Excel con listas de alumnos de otros cursos o fuentes (ej: planillas de inscripcion manuales), (3) matchear personas importadas con las existentes en el CRM (por email, telefono, nombre) para evitar duplicados, (4) crear personas nuevas cuando no haya match, (5) vincular personas importadas con los cursos/ediciones correspondientes en `course_members`, (6) enriquecer `person_soft_data` con datos academicos (cursos completados, notas, estado).
+- **Dependencias:** FEAT-004 (ABM Cursos), FEAT-013 (Inscripcion de Alumnos)
+- **Relacionado:** FEAT-008 (Enriquecimiento con IA), FEAT-034 (Enriquecimiento externo)
+- **Backend requerido:**
+  - Integracion con Moodle:
+    - Conexion via Moodle Web Services API (REST) o exportacion periodica de datos
+    - Mapeo de campos Moodle → CRM: `username` → email, `firstname`/`lastname` → nombre, cursos completados → `course_members`
+    - Tabla `import_log`: registro de cada importacion (fecha, fuente, registros procesados, creados, actualizados, errores)
+    - Tabla `import_mappings`: configuracion de mapeo de campos por fuente
+  - Importacion de archivos:
+    - Endpoint para subir CSV/Excel
+    - Parser que detecta columnas y sugiere mapeo a campos del CRM
+    - Preview de datos antes de importar (mostrar primeras filas, matches encontrados, nuevos a crear)
+    - Proceso de importacion con rollback en caso de error
+  - Deduplicacion inteligente:
+    - Match por email exacto (prioridad 1)
+    - Match por telefono normalizado (prioridad 2)
+    - Match por nombre fuzzy + algun dato adicional (prioridad 3)
+    - Para matches ambiguos: mostrar al operador para decision manual
+  - Cron de sincronizacion con Moodle: importacion periodica automatica (ej: diaria) de nuevos alumnos y cursos completados
+- **Frontend requerido:**
+  - Pagina de importacion con wizard:
+    1. Seleccionar fuente: Moodle (automatico) | Archivo CSV/Excel (manual)
+    2. Para archivo: subir archivo, detectar columnas, mapear campos
+    3. Preview: mostrar datos a importar, matches encontrados, conflictos
+    4. Confirmar e importar
+    5. Resultado: creados, actualizados, errores, duplicados resueltos
+  - Historial de importaciones con detalles
+  - Configuracion de sincronizacion Moodle (URL, token, frecuencia)
+  - Indicador en perfil de persona: "Importado desde Moodle" / "Importado desde archivo X"
+- **Notas:** Moodle expone una API REST bien documentada (`/webservice/rest/server.php`). Las funciones mas relevantes son `core_user_get_users`, `core_enrol_get_users_courses`, `gradereport_user_get_grade_items`. Se necesita un token de servicio web configurado en Moodle con los permisos adecuados. Para archivos CSV/Excel, la importacion debe ser lo suficientemente flexible para aceptar distintos formatos (cada planilla puede tener columnas diferentes). La deduplicacion es critica: importar 200 alumnos de Moodle no debe crear 200 personas nuevas si muchos ya estan como leads en el CRM.

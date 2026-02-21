@@ -27,6 +27,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-031: Banco de respuestas pre-generadas para leads nuevos — reduce costos y mejora velocidad (deseado)
 - FEAT-032: Reactivacion automatica de conversaciones sin respuesta — cron + IA + limites anti-spam (deseado, P1)
 - FEAT-033: Campanas de marketing pago en Meta — Ads automatizados por calendario y etiquetas (deseado)
+- FEAT-034: Enriquecimiento de datos desde fuentes externas — LinkedIn, APIs, web scraping (deseado)
+- FEAT-035: Importacion de datos desde Moodle y archivos CSV/Excel — alumnos, cursos, deduplicacion (deseado, P1)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---

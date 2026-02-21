@@ -130,8 +130,10 @@
 | 8.9 | Dashboard de costos operativos (IA, Make.com, canales, storage) | Frontend + DB + Make.com | P2 | FEAT-030 |
 | 8.10 | Banco de respuestas pre-generadas para leads nuevos | Make.com + DB + Frontend | P2 | FEAT-031 |
 | 8.11 | Campanas de marketing pago en Meta (Ads automatizados por calendario) | Make.com + DB + Frontend + Meta API | P2 | FEAT-033 |
+| 8.12 | Enriquecimiento de datos desde fuentes externas (LinkedIn, APIs, web) | Make.com + DB + Scripts | P2 | FEAT-034 |
+| 8.13 | Importacion de datos desde Moodle y archivos CSV/Excel | Make.com + DB + Frontend + Scripts | P1 | FEAT-035 |
 
-**Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La vista de mapa requiere datos de ubicacion enriquecidos en `person_soft_data`. El rate limiting de IA (FEAT-024) y el dashboard de costos (FEAT-030) comparten tabla de tracking y pueden implementarse juntos. La mensajeria alternativa (FEAT-026) tiene riesgos de TOS — empezar con fallbacks oficiales (email/SMS). El banco de respuestas (FEAT-031) reduce costos de IA significativamente para leads nuevos y se complementa con el tracking de costos.
+**Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La importacion de Moodle (FEAT-035) es P1 porque hay alumnos existentes que deben estar en el CRM. El enriquecimiento externo (FEAT-034) empieza con APIs por email y luego avanza a LinkedIn. El rate limiting de IA (FEAT-024) y el dashboard de costos (FEAT-030) comparten tabla de tracking. La mensajeria alternativa (FEAT-026) tiene riesgos de TOS — empezar con fallbacks oficiales (email/SMS). El banco de respuestas (FEAT-031) reduce costos de IA para leads nuevos.
 
 ---
 
