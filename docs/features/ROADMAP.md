@@ -26,7 +26,7 @@
 | 1.2 | Habilitar JWT en Edge Functions (`verify_jwt: true`) | Supabase EF | P0 | BUG-011 |
 | 1.3 | Agregar whitelist de tablas en CRUD generico de crm-api | Supabase EF | P0 | - |
 | 1.4 | Restringir CORS a dominios conocidos (reemplazar `*`) | Supabase EF | P0 | - |
-| 1.5 | Fijar `search_path` en las 15 funciones PostgreSQL | Supabase DB | P1 | BUG-009 |
+| 1.5 | ~~Fijar `search_path` en las 15 funciones PostgreSQL~~ *(Completado en repo - Gemini 3)* | Supabase DB | P1 | BUG-R004 |
 | 1.6 | Reemplazar politicas RLS `USING(true)` por condiciones reales | Supabase DB | P1 | BUG-010 |
 | 1.7 | Habilitar Leaked Password Protection en Auth | Supabase Auth | P2 | - |
 

@@ -80,7 +80,8 @@
 
 - **Estado:** Implementado
 - **Componente:** Frontend (People.jsx) + Supabase (get_persons_enriched, get_persons_filter_options)
-- **Descripcion:** Vista enriquecida de personas con filtros dinamicos basados en datos de `person_soft_data`. Permite filtrar por cualquier campo enriquecido (interes, nivel educativo, ubicacion, etc.).
+- **Descripcion:** Vista enriquecida de personas con filtros dinamicos basados en datos de `person_soft_data`. Permite filtrar por campos predefinidos extraidos (tag de interes/curso, provincia, pais, telefono, email).
+*(Nota: Corregido por Gemini 3 el 2026-02-20 - La funcion SQL solo acepta parametros especificos, no "cualquier campo" como indicaba la documentacion previa)*
 
 ---
 

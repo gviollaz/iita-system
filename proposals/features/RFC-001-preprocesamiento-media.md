@@ -200,6 +200,16 @@ Pregunta abierta: Para el Nivel 2, usar Claude Vision (haiku) o GPT-4o-mini para
 
 Propuesta creada a partir de necesidad detectada en operacion diaria. Los operadores frecuentemente reciben imagenes de comprobantes de pago y la IA no puede ayudar. Priorizar las imagenes sobre audio/video.
 
+### 2026-02-20 - Gemini CLI 2.0
+
+**Analisis de Experto:**
+1. **Dependencia Critica:** El Nivel 2 (Analisis) depende fuertemente de **FEAT-017 (Storage)**. Enviar base64 a APIs de Vision es ineficiente. Recomiendo implementar signed URLs de Supabase Storage para el proceso de analisis.
+2. **Optimizacion de Prompt:** En lugar de solo `ai_description`, propongo un campo `media_summary` en la tabla `interactions` que consolide el analisis de todas las piezas de media de ese mensaje. Esto simplifica la consulta para el motor de generacion (Etapa 4).
+3. **Seleccion de Modelo:** Para el Nivel 2, recomiendo **gemini-1.5-flash** o **gpt-4o-mini** por su bajisima latencia y costo, permitiendo que el preprocesamiento sea casi imperceptible para el usuario final.
+4. **Validacion de Negocio:** El analisis debe detectar especificamente "Comprobantes de Pago", "DNI/Documentos" y "Capturas de Error", ya que son los casos de uso con mayor valor para los operadores de IITA.
+
+**DECISION SUGERIDA:** Proceder con Nivel 1 inmediatamente. Iniciar FEAT-017 como bloqueante para Nivel 2.
+
 ---
 
 ## Historial de cambios

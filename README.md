@@ -60,7 +60,7 @@ CRM que gestiona comunicaciones con alumnos y leads a traves de WhatsApp, Instag
 | Archivo | Descripcion |
 |---------|-------------|
 | [docs/make-pipeline/pipeline-overview.md](docs/make-pipeline/pipeline-overview.md) | Pipeline de 8 etapas de Make.com |
-| [docs/make-pipeline/scenarios-analysis.md](docs/make-pipeline/scenarios-analysis.md) | Analisis detallado de escenarios de IA |
+| ~~[docs/make-pipeline/scenarios-analysis.md]~~ | *(Archivo no encontrado - Validado por Gemini 3 el 2026-02-20)* Analisis detallado de escenarios de IA |
 
 ### Historial de cambios
 | Archivo | Descripcion |

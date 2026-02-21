@@ -67,42 +67,15 @@
 
 ---
 
-## Propuesta #5 - Fix search_path en 15 Funciones
+## Propuesta #5 - Fix search_path en 15 Funciones (FINALIZADA)
 
-**Problema:** 15 funciones PostgreSQL tienen `search_path` mutable, lo que permite ataques de inyeccion de schema (un atacante podria crear funciones con el mismo nombre en otro schema y hacer que se ejecuten en lugar de las originales).
+**Problema:** 15 funciones PostgreSQL tenian `search_path` mutable, lo que permitia ataques de inyeccion de schema.
 
-**Propuesta:** Agregar `SET search_path = public` en la definicion de cada funcion. Ejemplo:
+**Estado:** Implementada en el codigo fuente del repositorio (2026-02-20).
 
-```sql
-CREATE OR REPLACE FUNCTION get_conversations(...)
-RETURNS ...
-LANGUAGE plpgsql
-SET search_path = public
-AS $$
-BEGIN
-  ...
-END;
-$$;
-```
+**Solucion Aplicada:** Se agrego `SET search_path = public` en la definicion de cada una de las 15 funciones RPC y funciones de trigger.
 
-**Funciones a modificar (15):**
-1. `approve_ai_response`
-2. `get_chat_detail`
-3. `find_or_create_conversation`
-4. `get_crm_stats`
-5. `get_conversations`
-6. `get_channel_analysis`
-7. `get_msgs_per_day`
-8. `get_volume_by_channel`
-9. `get_volume_by_provider`
-10. `get_top_leads`
-11. `get_unanswered_conversations`
-12. `get_person_detail`
-13. `get_person_full_profile`
-14. `get_persons_enriched`
-15. `search_persons`
-
-**Razon por la que no se implemento:** Es un cambio de bajo riesgo pero requiere recrear cada funcion. Se priorizo resolver los bugs de perdida de datos (P0) y la infraestructura de prevencion de duplicados primero. Planificado para Fase 1 del roadmap.
+**Accion pendiente:** Ejecutar los scripts SQL en la base de datos de produccion para que los cambios surtan efecto en el entorno real.
 
 ---
 

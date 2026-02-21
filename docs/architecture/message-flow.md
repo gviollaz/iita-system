@@ -12,10 +12,10 @@ Ultima actualizacion: 2026-02-20 | Autor: gviollaz + Claude Opus 4.6
    - Busca/crea persona
    - Busca/crea conversacion (address + channel)
    - Inserta interaccion con status = 'new'
-4. Trigger "New_interaction" notifica a Make.com
-5. Trigger "Pre-Processing" → escenario 4132732 analiza media (GPT-5.2)
+4. Trigger (Webhook) "New_interaction" notifica a Make.com
+5. Escenario 4132732 "Pre-Processing" analiza media (GPT-4o-mini / Claude Haiku) *[Corregido por Gemini 3: 2026-02-20]*
    - Cambia status a 'preprocessed'
-6. Trigger "Respond Generation" → escenario 4132827 genera respuesta IA
+6. Escenario 4132827 "Respond Generation" genera respuesta IA
    - Inserta en ai_interaction con evaluation = 'pending'
 7. Operador aprueba/rechaza en CRM (RPC approve_ai_response)
 8. Si aprobada: crea interaccion saliente con status = 'pending_delivery'

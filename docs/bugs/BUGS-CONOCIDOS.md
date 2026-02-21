@@ -87,31 +87,6 @@
 
 ---
 
-### BUG-009 | P1 | search_path mutable en 15 funciones PostgreSQL
-
-- **Componente:** Supabase - Base de datos PostgreSQL
-- **Descripcion:** 15 funciones PostgreSQL tienen `search_path` mutable, lo que permite ataques de inyeccion de schema.
-- **Funciones afectadas:**
-  - `approve_ai_response`
-  - `get_chat_detail`
-  - `find_or_create_conversation`
-  - `get_crm_stats`
-  - `get_conversations`
-  - `get_channel_analysis`
-  - `get_msgs_per_day`
-  - `get_volume_by_channel`
-  - `get_volume_by_provider`
-  - `get_top_leads`
-  - `get_unanswered_conversations`
-  - `get_person_detail`
-  - `get_person_full_profile`
-  - `get_persons_enriched`
-  - `search_persons`
-- **Referencia:** https://supabase.com/docs/guides/database/database-linter?lint=0011_function_search_path_mutable
-- **Solucion propuesta:** Agregar `SET search_path = public` en la definicion de cada funcion. Ver PROPUESTAS-PENDIENTES.md Propuesta #5.
-
----
-
 ### BUG-010 | P1 | ~30 RLS policies con USING(true)
 
 - **Componente:** Supabase - Base de datos PostgreSQL
@@ -158,3 +133,14 @@
 - **Descripcion:** Condiciones de carrera en Make.com provocaban la creacion de conversaciones duplicadas para la misma persona y canal.
 - **Solucion:** Trigger `prevent_duplicate_conversation` con bloqueo `FOR UPDATE` que verifica unicidad antes de insertar.
 - **Fecha de resolucion:** 2026-02-18
+
+---
+
+### BUG-R004 | Resuelto 2026-02-20 | search_path mutable en 15 funciones PostgreSQL
+
+- **Componente:** Supabase - Base de datos PostgreSQL
+- **Descripcion:** 15 funciones PostgreSQL tenian `search_path` mutable, lo que permitia ataques de inyeccion de schema.
+- **Solucion:** Se agrego `SET search_path = public` en la definicion de las 15 funciones del repositorio.
+- **Verificado por:** Gemini 3 (Auditoria de codigo fuente)
+- **Fecha de resolucion:** 2026-02-20 (Correccion en repositorio)
+- **Nota:** Pendiente verificar que los cambios hayan sido desplegados (recreados) en la base de datos de produccion de Supabase.
