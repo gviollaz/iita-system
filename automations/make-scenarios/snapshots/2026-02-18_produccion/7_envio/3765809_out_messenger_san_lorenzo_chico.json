@@ -1,0 +1,825 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "Contiene el identificador de la cuenta emisora.",
+            "name": "channel_address",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el identificador de la cuenta destinataria.",
+            "name": "person_address",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el mensaje que se enviará al destinatario.",
+            "name": "text",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el identificador del registro a actualizar.",
+            "name": "id_interaction",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 3,
+      "filter": {
+        "name": "San Lorenzo Chico",
+        "conditions": [
+          [
+            {
+              "a": "{{1.channel_address}}",
+              "b": "106307535517599",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "message": {
+          "text": "{{1.text}}",
+          "attachment": {}
+        },
+        "recipient": {
+          "id": "{{1.person_address}}"
+        },
+        "messaging_type": "RESPONSE",
+        "notification_type": "REGULAR"
+      },
+      "module": "facebook-messenger:sendMessage",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "messaging_type",
+            "type": "select",
+            "label": "Messaging Type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "RESPONSE",
+                "UPDATE",
+                "MESSAGE_TAG"
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "spec": [
+              {
+                "name": "id",
+                "type": "text",
+                "label": "Page Scoped User ID (PSID)"
+              },
+              {
+                "name": "user_ref",
+                "type": "text",
+                "label": "User Reference"
+              },
+              {
+                "name": "post_id",
+                "type": "text",
+                "label": "Post ID"
+              },
+              {
+                "name": "comment_id",
+                "type": "text",
+                "label": "Comment ID"
+              }
+            ],
+            "type": "collection",
+            "label": "Recipient"
+          },
+          {
+            "name": "message",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text",
+                "validate": {
+                  "max": 2000
+                }
+              },
+              {
+                "name": "attachment",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Attachment Type",
+                    "validate": {
+                      "enum": [
+                        "image",
+                        "audio",
+                        "video",
+                        "file",
+                        "template"
+                      ]
+                    }
+                  }
+                ],
+                "type": "collection",
+                "label": "Attachment"
+              },
+              {
+                "name": "quick_replies",
+                "spec": [
+                  {
+                    "name": "content_type",
+                    "type": "select",
+                    "label": "Content Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "help": "The text to display on the quick reply button.",
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title",
+                            "required": true,
+                            "validate": {
+                              "max": 20
+                            }
+                          },
+                          {
+                            "help": "Custom data that will be sent back to you via the `messaging_postbacks` webhook event.",
+                            "name": "payload",
+                            "type": "text",
+                            "label": "Payload",
+                            "validate": {
+                              "max": 1000
+                            }
+                          },
+                          {
+                            "help": "Required if `Title` is an `emptystring`. URL of image to display on the quick reply button for text quick replies. Image should be a minimum of 24px x 24px. Larger images will be automatically cropped and resized.",
+                            "name": "image_url",
+                            "type": "url",
+                            "label": "Image URL"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "User Phone Number",
+                        "value": "user_phone_number"
+                      },
+                      {
+                        "label": "User Email",
+                        "value": "user_email"
+                      }
+                    ],
+                    "required": true
+                  }
+                ],
+                "type": "array",
+                "label": "Quick Replies"
+              },
+              {
+                "name": "metadata",
+                "type": "text",
+                "label": "Metadata",
+                "validate": {
+                  "max": 1000
+                }
+              }
+            ],
+            "type": "collection",
+            "label": "Message"
+          },
+          {
+            "name": "notification_type",
+            "type": "select",
+            "label": "Notification Type",
+            "validate": {
+              "enum": [
+                "REGULAR",
+                "SILENT_PUSH",
+                "NO_PUSH"
+              ]
+            }
+          },
+          {
+            "name": "messaging_type",
+            "type": "select",
+            "label": "Messaging Type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "RESPONSE",
+                "UPDATE",
+                "MESSAGE_TAG"
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "spec": [
+              {
+                "name": "id",
+                "type": "text",
+                "label": "Page Scoped User ID (PSID)"
+              },
+              {
+                "name": "user_ref",
+                "type": "text",
+                "label": "User Reference"
+              },
+              {
+                "name": "post_id",
+                "type": "text",
+                "label": "Post ID"
+              },
+              {
+                "name": "comment_id",
+                "type": "text",
+                "label": "Comment ID"
+              }
+            ],
+            "type": "collection",
+            "label": "Recipient"
+          },
+          {
+            "name": "message",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text",
+                "validate": {
+                  "max": 2000
+                }
+              },
+              {
+                "name": "attachment",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Attachment Type",
+                    "validate": {
+                      "enum": [
+                        "image",
+                        "audio",
+                        "video",
+                        "file",
+                        "template"
+                      ]
+                    }
+                  }
+                ],
+                "type": "collection",
+                "label": "Attachment"
+              },
+              {
+                "name": "quick_replies",
+                "spec": [
+                  {
+                    "name": "content_type",
+                    "type": "select",
+                    "label": "Content Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "help": "The text to display on the quick reply button.",
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title",
+                            "required": true,
+                            "validate": {
+                              "max": 20
+                            }
+                          },
+                          {
+                            "help": "Custom data that will be sent back to you via the `messaging_postbacks` webhook event.",
+                            "name": "payload",
+                            "type": "text",
+                            "label": "Payload",
+                            "validate": {
+                              "max": 1000
+                            }
+                          },
+                          {
+                            "help": "Required if `Title` is an `emptystring`. URL of image to display on the quick reply button for text quick replies. Image should be a minimum of 24px x 24px. Larger images will be automatically cropped and resized.",
+                            "name": "image_url",
+                            "type": "url",
+                            "label": "Image URL"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "User Phone Number",
+                        "value": "user_phone_number"
+                      },
+                      {
+                        "label": "User Email",
+                        "value": "user_email"
+                      }
+                    ],
+                    "required": true
+                  }
+                ],
+                "type": "array",
+                "label": "Quick Replies"
+              },
+              {
+                "name": "metadata",
+                "type": "text",
+                "label": "Metadata",
+                "validate": {
+                  "max": 1000
+                }
+              }
+            ],
+            "type": "collection",
+            "label": "Message"
+          },
+          {
+            "name": "notification_type",
+            "type": "select",
+            "label": "Notification Type",
+            "validate": {
+              "enum": [
+                "REGULAR",
+                "SILENT_PUSH",
+                "NO_PUSH"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "message": {
+              "nested": {
+                "attachment": {
+                  "nested": {
+                    "type": {
+                      "mode": "chose",
+                      "label": "Empty"
+                    }
+                  }
+                },
+                "quick_replies": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "messaging_type": {
+              "mode": "chose",
+              "label": "Response"
+            },
+            "notification_type": {
+              "mode": "chose",
+              "label": "Sound / Vibration"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "facebook-messenger2"
+              },
+              "label": "San Lorenzo Chico (Messenger)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "San Lorenzo Chico"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:facebook-messenger2",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 6201300
+      }
+    },
+    {
+      "id": 6,
+      "mapper": {
+        "@id": "",
+        "@text": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{1.id_interaction}}",
+              "o": "equal"
+            },
+            {
+              "a": "status",
+              "b": "sending",
+              "o": "equal"
+            }
+          ]
+        ],
+        "@ad_id": "",
+        "@status": "send",
+        "@time_stamp": "{{now}}",
+        "@external_ref": "{{3.message_id}}",
+        "@id_person_conversation": "",
+        "@id_system_conversation": ""
+      },
+      "module": "postgres:UpdateTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.interactions"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Update record"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"interactions\"",
+        "account": 7346367,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "[OUT] Messenger ~ San Lorenzo Chico",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

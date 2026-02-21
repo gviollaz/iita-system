@@ -1,0 +1,4887 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "from": "share",
+        "limit": "1",
+        "sheetId": "Hoja 1",
+        "sortOrder": "asc",
+        "spreadsheetId": "1mqOTvQBivc3lFPehi1ufX7KTqlKs_dVAKkjpfcu0rfo",
+        "tableFirstRow": "A1:DZ1",
+        "includesHeaders": true,
+        "valueRenderOption": "FORMATTED_VALUE",
+        "dateTimeRenderOption": "FORMATTED_STRING"
+      },
+      "module": "google-sheets:filterRows",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "from",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "drive",
+                "share"
+              ]
+            }
+          },
+          {
+            "name": "valueRenderOption",
+            "type": "select",
+            "label": "Value render option",
+            "validate": {
+              "enum": [
+                "FORMATTED_VALUE",
+                "UNFORMATTED_VALUE",
+                "FORMULA"
+              ]
+            }
+          },
+          {
+            "name": "dateTimeRenderOption",
+            "type": "select",
+            "label": "Date and time render option",
+            "validate": {
+              "enum": [
+                "SERIAL_NUMBER",
+                "FORMATTED_STRING"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "tableFirstRow",
+            "type": "select",
+            "label": "Column range",
+            "required": true,
+            "validate": {
+              "enum": [
+                "A1:Z1",
+                "A1:BZ1",
+                "A1:CZ1",
+                "A1:DZ1",
+                "A1:MZ1",
+                "A1:ZZ1",
+                "A1:AZZ1",
+                "A1:BZZ1",
+                "A1:CZZ1",
+                "A1:DZZ1",
+                "A1:MZZ1",
+                "A1:ZZZ1"
+              ]
+            }
+          },
+          {
+            "name": "filter",
+            "type": "filter",
+            "label": "Filter",
+            "options": "rpc://google-sheets/2/rpcGetFilterKeys?includesHeaders=true"
+          },
+          {
+            "name": "orderBy",
+            "type": "select",
+            "label": "Order by"
+          },
+          {
+            "name": "sortOrder",
+            "type": "select",
+            "label": "Sort order",
+            "validate": {
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "from": {
+              "label": "Select from all"
+            },
+            "orderBy": {
+              "mode": "chose"
+            },
+            "sheetId": {
+              "mode": "chose",
+              "label": "Hoja 1"
+            },
+            "sortOrder": {
+              "mode": "chose",
+              "label": "Ascending"
+            },
+            "tableFirstRow": {
+              "label": "A-DZ"
+            },
+            "includesHeaders": {
+              "mode": "chose",
+              "label": "Yes"
+            },
+            "valueRenderOption": {
+              "mode": "chose",
+              "label": "Formatted value"
+            },
+            "dateTimeRenderOption": {
+              "mode": "chose",
+              "label": "Formatted string"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              },
+              "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Busca info cursos"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "__ROW_NUMBER__",
+            "type": "number",
+            "label": "Row number"
+          },
+          {
+            "name": "__SPREADSHEET_ID__",
+            "type": "text",
+            "label": "Spreadsheet ID"
+          },
+          {
+            "name": "__SHEET__",
+            "type": "text",
+            "label": "Sheet"
+          },
+          {
+            "name": "0",
+            "type": "text",
+            "label": "Curso (A)"
+          },
+          {
+            "name": "1",
+            "type": "text",
+            "label": "Edad objetivo (B)"
+          },
+          {
+            "name": "2",
+            "type": "text",
+            "label": "Temas clave (C)"
+          },
+          {
+            "name": "3",
+            "type": "text",
+            "label": "Modalidad (D)"
+          },
+          {
+            "name": "4",
+            "type": "text",
+            "label": "Fecha de inicio (E)"
+          },
+          {
+            "name": "5",
+            "type": "text",
+            "label": "(F)"
+          },
+          {
+            "name": "6",
+            "type": "text",
+            "label": "(G)"
+          },
+          {
+            "name": "7",
+            "type": "text",
+            "label": "(H)"
+          },
+          {
+            "name": "8",
+            "type": "text",
+            "label": "(I)"
+          },
+          {
+            "name": "9",
+            "type": "text",
+            "label": "(J)"
+          },
+          {
+            "name": "10",
+            "type": "text",
+            "label": "(K)"
+          },
+          {
+            "name": "11",
+            "type": "text",
+            "label": "(L)"
+          },
+          {
+            "name": "12",
+            "type": "text",
+            "label": "(M)"
+          },
+          {
+            "name": "13",
+            "type": "text",
+            "label": "(N)"
+          },
+          {
+            "name": "14",
+            "type": "text",
+            "label": "(O)"
+          },
+          {
+            "name": "15",
+            "type": "text",
+            "label": "(P)"
+          },
+          {
+            "name": "16",
+            "type": "text",
+            "label": "(Q)"
+          },
+          {
+            "name": "17",
+            "type": "text",
+            "label": "(R)"
+          },
+          {
+            "name": "18",
+            "type": "text",
+            "label": "(S)"
+          },
+          {
+            "name": "19",
+            "type": "text",
+            "label": "(T)"
+          },
+          {
+            "name": "20",
+            "type": "text",
+            "label": "(U)"
+          },
+          {
+            "name": "21",
+            "type": "text",
+            "label": "(V)"
+          },
+          {
+            "name": "22",
+            "type": "text",
+            "label": "(W)"
+          },
+          {
+            "name": "23",
+            "type": "text",
+            "label": "(X)"
+          },
+          {
+            "name": "24",
+            "type": "text",
+            "label": "(Y)"
+          },
+          {
+            "name": "25",
+            "type": "text",
+            "label": "(Z)"
+          },
+          {
+            "name": "26",
+            "type": "text",
+            "label": "(AA)"
+          },
+          {
+            "name": "27",
+            "type": "text",
+            "label": "(AB)"
+          },
+          {
+            "name": "28",
+            "type": "text",
+            "label": "(AC)"
+          },
+          {
+            "name": "29",
+            "type": "text",
+            "label": "(AD)"
+          },
+          {
+            "name": "30",
+            "type": "text",
+            "label": "(AE)"
+          },
+          {
+            "name": "31",
+            "type": "text",
+            "label": "(AF)"
+          },
+          {
+            "name": "32",
+            "type": "text",
+            "label": "(AG)"
+          },
+          {
+            "name": "33",
+            "type": "text",
+            "label": "(AH)"
+          },
+          {
+            "name": "34",
+            "type": "text",
+            "label": "(AI)"
+          },
+          {
+            "name": "35",
+            "type": "text",
+            "label": "(AJ)"
+          },
+          {
+            "name": "36",
+            "type": "text",
+            "label": "(AK)"
+          },
+          {
+            "name": "37",
+            "type": "text",
+            "label": "(AL)"
+          },
+          {
+            "name": "38",
+            "type": "text",
+            "label": "(AM)"
+          },
+          {
+            "name": "39",
+            "type": "text",
+            "label": "(AN)"
+          },
+          {
+            "name": "40",
+            "type": "text",
+            "label": "(AO)"
+          },
+          {
+            "name": "41",
+            "type": "text",
+            "label": "(AP)"
+          },
+          {
+            "name": "42",
+            "type": "text",
+            "label": "(AQ)"
+          },
+          {
+            "name": "43",
+            "type": "text",
+            "label": "(AR)"
+          },
+          {
+            "name": "44",
+            "type": "text",
+            "label": "(AS)"
+          },
+          {
+            "name": "45",
+            "type": "text",
+            "label": "(AT)"
+          },
+          {
+            "name": "46",
+            "type": "text",
+            "label": "(AU)"
+          },
+          {
+            "name": "47",
+            "type": "text",
+            "label": "(AV)"
+          },
+          {
+            "name": "48",
+            "type": "text",
+            "label": "(AW)"
+          },
+          {
+            "name": "49",
+            "type": "text",
+            "label": "(AX)"
+          },
+          {
+            "name": "50",
+            "type": "text",
+            "label": "(AY)"
+          },
+          {
+            "name": "51",
+            "type": "text",
+            "label": "(AZ)"
+          },
+          {
+            "name": "52",
+            "type": "text",
+            "label": "(BA)"
+          },
+          {
+            "name": "53",
+            "type": "text",
+            "label": "(BB)"
+          },
+          {
+            "name": "54",
+            "type": "text",
+            "label": "(BC)"
+          },
+          {
+            "name": "55",
+            "type": "text",
+            "label": "(BD)"
+          },
+          {
+            "name": "56",
+            "type": "text",
+            "label": "(BE)"
+          },
+          {
+            "name": "57",
+            "type": "text",
+            "label": "(BF)"
+          },
+          {
+            "name": "58",
+            "type": "text",
+            "label": "(BG)"
+          },
+          {
+            "name": "59",
+            "type": "text",
+            "label": "(BH)"
+          },
+          {
+            "name": "60",
+            "type": "text",
+            "label": "(BI)"
+          },
+          {
+            "name": "61",
+            "type": "text",
+            "label": "(BJ)"
+          },
+          {
+            "name": "62",
+            "type": "text",
+            "label": "(BK)"
+          },
+          {
+            "name": "63",
+            "type": "text",
+            "label": "(BL)"
+          },
+          {
+            "name": "64",
+            "type": "text",
+            "label": "(BM)"
+          },
+          {
+            "name": "65",
+            "type": "text",
+            "label": "(BN)"
+          },
+          {
+            "name": "66",
+            "type": "text",
+            "label": "(BO)"
+          },
+          {
+            "name": "67",
+            "type": "text",
+            "label": "(BP)"
+          },
+          {
+            "name": "68",
+            "type": "text",
+            "label": "(BQ)"
+          },
+          {
+            "name": "69",
+            "type": "text",
+            "label": "(BR)"
+          },
+          {
+            "name": "70",
+            "type": "text",
+            "label": "(BS)"
+          },
+          {
+            "name": "71",
+            "type": "text",
+            "label": "(BT)"
+          },
+          {
+            "name": "72",
+            "type": "text",
+            "label": "(BU)"
+          },
+          {
+            "name": "73",
+            "type": "text",
+            "label": "(BV)"
+          },
+          {
+            "name": "74",
+            "type": "text",
+            "label": "(BW)"
+          },
+          {
+            "name": "75",
+            "type": "text",
+            "label": "(BX)"
+          },
+          {
+            "name": "76",
+            "type": "text",
+            "label": "(BY)"
+          },
+          {
+            "name": "77",
+            "type": "text",
+            "label": "(BZ)"
+          },
+          {
+            "name": "78",
+            "type": "text",
+            "label": "(CA)"
+          },
+          {
+            "name": "79",
+            "type": "text",
+            "label": "(CB)"
+          },
+          {
+            "name": "80",
+            "type": "text",
+            "label": "(CC)"
+          },
+          {
+            "name": "81",
+            "type": "text",
+            "label": "(CD)"
+          },
+          {
+            "name": "82",
+            "type": "text",
+            "label": "(CE)"
+          },
+          {
+            "name": "83",
+            "type": "text",
+            "label": "(CF)"
+          },
+          {
+            "name": "84",
+            "type": "text",
+            "label": "(CG)"
+          },
+          {
+            "name": "85",
+            "type": "text",
+            "label": "(CH)"
+          },
+          {
+            "name": "86",
+            "type": "text",
+            "label": "(CI)"
+          },
+          {
+            "name": "87",
+            "type": "text",
+            "label": "(CJ)"
+          },
+          {
+            "name": "88",
+            "type": "text",
+            "label": "(CK)"
+          },
+          {
+            "name": "89",
+            "type": "text",
+            "label": "(CL)"
+          },
+          {
+            "name": "90",
+            "type": "text",
+            "label": "(CM)"
+          },
+          {
+            "name": "91",
+            "type": "text",
+            "label": "(CN)"
+          },
+          {
+            "name": "92",
+            "type": "text",
+            "label": "(CO)"
+          },
+          {
+            "name": "93",
+            "type": "text",
+            "label": "(CP)"
+          },
+          {
+            "name": "94",
+            "type": "text",
+            "label": "(CQ)"
+          },
+          {
+            "name": "95",
+            "type": "text",
+            "label": "(CR)"
+          },
+          {
+            "name": "96",
+            "type": "text",
+            "label": "(CS)"
+          },
+          {
+            "name": "97",
+            "type": "text",
+            "label": "(CT)"
+          },
+          {
+            "name": "98",
+            "type": "text",
+            "label": "(CU)"
+          },
+          {
+            "name": "99",
+            "type": "text",
+            "label": "(CV)"
+          },
+          {
+            "name": "100",
+            "type": "text",
+            "label": "(CW)"
+          },
+          {
+            "name": "101",
+            "type": "text",
+            "label": "(CX)"
+          },
+          {
+            "name": "102",
+            "type": "text",
+            "label": "(CY)"
+          },
+          {
+            "name": "103",
+            "type": "text",
+            "label": "(CZ)"
+          },
+          {
+            "name": "104",
+            "type": "text",
+            "label": "(DA)"
+          },
+          {
+            "name": "105",
+            "type": "text",
+            "label": "(DB)"
+          },
+          {
+            "name": "106",
+            "type": "text",
+            "label": "(DC)"
+          },
+          {
+            "name": "107",
+            "type": "text",
+            "label": "(DD)"
+          },
+          {
+            "name": "108",
+            "type": "text",
+            "label": "(DE)"
+          },
+          {
+            "name": "109",
+            "type": "text",
+            "label": "(DF)"
+          },
+          {
+            "name": "110",
+            "type": "text",
+            "label": "(DG)"
+          },
+          {
+            "name": "111",
+            "type": "text",
+            "label": "(DH)"
+          },
+          {
+            "name": "112",
+            "type": "text",
+            "label": "(DI)"
+          },
+          {
+            "name": "113",
+            "type": "text",
+            "label": "(DJ)"
+          },
+          {
+            "name": "114",
+            "type": "text",
+            "label": "(DK)"
+          },
+          {
+            "name": "115",
+            "type": "text",
+            "label": "(DL)"
+          },
+          {
+            "name": "116",
+            "type": "text",
+            "label": "(DM)"
+          },
+          {
+            "name": "117",
+            "type": "text",
+            "label": "(DN)"
+          },
+          {
+            "name": "118",
+            "type": "text",
+            "label": "(DO)"
+          },
+          {
+            "name": "119",
+            "type": "text",
+            "label": "(DP)"
+          },
+          {
+            "name": "120",
+            "type": "text",
+            "label": "(DQ)"
+          },
+          {
+            "name": "121",
+            "type": "text",
+            "label": "(DR)"
+          },
+          {
+            "name": "122",
+            "type": "text",
+            "label": "(DS)"
+          },
+          {
+            "name": "123",
+            "type": "text",
+            "label": "(DT)"
+          },
+          {
+            "name": "124",
+            "type": "text",
+            "label": "(DU)"
+          },
+          {
+            "name": "125",
+            "type": "text",
+            "label": "(DV)"
+          },
+          {
+            "name": "126",
+            "type": "text",
+            "label": "(DW)"
+          },
+          {
+            "name": "127",
+            "type": "text",
+            "label": "(DX)"
+          },
+          {
+            "name": "128",
+            "type": "text",
+            "label": "(DY)"
+          },
+          {
+            "name": "129",
+            "type": "text",
+            "label": "(DZ)"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5710354
+      }
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "model": "gpt-4o",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Usando la siguiente información del curso, genera 5 (cinco) buyer persona detallada\r\nen español.\r\nIncluye para cada buyer persona: nombre ficticio, edad exacta, ocupación,\r\nnivel educativo, motivaciones claras para hacer el curso, dolores\r\n(frustraciones o necesidades específicas que resolvería el curso) y el canal\r\ndigital preferido para comunicarse.\r\nInformación del curso:\r\n- Nombre del curso: {{1.`0`}}\r\n- Edad objetivo sugerida: {{1.`1`}}\r\n- Temas clave: {{1.`2`}}\n- Modalidad: {{1.`3`}}\n- Fecha de inicio: {{1.`4`}}\nUsa un lenguaje claro y marketing-friendly.\nLa respuesta sólo debe estrar estructurada en formato JSON string. No incluyas ningún dato adicional ni comillas al principio ni final."
+          }
+        ],
+        "max_tokens": "2048",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "chat",
+                "prompt"
+              ]
+            }
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "n_completions",
+            "type": "number",
+            "label": "Number"
+          },
+          {
+            "name": "frequency_penalty",
+            "type": "number",
+            "label": "Frequency Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "presence_penalty",
+            "type": "number",
+            "label": "Presence Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "logit_bias",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "token",
+                  "type": "text",
+                  "label": "Token ID",
+                  "required": true
+                },
+                {
+                  "name": "probability",
+                  "type": "number",
+                  "label": "Probability",
+                  "required": true,
+                  "validate": {
+                    "max": 100,
+                    "min": -100
+                  }
+                }
+              ],
+              "type": "collection",
+              "label": "Token Probability"
+            },
+            "type": "array",
+            "label": "Token Probability"
+          },
+          {
+            "name": "seed",
+            "type": "integer",
+            "label": "Seed"
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ]
+            }
+          },
+          {
+            "name": "stop",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Stop Sequence"
+            },
+            "type": "array",
+            "label": "Stop Sequences",
+            "validate": {
+              "maxItems": 4
+            }
+          },
+          {
+            "name": "additionalParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Parameter Name",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Input Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "text",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Parameter Value"
+                        }
+                      ],
+                      "default": true
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "number",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "boolean",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Date",
+                      "value": "date",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "date",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Any",
+                      "value": "any",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "any",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "collection",
+              "label": "Input Parameter"
+            },
+            "type": "array",
+            "label": "Other Input Parameters"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "max_tokens",
+            "type": "uinteger",
+            "label": "Max Output Tokens"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "role",
+                  "type": "select",
+                  "label": "Role",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "User",
+                        "value": "user",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "name": "imageInputType",
+                            "type": "select",
+                            "label": "Image Input Type",
+                            "options": [
+                              {
+                                "label": "URL",
+                                "value": "url",
+                                "nested": [
+                                  {
+                                    "help": "Make sure to use a publicly accessible URL.\nYou can test if your image is publicly accessible by opening the link in an incognito tab.",
+                                    "name": "imageUrl",
+                                    "type": "url",
+                                    "label": "Image URL"
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "Image File",
+                                "value": "file",
+                                "nested": [
+                                  {
+                                    "name": "imageFile",
+                                    "spec": [
+                                      {
+                                        "help": "Accepted extensions: `.jpg`, `.jpeg`, `.png`, `.webp` and `.gif`.",
+                                        "name": "imageFilename",
+                                        "type": "filename",
+                                        "label": "Image Filename",
+                                        "semantic": "file:name",
+                                        "extension": [
+                                          "jpg",
+                                          "jpeg",
+                                          "png",
+                                          "webp",
+                                          "gif"
+                                        ]
+                                      },
+                                      {
+                                        "name": "imageData",
+                                        "type": "buffer",
+                                        "label": "Image Data",
+                                        "semantic": "file:data"
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Image"
+                                  }
+                                ]
+                              }
+                            ],
+                            "mappable": false
+                          },
+                          {
+                            "help": "Recommended value: `Auto`",
+                            "name": "imageDetail",
+                            "type": "select",
+                            "label": "Image Detail",
+                            "options": [
+                              {
+                                "label": "Auto",
+                                "value": "auto",
+                                "default": true
+                              },
+                              {
+                                "label": "High",
+                                "value": "high"
+                              },
+                              {
+                                "label": "Low",
+                                "value": "low"
+                              }
+                            ]
+                          }
+                        ],
+                        "default": true
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "mode": "edit",
+                            "name": "tool_calls",
+                            "spec": {
+                              "spec": [
+                                {
+                                  "name": "type",
+                                  "type": "hidden",
+                                  "default": "function"
+                                },
+                                {
+                                  "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                  "name": "id",
+                                  "type": "text",
+                                  "label": "Tool call ID"
+                                },
+                                {
+                                  "name": "function",
+                                  "spec": [
+                                    {
+                                      "help": "The name of the function previously called.",
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "help": "The arguments previously output by the AI.",
+                                      "name": "arguments",
+                                      "type": "text",
+                                      "label": "Arguments",
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Function"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Tool Call"
+                            },
+                            "type": "array",
+                            "label": "Tool Calls",
+                            "labels": {
+                              "add": "Add tool call"
+                            },
+                            "mappable": {
+                              "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Developer / System",
+                        "value": "system",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool",
+                        "nested": [
+                          {
+                            "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content",
+                            "required": true
+                          },
+                          {
+                            "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                            "name": "tool_call_id",
+                            "type": "text",
+                            "label": "Tool Call ID.",
+                            "required": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "text",
+                "json_object"
+              ]
+            }
+          },
+          {
+            "name": "prediction",
+            "type": "text",
+            "label": "Predicted Outputs"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "stop": {
+              "mode": "chose"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "gpt-4o (system)"
+            },
+            "select": {
+              "label": "Create a Chat Completion (GPT and o1 models)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "Developer / System"
+                  }
+                }
+              ]
+            },
+            "logit_bias": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Text"
+            },
+            "additionalParameters": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Crear buyer personas"
+        },
+        "interface": [
+          {
+            "name": "result",
+            "type": "any",
+            "label": "Result"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "ID"
+          },
+          {
+            "name": "object",
+            "type": "text",
+            "label": "Object"
+          },
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "model",
+            "type": "text",
+            "label": "Model"
+          },
+          {
+            "name": "choices",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text"
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "label": "Index"
+              },
+              {
+                "name": "logprobs",
+                "type": "text",
+                "label": "Log Probs"
+              },
+              {
+                "name": "finish_reason",
+                "type": "text",
+                "label": "Finish Reason"
+              },
+              {
+                "name": "message",
+                "spec": [
+                  {
+                    "name": "role",
+                    "type": "text",
+                    "label": "Role"
+                  },
+                  {
+                    "name": "content",
+                    "type": "text",
+                    "label": "Content"
+                  },
+                  {
+                    "name": "tool_calls",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                      },
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "function",
+                        "spec": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Name"
+                          },
+                          {
+                            "name": "arguments",
+                            "type": "text",
+                            "label": "Arguments"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Function"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Tool Calls"
+                  },
+                  {
+                    "name": "refusal",
+                    "type": "text",
+                    "label": "Refusal"
+                  },
+                  {
+                    "name": "annotations",
+                    "spec": [
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "url_citation",
+                        "spec": [
+                          {
+                            "name": "end_index",
+                            "type": "number",
+                            "label": "End Index"
+                          },
+                          {
+                            "name": "start_index",
+                            "type": "number",
+                            "label": "Start Index"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          },
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "URL Citation"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Annotations"
+                  }
+                ],
+                "type": "collection",
+                "label": "Message"
+              }
+            ],
+            "type": "array",
+            "label": "Choices"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "prompt_tokens",
+                "type": "number",
+                "label": "Prompt Tokens"
+              },
+              {
+                "name": "completion_tokens",
+                "type": "text",
+                "label": "Completion Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "number",
+                "label": "Total Tokens"
+              },
+              {
+                "name": "prompt_tokens_details",
+                "spec": [
+                  {
+                    "name": "cached_tokens",
+                    "type": "uinteger",
+                    "label": "Cached Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Prompt Tokens Details"
+              },
+              {
+                "name": "completion_tokens_details",
+                "spec": [
+                  {
+                    "name": "reasoning_tokens",
+                    "type": "uinteger",
+                    "label": "Reasoning Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  },
+                  {
+                    "name": "accepted_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Accepted Prediction Tokens"
+                  },
+                  {
+                    "name": "rejected_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Rejected Prediction Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Completion Tokens Details"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          },
+          {
+            "name": "service_tier",
+            "type": "text",
+            "label": "Service Tier"
+          },
+          {
+            "name": "system_fingerprint",
+            "type": "text",
+            "label": "System Fingerprint"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 55,
+      "mapper": {
+        "json": "{{2.result}}"
+      },
+      "module": "json:ParseJSON",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "json",
+            "type": "text",
+            "label": "JSON string",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "type": {
+              "label": "Choose a data structure"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "type",
+            "type": "udt",
+            "label": "Data structure"
+          }
+        ]
+      },
+      "parameters": {
+        "type": ""
+      }
+    },
+    {
+      "id": 56,
+      "mapper": {
+        "array": "{{55.buyer_personas}}"
+      },
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "mode": "edit",
+            "name": "array",
+            "spec": [],
+            "type": "array",
+            "label": "Array"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "array": {
+              "mode": "edit"
+            }
+          }
+        },
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "mode": "fromAll",
+        "values": {
+          "0": "{{1.`0`}}",
+          "1": "{{56.nombre_ficticio}}",
+          "2": "{{56.edad}}",
+          "3": "{{56.`ocupación`}}",
+          "4": "{{56.nivel_educativo}}",
+          "5": "{{56.motivaciones}}",
+          "6": "{{56.dolores}}",
+          "7": "{{56.canal_preferido}}"
+        },
+        "sheetId": "Hoja 1",
+        "spreadsheetId": "1b2BrgKxqzNc7adw9s4vTN0HH8s4_eKvmIq4brk8eKHQ",
+        "includesHeaders": true,
+        "insertDataOption": "INSERT_ROWS",
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "Curso (A)"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "Buyer persona (B)"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "Edad (C)"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "Ocupación (D)"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "Nivel educativo (E)"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "Motivaciones (F)"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "Dolores (G)"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "Canal preferido (H)"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "(I)"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "(J)"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "(K)"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "(L)"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "(M)"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "(N)"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "(O)"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "(P)"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "(Q)"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "(R)"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "(S)"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "(T)"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "(U)"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "(V)"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "(W)"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "(X)"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "(Y)"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "(Z)"
+              }
+            ],
+            "type": "collection",
+            "label": "Values"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "mode": {
+              "label": "Select from all"
+            },
+            "sheetId": {
+              "mode": "chose",
+              "label": "Hoja 1"
+            },
+            "includesHeaders": {
+              "label": "Yes",
+              "nested": [
+                {
+                  "name": "values",
+                  "spec": [
+                    {
+                      "name": "0",
+                      "type": "text",
+                      "label": "Curso (A)"
+                    },
+                    {
+                      "name": "1",
+                      "type": "text",
+                      "label": "Buyer persona (B)"
+                    },
+                    {
+                      "name": "2",
+                      "type": "text",
+                      "label": "Edad (C)"
+                    },
+                    {
+                      "name": "3",
+                      "type": "text",
+                      "label": "Ocupación (D)"
+                    },
+                    {
+                      "name": "4",
+                      "type": "text",
+                      "label": "Nivel educativo (E)"
+                    },
+                    {
+                      "name": "5",
+                      "type": "text",
+                      "label": "Motivaciones (F)"
+                    },
+                    {
+                      "name": "6",
+                      "type": "text",
+                      "label": "Dolores (G)"
+                    },
+                    {
+                      "name": "7",
+                      "type": "text",
+                      "label": "Canal preferido (H)"
+                    },
+                    {
+                      "name": "8",
+                      "type": "text",
+                      "label": "(I)"
+                    },
+                    {
+                      "name": "9",
+                      "type": "text",
+                      "label": "(J)"
+                    },
+                    {
+                      "name": "10",
+                      "type": "text",
+                      "label": "(K)"
+                    },
+                    {
+                      "name": "11",
+                      "type": "text",
+                      "label": "(L)"
+                    },
+                    {
+                      "name": "12",
+                      "type": "text",
+                      "label": "(M)"
+                    },
+                    {
+                      "name": "13",
+                      "type": "text",
+                      "label": "(N)"
+                    },
+                    {
+                      "name": "14",
+                      "type": "text",
+                      "label": "(O)"
+                    },
+                    {
+                      "name": "15",
+                      "type": "text",
+                      "label": "(P)"
+                    },
+                    {
+                      "name": "16",
+                      "type": "text",
+                      "label": "(Q)"
+                    },
+                    {
+                      "name": "17",
+                      "type": "text",
+                      "label": "(R)"
+                    },
+                    {
+                      "name": "18",
+                      "type": "text",
+                      "label": "(S)"
+                    },
+                    {
+                      "name": "19",
+                      "type": "text",
+                      "label": "(T)"
+                    },
+                    {
+                      "name": "20",
+                      "type": "text",
+                      "label": "(U)"
+                    },
+                    {
+                      "name": "21",
+                      "type": "text",
+                      "label": "(V)"
+                    },
+                    {
+                      "name": "22",
+                      "type": "text",
+                      "label": "(W)"
+                    },
+                    {
+                      "name": "23",
+                      "type": "text",
+                      "label": "(X)"
+                    },
+                    {
+                      "name": "24",
+                      "type": "text",
+                      "label": "(Y)"
+                    },
+                    {
+                      "name": "25",
+                      "type": "text",
+                      "label": "(Z)"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Values"
+                }
+              ]
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              },
+              "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 1200,
+          "y": 0,
+          "name": "Añade a Buyer Personas"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5710354
+      }
+    },
+    {
+      "id": 14,
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Usando los siguientes datos del curso y buyer persona, genera una idea\r\natractiva de historias de uso o casos de éxito cortos (1 párrafo breve) para promocionar el curso en redes sociales. Usa un lenguaje\r\ninspirador y motivacional.\r\nCurso: {{1.`0`}}\nTemas clave: {{1.`2`}}\nBuyer Persona: {{56.nombre}}Motivaciones: {{56.motivaciones}}\nDolores: {{56.dolores}}\nEdad: {{56.edad}}\nNivel educativo: {{56.nivel_educativo}}\nOcupación: {{56.`ocupación`}}\nLas historias deben estar centradas en resolver claramente los dolores de las\r\nbuyer personas con el curso.\r"
+          }
+        ],
+        "max_tokens": "2048",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "chat",
+                "prompt"
+              ]
+            }
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "n_completions",
+            "type": "number",
+            "label": "Number"
+          },
+          {
+            "name": "frequency_penalty",
+            "type": "number",
+            "label": "Frequency Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "presence_penalty",
+            "type": "number",
+            "label": "Presence Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "logit_bias",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "token",
+                  "type": "text",
+                  "label": "Token ID",
+                  "required": true
+                },
+                {
+                  "name": "probability",
+                  "type": "number",
+                  "label": "Probability",
+                  "required": true,
+                  "validate": {
+                    "max": 100,
+                    "min": -100
+                  }
+                }
+              ],
+              "type": "collection",
+              "label": "Token Probability"
+            },
+            "type": "array",
+            "label": "Token Probability"
+          },
+          {
+            "name": "seed",
+            "type": "integer",
+            "label": "Seed"
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ]
+            }
+          },
+          {
+            "name": "stop",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Stop Sequence"
+            },
+            "type": "array",
+            "label": "Stop Sequences",
+            "validate": {
+              "maxItems": 4
+            }
+          },
+          {
+            "name": "additionalParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Parameter Name",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Input Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "text",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Parameter Value"
+                        }
+                      ],
+                      "default": true
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "number",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "boolean",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Date",
+                      "value": "date",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "date",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Any",
+                      "value": "any",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "any",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "collection",
+              "label": "Input Parameter"
+            },
+            "type": "array",
+            "label": "Other Input Parameters"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "max_tokens",
+            "type": "uinteger",
+            "label": "Max Completion Tokens"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "role",
+                  "type": "select",
+                  "label": "Role",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "User",
+                        "value": "user",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "mode": "edit",
+                            "name": "tool_calls",
+                            "spec": {
+                              "spec": [
+                                {
+                                  "name": "type",
+                                  "type": "hidden",
+                                  "default": "function"
+                                },
+                                {
+                                  "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                  "name": "id",
+                                  "type": "text",
+                                  "label": "Tool call ID"
+                                },
+                                {
+                                  "name": "function",
+                                  "spec": [
+                                    {
+                                      "help": "The name of the function previously called.",
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "help": "The arguments previously output by the AI.",
+                                      "name": "arguments",
+                                      "type": "text",
+                                      "label": "Arguments",
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Function"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Tool Call"
+                            },
+                            "type": "array",
+                            "label": "Tool Calls",
+                            "labels": {
+                              "add": "Add tool call"
+                            },
+                            "mappable": {
+                              "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Developer / System",
+                        "value": "system",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool",
+                        "nested": [
+                          {
+                            "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content",
+                            "required": true
+                          },
+                          {
+                            "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                            "name": "tool_call_id",
+                            "type": "text",
+                            "label": "Tool Call ID.",
+                            "required": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "text",
+                "json_object"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "stop": {
+              "mode": "chose"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "gpt-4"
+            },
+            "select": {
+              "label": "Create a Chat Completion (GPT and o1 models)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "Developer / System"
+                  }
+                }
+              ]
+            },
+            "logit_bias": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Text"
+            },
+            "additionalParameters": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 1500,
+          "y": 0,
+          "name": "Creación texto para redes"
+        },
+        "interface": [
+          {
+            "name": "result",
+            "type": "any",
+            "label": "Result"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "ID"
+          },
+          {
+            "name": "object",
+            "type": "text",
+            "label": "Object"
+          },
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "model",
+            "type": "text",
+            "label": "Model"
+          },
+          {
+            "name": "choices",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text"
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "label": "Index"
+              },
+              {
+                "name": "logprobs",
+                "type": "text",
+                "label": "Log Probs"
+              },
+              {
+                "name": "finish_reason",
+                "type": "text",
+                "label": "Finish Reason"
+              },
+              {
+                "name": "message",
+                "spec": [
+                  {
+                    "name": "role",
+                    "type": "text",
+                    "label": "Role"
+                  },
+                  {
+                    "name": "content",
+                    "type": "text",
+                    "label": "Content"
+                  },
+                  {
+                    "name": "tool_calls",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                      },
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "function",
+                        "spec": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Name"
+                          },
+                          {
+                            "name": "arguments",
+                            "type": "text",
+                            "label": "Arguments"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Function"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Tool Calls"
+                  },
+                  {
+                    "name": "refusal",
+                    "type": "text",
+                    "label": "Refusal"
+                  },
+                  {
+                    "name": "annotations",
+                    "spec": [
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "url_citation",
+                        "spec": [
+                          {
+                            "name": "end_index",
+                            "type": "number",
+                            "label": "End Index"
+                          },
+                          {
+                            "name": "start_index",
+                            "type": "number",
+                            "label": "Start Index"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          },
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "URL Citation"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Annotations"
+                  }
+                ],
+                "type": "collection",
+                "label": "Message"
+              }
+            ],
+            "type": "array",
+            "label": "Choices"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "prompt_tokens",
+                "type": "number",
+                "label": "Prompt Tokens"
+              },
+              {
+                "name": "completion_tokens",
+                "type": "text",
+                "label": "Completion Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "number",
+                "label": "Total Tokens"
+              },
+              {
+                "name": "prompt_tokens_details",
+                "spec": [
+                  {
+                    "name": "cached_tokens",
+                    "type": "uinteger",
+                    "label": "Cached Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Prompt Tokens Details"
+              },
+              {
+                "name": "completion_tokens_details",
+                "spec": [
+                  {
+                    "name": "reasoning_tokens",
+                    "type": "uinteger",
+                    "label": "Reasoning Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  },
+                  {
+                    "name": "accepted_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Accepted Prediction Tokens"
+                  },
+                  {
+                    "name": "rejected_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Rejected Prediction Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Completion Tokens Details"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          },
+          {
+            "name": "service_tier",
+            "type": "text",
+            "label": "Service Tier"
+          },
+          {
+            "name": "system_fingerprint",
+            "type": "text",
+            "label": "System Fingerprint"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 27,
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Usando la siguiente historia base, crea un post adaptado para Facebook, manteniendo un tono {Tono (educativo, inspirador, promocional)}.\r\n\r\nUtiliza un texto ligeramente más extenso, con desarrollo narrativo. Incluí emojis estratégicos que refuercen el mensaje y hashtags moderados que ayuden al alcance.\r\n\r\nFinalizá con un llamado a la acción claro como “Inscribite ahora desde el link” o “Conocé más en nuestra web”.\nAdemás, debes añadir que la imagen que está acompañada de este texto está generada con inteligencia artificial, que sea muy breve.\r\n\r\nHistoria base:\r\n{{14.result}}"
+          }
+        ],
+        "max_tokens": "2048",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "chat",
+                "prompt"
+              ]
+            }
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "n_completions",
+            "type": "number",
+            "label": "Number"
+          },
+          {
+            "name": "frequency_penalty",
+            "type": "number",
+            "label": "Frequency Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "presence_penalty",
+            "type": "number",
+            "label": "Presence Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "logit_bias",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "token",
+                  "type": "text",
+                  "label": "Token ID",
+                  "required": true
+                },
+                {
+                  "name": "probability",
+                  "type": "number",
+                  "label": "Probability",
+                  "required": true,
+                  "validate": {
+                    "max": 100,
+                    "min": -100
+                  }
+                }
+              ],
+              "type": "collection",
+              "label": "Token Probability"
+            },
+            "type": "array",
+            "label": "Token Probability"
+          },
+          {
+            "name": "seed",
+            "type": "integer",
+            "label": "Seed"
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ]
+            }
+          },
+          {
+            "name": "stop",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Stop Sequence"
+            },
+            "type": "array",
+            "label": "Stop Sequences",
+            "validate": {
+              "maxItems": 4
+            }
+          },
+          {
+            "name": "additionalParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Parameter Name",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Input Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "text",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Parameter Value"
+                        }
+                      ],
+                      "default": true
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "number",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "boolean",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Date",
+                      "value": "date",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "date",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Any",
+                      "value": "any",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "any",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "collection",
+              "label": "Input Parameter"
+            },
+            "type": "array",
+            "label": "Other Input Parameters"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "max_tokens",
+            "type": "uinteger",
+            "label": "Max Completion Tokens"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "role",
+                  "type": "select",
+                  "label": "Role",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "User",
+                        "value": "user",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "mode": "edit",
+                            "name": "tool_calls",
+                            "spec": {
+                              "spec": [
+                                {
+                                  "name": "type",
+                                  "type": "hidden",
+                                  "default": "function"
+                                },
+                                {
+                                  "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                  "name": "id",
+                                  "type": "text",
+                                  "label": "Tool call ID"
+                                },
+                                {
+                                  "name": "function",
+                                  "spec": [
+                                    {
+                                      "help": "The name of the function previously called.",
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "help": "The arguments previously output by the AI.",
+                                      "name": "arguments",
+                                      "type": "text",
+                                      "label": "Arguments",
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Function"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Tool Call"
+                            },
+                            "type": "array",
+                            "label": "Tool Calls",
+                            "labels": {
+                              "add": "Add tool call"
+                            },
+                            "mappable": {
+                              "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Developer / System",
+                        "value": "system",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool",
+                        "nested": [
+                          {
+                            "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content",
+                            "required": true
+                          },
+                          {
+                            "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                            "name": "tool_call_id",
+                            "type": "text",
+                            "label": "Tool Call ID.",
+                            "required": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "text",
+                "json_object"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "stop": {
+              "mode": "chose"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "gpt-4"
+            },
+            "select": {
+              "label": "Create a Chat Completion (GPT and o1 models)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "Developer / System"
+                  }
+                }
+              ]
+            },
+            "logit_bias": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Text"
+            },
+            "additionalParameters": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 1800,
+          "y": 0,
+          "name": "Adaptación a Facebook"
+        },
+        "interface": [
+          {
+            "name": "result",
+            "type": "any",
+            "label": "Result"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "ID"
+          },
+          {
+            "name": "object",
+            "type": "text",
+            "label": "Object"
+          },
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "model",
+            "type": "text",
+            "label": "Model"
+          },
+          {
+            "name": "choices",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text"
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "label": "Index"
+              },
+              {
+                "name": "logprobs",
+                "type": "text",
+                "label": "Log Probs"
+              },
+              {
+                "name": "finish_reason",
+                "type": "text",
+                "label": "Finish Reason"
+              },
+              {
+                "name": "message",
+                "spec": [
+                  {
+                    "name": "role",
+                    "type": "text",
+                    "label": "Role"
+                  },
+                  {
+                    "name": "content",
+                    "type": "text",
+                    "label": "Content"
+                  },
+                  {
+                    "name": "tool_calls",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                      },
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "function",
+                        "spec": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Name"
+                          },
+                          {
+                            "name": "arguments",
+                            "type": "text",
+                            "label": "Arguments"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Function"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Tool Calls"
+                  },
+                  {
+                    "name": "refusal",
+                    "type": "text",
+                    "label": "Refusal"
+                  },
+                  {
+                    "name": "annotations",
+                    "spec": [
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "url_citation",
+                        "spec": [
+                          {
+                            "name": "end_index",
+                            "type": "number",
+                            "label": "End Index"
+                          },
+                          {
+                            "name": "start_index",
+                            "type": "number",
+                            "label": "Start Index"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          },
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "URL Citation"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Annotations"
+                  }
+                ],
+                "type": "collection",
+                "label": "Message"
+              }
+            ],
+            "type": "array",
+            "label": "Choices"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "prompt_tokens",
+                "type": "number",
+                "label": "Prompt Tokens"
+              },
+              {
+                "name": "completion_tokens",
+                "type": "text",
+                "label": "Completion Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "number",
+                "label": "Total Tokens"
+              },
+              {
+                "name": "prompt_tokens_details",
+                "spec": [
+                  {
+                    "name": "cached_tokens",
+                    "type": "uinteger",
+                    "label": "Cached Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Prompt Tokens Details"
+              },
+              {
+                "name": "completion_tokens_details",
+                "spec": [
+                  {
+                    "name": "reasoning_tokens",
+                    "type": "uinteger",
+                    "label": "Reasoning Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  },
+                  {
+                    "name": "accepted_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Accepted Prediction Tokens"
+                  },
+                  {
+                    "name": "rejected_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Rejected Prediction Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Completion Tokens Details"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          },
+          {
+            "name": "service_tier",
+            "type": "text",
+            "label": "Service Tier"
+          },
+          {
+            "name": "system_fingerprint",
+            "type": "text",
+            "label": "System Fingerprint"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 50,
+      "mapper": {
+        "n": "1",
+        "model": "gpt-image-1",
+        "prompt": "Crea una imagen publicitaria realista y profesional para promocionar un curso del IITA, basada en el siguiente texto: \"{{27.result}}\".\n\nFormato: Optimizado para Facebook en relación de aspecto 1:1 (cuadrado) o 4:5 (vertical), resolución mínima 1080×1080 px. Mantén todos los textos y elementos clave dentro de un margen seguro de al menos 10% desde los bordes.\nEstilo: Fotografía realista, iluminación natural, con colores vivos y llamativos que armonicen bien y dirijan la atención a lo importante.\nTexto: Estrictamente un máximo de tres frases cortas, en español, diseñadas para captar la atención al instante. Tipografía clara, moderna y profesional. El texto debe estar separado de los objetos y no tocar los bordes.\nComposición: Espacio amplio entre elementos, estética equilibrada y sin saturación.\nSensación: Positiva, entusiasta y motivadora, transmitiendo confianza, innovación y profesionalismo.\nTemática: Mostrar elementos visuales vinculados al curso y a la formación tecnológica (personas, herramientas, entornos de aprendizaje, tecnología aplicada)."
+      },
+      "module": "openai-gpt-3:GenerateImage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true,
+            "validate": {
+              "enum": [
+                "gpt-image-1",
+                "dall-e-3",
+                "dall-e-2"
+              ]
+            }
+          },
+          {
+            "name": "prompt",
+            "type": "text",
+            "label": "Prompt",
+            "required": true,
+            "validate": {
+              "max": 32000,
+              "min": 1
+            }
+          },
+          {
+            "name": "size",
+            "type": "select",
+            "label": "Size",
+            "validate": {
+              "enum": [
+                "auto",
+                "1024x1024",
+                "1536x1024",
+                "1024x1536"
+              ]
+            }
+          },
+          {
+            "name": "quality",
+            "type": "select",
+            "label": "Quality",
+            "validate": {
+              "enum": [
+                "auto",
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          },
+          {
+            "name": "background",
+            "type": "select",
+            "label": "Background",
+            "validate": {
+              "enum": [
+                "auto",
+                "transparent",
+                "opaque"
+              ]
+            }
+          },
+          {
+            "name": "n",
+            "type": "integer",
+            "label": "Number",
+            "validate": {
+              "max": 10,
+              "min": 1
+            }
+          },
+          {
+            "name": "moderation",
+            "type": "select",
+            "label": "Moderation",
+            "validate": {
+              "enum": [
+                "auto",
+                "low"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "size": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "GPT Image 1"
+            },
+            "quality": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "background": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "moderation": {
+              "mode": "chose",
+              "label": "Empty"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 2100,
+          "y": 0,
+          "name": "Genera imagen acorde"
+        },
+        "interface": [
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "fileName",
+                "type": "text",
+                "label": "File Name",
+                "semantic": "file:name"
+              },
+              {
+                "name": "fileData",
+                "type": "buffer",
+                "label": "File Data",
+                "semantic": "file:data"
+              }
+            ],
+            "type": "array",
+            "label": "Data"
+          },
+          {
+            "name": "resImgName",
+            "type": "text",
+            "label": "Response Image Name",
+            "semantic": "file:name"
+          },
+          {
+            "name": "resImgData",
+            "type": "buffer",
+            "label": "Response Image Data",
+            "semantic": "file:data"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "input_tokens",
+                "type": "uinteger",
+                "label": "Input Tokens"
+              },
+              {
+                "name": "input_tokens_details",
+                "spec": [
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Input Tokens Details"
+              },
+              {
+                "name": "output_tokens",
+                "type": "uinteger",
+                "label": "Output Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "uinteger",
+                "label": "Total Tokens"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 58,
+      "mapper": {
+        "data": "{{50.resImgData}}",
+        "select": "value",
+        "convert": false,
+        "filename": "{{50.resImgName}}",
+        "folderId": "/1xPVH4z07ICtydmiwhGhrvEUbgmgDLnSf",
+        "destination": "team",
+        "sharedDrive": "0ALA9KcV_TCNJUk9PVA",
+        "useDomainAdminAccess": false
+      },
+      "module": "google-drive:uploadAFile",
+      "version": 4,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Enter a Folder ID",
+            "required": true,
+            "validate": {
+              "enum": [
+                "map",
+                "value"
+              ]
+            }
+          },
+          {
+            "name": "title",
+            "type": "text",
+            "label": "New File Name"
+          },
+          {
+            "name": "filename",
+            "type": "text",
+            "label": "File Name",
+            "required": true
+          },
+          {
+            "name": "data",
+            "type": "buffer",
+            "label": "Data",
+            "required": true
+          },
+          {
+            "name": "convert",
+            "type": "boolean",
+            "label": "Convert a File",
+            "required": true
+          },
+          {
+            "name": "destination",
+            "type": "select",
+            "label": "New Drive Location",
+            "required": true,
+            "validate": {
+              "enum": [
+                "drive",
+                "share",
+                "team"
+              ]
+            }
+          },
+          {
+            "name": "useDomainAdminAccess",
+            "type": "select",
+            "label": "Use Domain Admin Access",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "sharedDrive",
+            "type": "select",
+            "label": "Shared Drive",
+            "required": true
+          },
+          {
+            "name": "folderId",
+            "type": "folder",
+            "label": "New Folder Location",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "select": {
+              "label": "Select from the list"
+            },
+            "folderId": {
+              "mode": "chose",
+              "path": [
+                "IITA 3D"
+              ]
+            },
+            "destination": {
+              "label": "Google Shared Drive"
+            },
+            "sharedDrive": {
+              "mode": "chose",
+              "label": "IITA IA"
+            },
+            "useDomainAdminAccess": {
+              "label": "No"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "Fundación innovar Gonzalo (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 2400,
+          "y": 0,
+          "name": "Subir imagen a drive"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5891453
+      }
+    },
+    {
+      "id": 59,
+      "mapper": {
+        "file": "{{58.id}}",
+        "role": "organizer",
+        "type": "user",
+        "select": "file",
+        "destination": "team",
+        "sharedDrive": "0ALA9KcV_TCNJUk9PVA",
+        "emailAddress": "{{58.lastModifyingUser.emailAddress}}",
+        "useDomainAdminAccess": false,
+        "sendNotificationEmail": false
+      },
+      "module": "google-drive:shareAFileFolder",
+      "version": 4,
+      "metadata": {
+        "expect": [
+          {
+            "name": "destination",
+            "type": "select",
+            "label": "Choose a Drive",
+            "required": true,
+            "validate": {
+              "enum": [
+                "drive",
+                "share",
+                "team"
+              ]
+            }
+          },
+          {
+            "name": "useDomainAdminAccess",
+            "type": "select",
+            "label": "Use Domain Admin Access",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "role",
+            "type": "select",
+            "label": "Role",
+            "required": true,
+            "validate": {
+              "enum": [
+                "organizer",
+                "fileOrganizer",
+                "writer",
+                "commenter",
+                "reader"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "type": "select",
+            "label": "Type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "user",
+                "group"
+              ]
+            }
+          },
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select",
+            "required": true,
+            "validate": {
+              "enum": [
+                "file",
+                "folder"
+              ]
+            }
+          },
+          {
+            "mode": "edit",
+            "name": "sharedDrive",
+            "type": "select",
+            "label": "Shared Drive",
+            "required": true
+          },
+          {
+            "mode": "edit",
+            "name": "file",
+            "type": "file",
+            "label": "File ID",
+            "required": true
+          },
+          {
+            "name": "emailAddress",
+            "type": "email",
+            "label": "Email Address",
+            "required": true
+          },
+          {
+            "name": "sendNotificationEmail",
+            "type": "boolean",
+            "label": "Send Notification Email",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "file": {
+              "mode": "edit",
+              "path": []
+            },
+            "role": {
+              "mode": "chose",
+              "label": "Organizer"
+            },
+            "type": {
+              "mode": "chose",
+              "label": "User"
+            },
+            "select": {
+              "label": "File"
+            },
+            "destination": {
+              "label": "Google Shared Drive"
+            },
+            "sharedDrive": {
+              "mode": "chose",
+              "label": "IITA IA"
+            },
+            "useDomainAdminAccess": {
+              "label": "No"
+            },
+            "sendNotificationEmail": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "Fundación innovar Gonzalo (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 2700,
+          "y": 0,
+          "name": "Obtiene URL"
+        },
+        "interface": [
+          {
+            "name": "fileId",
+            "type": "text",
+            "label": "File ID"
+          },
+          {
+            "name": "kind",
+            "type": "text",
+            "label": "Kind"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "Permission ID"
+          },
+          {
+            "name": "type",
+            "type": "text",
+            "label": "Type"
+          },
+          {
+            "name": "shareLink",
+            "type": "url",
+            "label": "Share Link"
+          },
+          {
+            "name": "emailAddress",
+            "type": "text",
+            "label": "Email Address"
+          },
+          {
+            "name": "domain",
+            "type": "text",
+            "label": "Domain"
+          },
+          {
+            "name": "role",
+            "type": "text",
+            "label": "Role"
+          },
+          {
+            "name": "allowFileDiscovery",
+            "type": "boolean",
+            "label": "Allow File Discovery"
+          },
+          {
+            "name": "displayName",
+            "type": "text",
+            "label": "Display Name"
+          },
+          {
+            "name": "photoLink",
+            "type": "text",
+            "label": "Photo Link"
+          },
+          {
+            "name": "expirationTime",
+            "type": "date",
+            "label": "Expiration Time"
+          },
+          {
+            "name": "teamDrivePermissionDetails",
+            "spec": {
+              "spec": [
+                {
+                  "name": "teamDrivePermissionType",
+                  "type": "text",
+                  "label": "Team Drive Permission Type"
+                },
+                {
+                  "name": "role",
+                  "type": "text",
+                  "label": "Role"
+                },
+                {
+                  "name": "inheritedFrom",
+                  "type": "text",
+                  "label": "Inherited From"
+                },
+                {
+                  "name": "inherited",
+                  "type": "boolean",
+                  "label": "Inherited"
+                }
+              ],
+              "type": "collection"
+            },
+            "type": "array",
+            "label": "Team Drive Permission Details"
+          },
+          {
+            "name": "permissionDetails",
+            "spec": {
+              "spec": [
+                {
+                  "name": "permissionType",
+                  "type": "text",
+                  "label": "Permission Type"
+                },
+                {
+                  "name": "role",
+                  "type": "text",
+                  "label": "Role"
+                },
+                {
+                  "name": "inheritedFrom",
+                  "type": "text",
+                  "label": "Inherited From"
+                },
+                {
+                  "name": "inherited",
+                  "type": "boolean",
+                  "label": "Inherited"
+                }
+              ],
+              "type": "collection"
+            },
+            "type": "array",
+            "label": "Permission Details"
+          },
+          {
+            "name": "deleted",
+            "type": "boolean",
+            "label": "Deleted"
+          },
+          {
+            "name": "pendingOwner",
+            "type": "boolean",
+            "label": "Pending Owner"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5891453
+      }
+    },
+    {
+      "id": 33,
+      "mapper": {
+        "mode": "fromAll",
+        "values": {
+          "0": "Curso",
+          "1": "'{{formatDate(now; \"DD-MM-YYYY HH:mm\")}}}",
+          "2": "{{27.result}}",
+          "3": "{{59.shareLink}}",
+          "4": "{{59.fileId}}",
+          "5": "En revisión"
+        },
+        "sheetId": "Post generado",
+        "spreadsheetId": "1lXJYnOEx2sSmKji_0bqAE-rmbE5NbBwwEn9nDkryfKw",
+        "includesHeaders": true,
+        "insertDataOption": "INSERT_ROWS",
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "Tipo de post (A)"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "Fecha de generación (B)"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "Descripción post (C)"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "Imágen (D)"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "ID de archivo (E)"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "Estado (F)"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "Aprobado (G)"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "(H)"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "(I)"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "(J)"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "(K)"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "(L)"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "(M)"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "(N)"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "(O)"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "(P)"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "(Q)"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "(R)"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "(S)"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "(T)"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "(U)"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "(V)"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "(W)"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "(X)"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "(Y)"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "(Z)"
+              }
+            ],
+            "type": "collection",
+            "label": "Values"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "mode": {
+              "label": "Select from all"
+            },
+            "sheetId": {
+              "mode": "chose",
+              "label": "Post generado"
+            },
+            "includesHeaders": {
+              "label": "Yes",
+              "nested": [
+                {
+                  "name": "values",
+                  "spec": [
+                    {
+                      "name": "0",
+                      "type": "text",
+                      "label": "Tipo de post (A)"
+                    },
+                    {
+                      "name": "1",
+                      "type": "text",
+                      "label": "Fecha de generación (B)"
+                    },
+                    {
+                      "name": "2",
+                      "type": "text",
+                      "label": "Descripción post (C)"
+                    },
+                    {
+                      "name": "3",
+                      "type": "text",
+                      "label": "Imágen (D)"
+                    },
+                    {
+                      "name": "4",
+                      "type": "text",
+                      "label": "ID de archivo (E)"
+                    },
+                    {
+                      "name": "5",
+                      "type": "text",
+                      "label": "Estado (F)"
+                    },
+                    {
+                      "name": "6",
+                      "type": "text",
+                      "label": "Aprobado (G)"
+                    },
+                    {
+                      "name": "7",
+                      "type": "text",
+                      "label": "(H)"
+                    },
+                    {
+                      "name": "8",
+                      "type": "text",
+                      "label": "(I)"
+                    },
+                    {
+                      "name": "9",
+                      "type": "text",
+                      "label": "(J)"
+                    },
+                    {
+                      "name": "10",
+                      "type": "text",
+                      "label": "(K)"
+                    },
+                    {
+                      "name": "11",
+                      "type": "text",
+                      "label": "(L)"
+                    },
+                    {
+                      "name": "12",
+                      "type": "text",
+                      "label": "(M)"
+                    },
+                    {
+                      "name": "13",
+                      "type": "text",
+                      "label": "(N)"
+                    },
+                    {
+                      "name": "14",
+                      "type": "text",
+                      "label": "(O)"
+                    },
+                    {
+                      "name": "15",
+                      "type": "text",
+                      "label": "(P)"
+                    },
+                    {
+                      "name": "16",
+                      "type": "text",
+                      "label": "(Q)"
+                    },
+                    {
+                      "name": "17",
+                      "type": "text",
+                      "label": "(R)"
+                    },
+                    {
+                      "name": "18",
+                      "type": "text",
+                      "label": "(S)"
+                    },
+                    {
+                      "name": "19",
+                      "type": "text",
+                      "label": "(T)"
+                    },
+                    {
+                      "name": "20",
+                      "type": "text",
+                      "label": "(U)"
+                    },
+                    {
+                      "name": "21",
+                      "type": "text",
+                      "label": "(V)"
+                    },
+                    {
+                      "name": "22",
+                      "type": "text",
+                      "label": "(W)"
+                    },
+                    {
+                      "name": "23",
+                      "type": "text",
+                      "label": "(X)"
+                    },
+                    {
+                      "name": "24",
+                      "type": "text",
+                      "label": "(Y)"
+                    },
+                    {
+                      "name": "25",
+                      "type": "text",
+                      "label": "(Z)"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Values"
+                }
+              ]
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              },
+              "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 3000,
+          "y": 0,
+          "name": "Tabla de verificación"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5710354
+      }
+    }
+  ],
+  "name": "Generación de contenido para Facebook IITA 3D",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "0": "Impresión 3D",
+          "1": "15-45",
+          "2": "Introducción a la impresión 3D: conceptos básicos y tipos de impresoras\n\nMateriales usados en impres...",
+          "3": "Presencial",
+          "4": "20 de agosto",
+          "__SHEET__": "Hoja 1",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1,
+          "__ROW_NUMBER__": 2,
+          "__SPREADSHEET_ID__": "1KLSpagG7ccoogasWXUO6XwPam1sRANDYGMx9bpAyiIw"
+        },
+        "2": {
+          "id": "chatcmpl-C46JK1Dfhy62dQyLLKq7IXQfbI8Cd",
+          "model": "gpt-4o-2024-08-06",
+          "usage": {
+            "total_tokens": 876,
+            "prompt_tokens": 275,
+            "completion_tokens": 601,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "object": "chat.completion",
+          "result": "{\n  \"buyer_personas\": [\n    {\n      \"nombre_ficticio\": \"Juan Álvarez\",\n      \"edad\": 35,\n      \"ocup...",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"buyer_personas\": [\n    {\n      \"nombre_ficticio\": \"Juan Álvarez\",\n      \"edad\": 35,\n      \"ocup...",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "created": "2025-08-13T14:00:06.000Z",
+          "service_tier": "default",
+          "system_fingerprint": "fp_ff25b2783a"
+        },
+        "3": {
+          "updates": {
+            "updatedRows": 1,
+            "updatedCells": 7,
+            "updatedRange": "'Hoja 1'!A4:H4",
+            "spreadsheetId": "1N7_Z0mME1svcbgI9ytGjcgjmY0augMieRMhfz4j2yvU",
+            "updatedColumns": 7
+          },
+          "rowNumber": 4,
+          "sheetName": "Hoja 1",
+          "tableRange": "'Hoja 1'!A1:H3",
+          "spreadsheetId": "1N7_Z0mME1svcbgI9ytGjcgjmY0augMieRMhfz4j2yvU"
+        },
+        "14": {
+          "id": "chatcmpl-C46KBRcsSHhCuKezG1bq3PeqPcMve",
+          "model": "gpt-4-0613",
+          "usage": {
+            "total_tokens": 498,
+            "prompt_tokens": 338,
+            "completion_tokens": 160,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "object": "chat.completion",
+          "result": "\"Imagina tener la libertad de diseñar y crear tus propios prototipos sin depender de terceros. Marco...",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "\"Imagina tener la libertad de diseñar y crear tus propios prototipos sin depender de terceros. Marco...",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "created": "2025-08-13T14:00:59.000Z",
+          "service_tier": "default",
+          "system_fingerprint": null
+        },
+        "27": {
+          "id": "chatcmpl-C46KK5Z6ggjoqwT4yRYa4tSkMqPPU",
+          "model": "gpt-4-0613",
+          "usage": {
+            "total_tokens": 675,
+            "prompt_tokens": 310,
+            "completion_tokens": 365,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "object": "chat.completion",
+          "result": "🚀¿Te imaginas tener la completa libertad de diseñar y dar vida a tus propios prototipos sin depende...",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "🚀¿Te imaginas tener la completa libertad de diseñar y dar vida a tus propios prototipos sin depende...",
+                "refusal": null,
+                "annotations": []
+              },
+              "logprobs": null,
+              "finish_reason": "stop"
+            }
+          ],
+          "created": "2025-08-13T14:01:08.000Z",
+          "service_tier": "default",
+          "system_fingerprint": null
+        },
+        "33": {
+          "updates": {
+            "updatedRows": 1,
+            "updatedCells": 5,
+            "updatedRange": "'Hoja 1'!A3:F3",
+            "spreadsheetId": "1_qErnyu2sY3whh0pIpIrlL66osWOKsOXCBogCANm7S8",
+            "updatedColumns": 5
+          },
+          "rowNumber": 3,
+          "sheetName": "Hoja 1",
+          "tableRange": "'Hoja 1'!A1:F2",
+          "spreadsheetId": "1_qErnyu2sY3whh0pIpIrlL66osWOKsOXCBogCANm7S8"
+        },
+        "50": {
+          "data": [
+            {
+              "fileData": "IMTBuffer(2590897, binary, 1e3ac279ef07e197c21c974671fe25a630c4f51f): 89504e470d0a1a0a0000000d494844...",
+              "fileName": "output1.png"
+            }
+          ],
+          "size": "1024x1536",
+          "usage": {
+            "input_tokens": 556,
+            "total_tokens": 6796,
+            "output_tokens": 6240,
+            "input_tokens_details": {
+              "text_tokens": 556,
+              "image_tokens": 0
+            }
+          },
+          "created": "2025-08-13T14:02:30.000Z",
+          "quality": "high",
+          "background": "opaque",
+          "resImgData": "IMTBuffer(2590897, binary, 1e3ac279ef07e197c21c974671fe25a630c4f51f): 89504e470d0a1a0a0000000d494844...",
+          "resImgName": "output1.png",
+          "output_format": "png"
+        },
+        "55": {
+          "buyer_personas": [
+            {
+              "edad": 31,
+              "dolores": "Tiene una impresora 3D pero está frustrado por no saber configurarla correctamente y los errores rec...",
+              "ocupación": "Hobbista Tecnológico",
+              "motivaciones": "Desea explorar la impresión 3D como una nueva pasión y mejorar su conocimiento técnico.",
+              "canal_preferido": "Foros Online",
+              "nivel_educativo": "Técnico",
+              "nombre_ficticio": "Luis Romero"
+            }
+          ]
+        },
+        "56": {
+          "edad": 35,
+          "dolores": "Necesita optimizar procesos en su trabajo actual y está frustrado por depender de terceros para la c...",
+          "ocupación": "Ingeniero Mecánico",
+          "__IMTINDEX__": 1,
+          "motivaciones": "Adquirir conocimientos prácticos en tecnología 3D para aplicarlos en el diseño y creación de prototi...",
+          "__IMTLENGTH__": 5,
+          "canal_preferido": "LinkedIn",
+          "nivel_educativo": "Maestría",
+          "nombre_ficticio": "Juan Álvarez"
+        },
+        "58": {
+          "id": "1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh",
+          "kind": "drive#file",
+          "name": "output1.png",
+          "size": "2590897",
+          "owners": [
+            {
+              "me": true,
+              "kind": "drive#user",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIBFn8fI3p1Y6MHQTEnWHH3nvCT36gcIFROWhoK8POdXn0ZOeDlIA=s64",
+              "displayName": "Gonzalo Agustín Aybar Oviedo",
+              "emailAddress": "talitoagustin@gmail.com",
+              "permissionId": "07093277817644828304"
+            }
+          ],
+          "shared": false,
+          "spaces": [
+            "drive"
+          ],
+          "parents": [
+            "10TG2lLIRmjOG2f0i0Ld2EL7x6qF75M28"
+          ],
+          "starred": false,
+          "trashed": false,
+          "version": "3",
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/image/png",
+          "mimeType": "image/png",
+          "ownedByMe": true,
+          "viewedByMe": false,
+          "createdTime": "2025-08-13T14:02:31.307Z",
+          "md5Checksum": "9049702376490971eb56d791c433f43f",
+          "permissions": [
+            {
+              "id": "07093277817644828304",
+              "kind": "drive#permission",
+              "role": "owner",
+              "type": "user",
+              "deleted": false,
+              "displayName": "talitoagustin",
+              "emailAddress": "talitoagustin@gmail.com",
+              "pendingOwner": false
+            }
+          ],
+          "webViewLink": "https://drive.google.com/file/d/1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh/view?usp=drivesdk",
+          "capabilities": {
+            "canCopy": true,
+            "canEdit": true,
+            "canShare": true,
+            "canTrash": true,
+            "canDelete": true,
+            "canRename": true,
+            "canComment": true,
+            "canUntrash": true,
+            "canDownload": true,
+            "canReadLabels": false,
+            "canAddChildren": false,
+            "canListChildren": false,
+            "canModifyLabels": false,
+            "canModifyContent": true,
+            "canReadRevisions": true,
+            "canRemoveChildren": false,
+            "canAcceptOwnership": false,
+            "canAddMyDriveParent": false,
+            "canMoveItemOutOfDrive": true,
+            "canMoveItemWithinDrive": true,
+            "canRemoveMyDriveParent": true,
+            "canMoveItemIntoTeamDrive": true,
+            "canMoveChildrenWithinDrive": false,
+            "canModifyContentRestriction": true,
+            "canRemoveContentRestriction": false,
+            "canEnableInheritedPermissions": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canChangeViewersCanCopyContent": true,
+            "canDisableInheritedPermissions": false,
+            "canChangeItemDownloadRestriction": true,
+            "canModifyOwnerContentRestriction": true,
+            "canModifyEditorContentRestriction": true,
+            "canChangeCopyRequiresWriterPermission": true
+          },
+          "hasThumbnail": true,
+          "modifiedByMe": true,
+          "modifiedTime": "2025-08-13T14:02:32.687Z",
+          "sha1Checksum": "1e3ac279ef07e197c21c974671fe25a630c4f51f",
+          "fileExtension": "png",
+          "permissionIds": [
+            "07093277817644828304"
+          ],
+          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBPJ0dtyFDnd0aXUrwgb0YDWaE0VZga0LUykd3fld_wQoGE7...",
+          "headRevisionId": "0BwCNwE1eY8QjWHg4OG9xME55YmFVT1dCb01hQkZkcU5JRjZvPQ",
+          "quotaBytesUsed": "2590897",
+          "sha256Checksum": "ffd39df707b223f49dfb3e053b38791a1aed4b70a837ab6be300f841fc0a7e31",
+          "webContentLink": "https://drive.google.com/uc?id=1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh&export=download",
+          "isAppAuthorized": true,
+          "writersCanShare": true,
+          "modifiedByMeTime": "2025-08-13T14:02:32.687Z",
+          "originalFilename": "output1.png",
+          "thumbnailVersion": "1",
+          "explicitlyTrashed": false,
+          "fullFileExtension": "png",
+          "lastModifyingUser": {
+            "me": true,
+            "kind": "drive#user",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIBFn8fI3p1Y6MHQTEnWHH3nvCT36gcIFROWhoK8POdXn0ZOeDlIA=s64",
+            "displayName": "Gonzalo Agustín Aybar Oviedo",
+            "emailAddress": "talitoagustin@gmail.com",
+            "permissionId": "07093277817644828304"
+          },
+          "linkShareMetadata": {
+            "securityUpdateEnabled": true,
+            "securityUpdateEligible": false
+          },
+          "imageMediaMetadata": {
+            "width": 1024,
+            "height": 1536,
+            "rotation": 0
+          },
+          "downloadRestrictions": {
+            "itemDownloadRestriction": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            },
+            "effectiveDownloadRestrictionWithContext": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            }
+          },
+          "viewersCanCopyContent": true,
+          "copyRequiresWriterPermission": false,
+          "inheritedPermissionsDisabled": false
+        },
+        "59": {
+          "id": "15165804952902535070",
+          "kind": "drive#permission",
+          "role": "reader",
+          "type": "user",
+          "fileId": "1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh",
+          "deleted": false,
+          "photoLink": "https://lh3.googleusercontent.com/a-/ALV-UjXAT-KP2vBzGH7APgIoFT6NLka7dRhUggUekFtTBPtF27hz09RI=s64",
+          "shareLink": "https://drive.google.com/file/d/1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh",
+          "displayName": "gonzaaybar17",
+          "emailAddress": "gonzaaybar17@gmail.com",
+          "pendingOwner": false
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

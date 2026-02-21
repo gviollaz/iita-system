@@ -1,0 +1,411 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "WhatsApp API Reports"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 150
+        },
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1395758,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 3,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 4,
+              "filter": {
+                "name": "Verificacion",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.`hub.mode`}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{2.`hub.mode`}}",
+                      "b": "subscribe",
+                      "o": "text:equal"
+                    },
+                    {
+                      "a": "{{2.`hub.verify_token`}}",
+                      "b": "iita",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "body": "{{2.`hub.challenge`}}",
+                "status": "200",
+                "headers": []
+              },
+              "module": "gateway:WebhookRespond",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "status",
+                    "type": "uinteger",
+                    "label": "Status",
+                    "required": true,
+                    "validate": {
+                      "min": 100
+                    }
+                  },
+                  {
+                    "name": "body",
+                    "type": "any",
+                    "label": "Body"
+                  },
+                  {
+                    "name": "headers",
+                    "spec": [
+                      {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key",
+                        "required": true,
+                        "validate": {
+                          "max": 256
+                        }
+                      },
+                      {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Value",
+                        "required": true,
+                        "validate": {
+                          "max": 4096
+                        }
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Custom headers",
+                    "validate": {
+                      "maxItems": 16
+                    }
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "headers": {
+                      "mode": "chose"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 0
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 5,
+              "filter": {
+                "name": "Mensaje",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.entry}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{2.entry[].id}}",
+                      "b": "111869345312688",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 6,
+                      "filter": {
+                        "name": "Mensaje cliente",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{2.entry[].changes[].value.messages}}",
+                              "o": "exist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{2.entry[].changes[].value.messages[].text.body}}",
+                          "status": "new",
+                          "is_user": true,
+                          "person_name": "{{2.entry[].changes[].value.contacts[].profile.name}}",
+                          "external_ref": "{{2.entry[].changes[].value.messages[].id}}",
+                          "provider_name": "Whatsapp Cloud API",
+                          "person_address": "{{2.entry[].changes[].value.messages[].from}}",
+                          "channel_address": "{{2.entry[].id}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new Interaction"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 300
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3240069",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 300
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 150
+        }
+      }
+    }
+  ],
+  "name": "IITA Chatbot - Whatsapp Cloud API (LEGACY)",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "entry": [
+            {
+              "id": "111869345312688",
+              "changes": [
+                {
+                  "field": "messages",
+                  "value": {
+                    "contacts": [
+                      {
+                        "wa_id": "5493875354413",
+                        "profile": {
+                          "name": "Nico Martinelli"
+                        }
+                      }
+                    ],
+                    "messages": [
+                      {
+                        "id": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDNEExMDJBNzU2RjFEQUM3RTA1QjczRjg2MkQ1MTE2AA==",
+                        "from": "5493875354413",
+                        "text": {
+                          "body": "Este es un mensaje de prueba de nicolas"
+                        },
+                        "type": "text",
+                        "timestamp": "1770132582"
+                      }
+                    ],
+                    "metadata": {
+                      "phone_number_id": "100436536473788",
+                      "display_phone_number": "5493872520781"
+                    },
+                    "messaging_product": "whatsapp"
+                  }
+                }
+              ]
+            }
+          ],
+          "object": "whatsapp_business_account"
+        },
+        "6": {
+          "id_interaction": "20436",
+          "id_person_conversation": "3203"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

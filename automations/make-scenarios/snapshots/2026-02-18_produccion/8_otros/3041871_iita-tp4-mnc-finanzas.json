@@ -1,0 +1,567 @@
+{
+  "flow": [
+    {
+      "id": 12,
+      "mapper": {},
+      "module": "telegram:WatchUpdates",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Webhook Telegram Gonza"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:telegramapi",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1356053
+      }
+    },
+    {
+      "id": 13,
+      "mapper": {
+        "model": "gemini-1.5-flash",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Toma el siguiente símbolo de acción (ticker) que te proporcionaré.\nBusca la información más reciente de este ticker en Yahoo Finanzas.\nExtrae exclusivamente los siguientes tres datos:\nPrecio de apertura del día (Open).\nPrecio de cierre del día anterior (Previous Close).\nLa variación del día actual (tanto en valor monetario como en porcentaje).\nPresenta la información en una única línea de texto simple, utilizando el formato exacto que se detalla a continuación.Manejo de Errores:\nSi el símbolo de la acción no es válido o no se encuentra en Yahoo Finanzas, responde únicamente con el siguiente mensaje de error: Error: El ticker \"{{12.message.text}}\" no es válido o no se encontró.\nFormato de Salida Exitosa:\n{{12.message.text}}: Apertura: $[Valor de Apertura], Cierre Anterior: $[Valor de Cierre Anterior], Variación: $[Valor de Variación] ([Porcentaje de Variación]%)\nSímbolo de la Acción a Consultar:\n{{12.message.text}}",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "thinkingConfig": {}
+        },
+        "system_instruction": {
+          "parts": [
+            {
+              "text": "Eres un asistente experto en finanzas que extrae datos de Yahoo Finanzas. Tu única función es proporcionar datos de acciones de manera precisa y concisa. No debes añadir opiniones, saludos ni información extra que no se haya solicitado."
+            }
+          ]
+        }
+      },
+      "module": "gemini-ai:createACompletionGeminiPro",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "model",
+            "type": "select",
+            "label": "AI Model",
+            "required": true
+          },
+          {
+            "name": "contents",
+            "spec": [
+              {
+                "name": "role",
+                "type": "select",
+                "label": "Role",
+                "options": [
+                  {
+                    "label": "User",
+                    "value": "user"
+                  },
+                  {
+                    "label": "Model",
+                    "value": "model"
+                  }
+                ]
+              },
+              {
+                "name": "parts",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Message Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "name": "text",
+                            "type": "text",
+                            "label": "Text",
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "File",
+                        "value": "file",
+                        "nested": [
+                          {
+                            "name": "file_data",
+                            "spec": [
+                              {
+                                "name": "mime_type",
+                                "type": "text",
+                                "label": "Mime Type",
+                                "required": false
+                              },
+                              {
+                                "help": "You get this from the 'Upload a File' module.",
+                                "name": "file_uri",
+                                "type": "text",
+                                "label": "File URI",
+                                "required": false
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "File Data",
+                            "required": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "array",
+                "label": "Parts"
+              }
+            ],
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "system_instruction",
+            "spec": [
+              {
+                "name": "parts",
+                "spec": {
+                  "name": "value",
+                  "spec": [
+                    {
+                      "name": "text",
+                      "type": "text",
+                      "label": "Value"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Prompt"
+                },
+                "type": "array",
+                "label": "Prompts"
+              }
+            ],
+            "type": "collection",
+            "label": "System Instructions"
+          },
+          {
+            "name": "safetySettings",
+            "spec": [
+              {
+                "name": "category",
+                "type": "select",
+                "label": "Category",
+                "options": [
+                  {
+                    "label": "Harassment content",
+                    "value": "HARM_CATEGORY_HARASSMENT"
+                  },
+                  {
+                    "label": "Hate speech and content",
+                    "value": "HARM_CATEGORY_HATE_SPEECH"
+                  },
+                  {
+                    "label": "Sexually explicit content.",
+                    "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                  },
+                  {
+                    "label": "Dangerous content:",
+                    "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                  }
+                ]
+              },
+              {
+                "name": "threshold",
+                "type": "select",
+                "label": "Threshold",
+                "options": [
+                  {
+                    "label": "Block low and above.",
+                    "value": "BLOCK_LOW_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block medium and above.",
+                    "value": "BLOCK_MEDIUM_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block only high.",
+                    "value": "BLOCK_ONLY_HIGH"
+                  },
+                  {
+                    "label": "Block none.",
+                    "value": "BLOCK_NONE"
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "label": "Safety Settings"
+          },
+          {
+            "name": "generationConfig",
+            "spec": [
+              {
+                "name": "stopSequences",
+                "spec": {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Stop Sequence"
+                },
+                "type": "array",
+                "label": "Stop Sequences"
+              },
+              {
+                "name": "responseModalities",
+                "type": "select",
+                "label": "Response Modalities",
+                "multiple": true,
+                "validate": {
+                  "enum": [
+                    "text",
+                    "image"
+                  ]
+                }
+              },
+              {
+                "name": "maxOutputTokens",
+                "type": "number",
+                "label": "Max Output Tokens"
+              },
+              {
+                "name": "temperature",
+                "type": "number",
+                "label": "Temperature",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topP",
+                "type": "number",
+                "label": "Top P",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topK",
+                "type": "number",
+                "label": "Top K"
+              },
+              {
+                "name": "thinkingConfig",
+                "spec": [
+                  {
+                    "name": "thinkingBudget",
+                    "type": "number",
+                    "label": "Thinking Budget"
+                  },
+                  {
+                    "name": "include_thoughts",
+                    "type": "boolean",
+                    "label": "Include Thoughts"
+                  }
+                ],
+                "type": "collection",
+                "label": "Thinking Config"
+              },
+              {
+                "name": "responseMimeType",
+                "type": "select",
+                "label": "Response Mime Type"
+              }
+            ],
+            "type": "collection",
+            "label": "Generation configurations"
+          },
+          {
+            "name": "tools",
+            "type": "any",
+            "label": "Tools"
+          },
+          {
+            "name": "tool_config",
+            "type": "any",
+            "label": "Tool Config"
+          },
+          {
+            "name": "url_context",
+            "type": "boolean",
+            "label": "URL Context"
+          },
+          {
+            "name": "google_search_context",
+            "type": "boolean",
+            "label": "Google Search Grounding"
+          },
+          {
+            "name": "code_execution",
+            "type": "boolean",
+            "label": "Code Execution"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "model": {
+              "mode": "chose",
+              "label": "Gemini 1.5 Flash"
+            },
+            "contents": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "User"
+                  },
+                  "parts": {
+                    "mode": "chose",
+                    "items": [
+                      {
+                        "type": {
+                          "mode": "chose",
+                          "label": "Text"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "url_context": {
+              "mode": "chose"
+            },
+            "code_execution": {
+              "mode": "chose"
+            },
+            "safetySettings": {
+              "mode": "chose",
+              "collapsed": true
+            },
+            "generationConfig": {
+              "nested": {
+                "stopSequences": {
+                  "mode": "chose"
+                },
+                "thinkingConfig": {
+                  "nested": {
+                    "include_thoughts": {
+                      "mode": "chose"
+                    }
+                  }
+                },
+                "responseMimeType": {
+                  "mode": "chose",
+                  "label": "Empty"
+                },
+                "responseModalities": {
+                  "mode": "chose",
+                  "collapsed": true
+                }
+              }
+            },
+            "system_instruction": {
+              "nested": {
+                "parts": {
+                  "mode": "chose",
+                  "items": [
+                    null
+                  ]
+                }
+              }
+            },
+            "google_search_context": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "gemini-ai-q9zyjp"
+              },
+              "label": "Gemini API"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:gemini-ai-q9zyjp",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4758306
+      }
+    },
+    {
+      "id": 14,
+      "mapper": {
+        "text": "Fin-Status: {{13.result}}",
+        "chatId": "{{12.message.chat.id}}",
+        "parseMode": "Markdown",
+        "replyMarkup": "",
+        "messageThreadId": "",
+        "replyToMessageId": "",
+        "replyMarkupAssembleType": "reply_markup_enter"
+      },
+      "module": "telegram:SendReplyMessage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "chatId",
+            "type": "text",
+            "label": "Chat ID",
+            "required": true
+          },
+          {
+            "name": "text",
+            "type": "text",
+            "label": "Text",
+            "required": true
+          },
+          {
+            "name": "messageThreadId",
+            "type": "number",
+            "label": "Message Thread ID"
+          },
+          {
+            "name": "parseMode",
+            "type": "select",
+            "label": "Parse Mode",
+            "validate": {
+              "enum": [
+                "Markdown",
+                "HTML"
+              ]
+            }
+          },
+          {
+            "name": "disableNotification",
+            "type": "boolean",
+            "label": "Disable Notifications"
+          },
+          {
+            "name": "disableWebPagePreview",
+            "type": "boolean",
+            "label": "Disable Link Previews"
+          },
+          {
+            "name": "replyToMessageId",
+            "type": "number",
+            "label": "Original Message ID"
+          },
+          {
+            "name": "replyMarkupAssembleType",
+            "type": "select",
+            "label": "Enter/Assemble the Reply Markup Field",
+            "validate": {
+              "enum": [
+                "reply_markup_enter",
+                "reply_markup_assemble"
+              ]
+            }
+          },
+          {
+            "name": "replyMarkup",
+            "type": "text",
+            "label": "Reply Markup"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "parseMode": {
+              "label": "Markdown"
+            },
+            "disableNotification": {
+              "mode": "chose"
+            },
+            "replyMarkupAssembleType": {
+              "label": "Enter the Reply Markup"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "telegram"
+              },
+              "label": "Bot Telegram Gonzalo"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Enviar mensaje"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:telegram",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5447464
+      }
+    }
+  ],
+  "name": "IITA-TP4-MNC-Finanzas",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

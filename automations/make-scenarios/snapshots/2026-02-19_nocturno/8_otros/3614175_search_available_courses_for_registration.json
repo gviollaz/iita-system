@@ -1,0 +1,228 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "edad para buscar cursos",
+            "name": "age",
+            "type": "integer",
+            "label": "",
+            "default": null,
+            "required": false
+          },
+          {
+            "help": "id de la sede",
+            "name": "branch_id",
+            "type": "integer",
+            "label": "",
+            "default": null,
+            "required": false
+          },
+          {
+            "help": "modalidad del curso",
+            "name": "modality",
+            "type": "select",
+            "label": "",
+            "options": [
+              {
+                "value": "PRESENTIAL"
+              },
+              {
+                "value": "VIRTUAL"
+              }
+            ],
+            "required": false
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "command": "SELECT \r\n  distinct(c.name) AS course_name\r\nFROM course_editions ce\r\nLEFT JOIN courses c ON c.id = ce.course_id\r\nWHERE \n{{if(var.input.age; var.input.age + \">=ce.min_age and \" + var.input.age + \"<=ce.max_age and \"; )}}\n{{if(var.input.branch_id; \"ce.branch_id =\" + var.input.branch_id + \" and \"; )}}\n{{if(var.input.modality; \"ce.modality = '\" + var.input.modality + \"' and\"; )}}\nce.status = 'Enrolling';"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Courses Enrolling"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "value": "{{2.course_name}}"
+      },
+      "module": "util:TextAggregator",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "Courses Enrolling - Execute a query (advanced) [2]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "Other"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Group courses"
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          },
+          {
+            "name": "otherRowSeparator",
+            "type": "text",
+            "label": "Separator"
+          }
+        ]
+      },
+      "parameters": {
+        "feeder": 2,
+        "rowSeparator": "other",
+        "otherRowSeparator": "; "
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "course_names": "{{`7`}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "course_names",
+            "type": "text",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Search available courses for registration",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "age": 12,
+          "modality": "PRESENTIAL",
+          "branch_id": 1
+        },
+        "2": {
+          "course_name": "Videojuegos de verano"
+        },
+        "4": {
+          "course_names": "{\"text\":\"Videojuegos de verano; Robótica educativa verano; Inteligencia Artificial adolescentes vera..."
+        },
+        "7": {
+          "text": "Videojuegos de verano; Robótica educativa verano; Inteligencia Artificial adolescentes verano; Robót..."
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,2298 @@
+{
+  "flow": [
+    {
+      "id": 7,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "IITA - Instagram Account (iita_salta)"
+            }
+          }
+        },
+        "designer": {
+          "x": -50,
+          "y": 602,
+          "name": "Messages incoming"
+        },
+        "interface": [
+          {
+            "name": "hub.mode",
+            "type": "text"
+          },
+          {
+            "name": "hub.challenge",
+            "type": "text"
+          },
+          {
+            "name": "hub.verify_token",
+            "type": "text"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1450446,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 8,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 9,
+              "filter": {
+                "name": "Verify",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{7.`hub.mode`}}",
+                      "b": "subscribe",
+                      "o": "text:equal"
+                    },
+                    {
+                      "a": "{{7.`hub.verify_token`}}",
+                      "b": "1234",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "body": "{{7.`hub.challenge`}}",
+                "status": "200",
+                "headers": []
+              },
+              "module": "gateway:WebhookRespond",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "status",
+                    "type": "uinteger",
+                    "label": "Status",
+                    "required": true,
+                    "validate": {
+                      "min": 100
+                    }
+                  },
+                  {
+                    "name": "body",
+                    "type": "any",
+                    "label": "Body"
+                  },
+                  {
+                    "name": "headers",
+                    "spec": [
+                      {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key",
+                        "required": true,
+                        "validate": {
+                          "max": 256
+                        }
+                      },
+                      {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Value",
+                        "required": true,
+                        "validate": {
+                          "max": 4096
+                        }
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Custom headers",
+                    "validate": {
+                      "maxItems": 16
+                    }
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "headers": {
+                      "mode": "chose"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 575,
+                  "y": 306,
+                  "name": "Webhook Verify"
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 11,
+              "filter": {
+                "name": "Messages",
+                "conditions": []
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 12,
+                      "filter": {
+                        "name": "Is user",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{7.entry[].id}}",
+                              "b": "{{7.entry[].messaging[].sender.id}}",
+                              "o": "text:notequal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "sort": [],
+                        "limit": "1",
+                        "where": [
+                          [
+                            {
+                              "a": "self_ref",
+                              "b": "{{7.entry[].messaging[].recipient.id}}",
+                              "o": "equal"
+                            },
+                            {
+                              "a": "user_ref",
+                              "b": "{{7.entry[].messaging[].sender.id}}",
+                              "o": "equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "module": "postgres:SelectFromTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "where",
+                            "type": "filter",
+                            "label": "Filter",
+                            "options": {
+                              "store": [
+                                {
+                                  "label": "id",
+                                  "value": "id"
+                                },
+                                {
+                                  "label": "user_ref",
+                                  "value": "user_ref"
+                                },
+                                {
+                                  "label": "self_ref",
+                                  "value": "self_ref"
+                                },
+                                {
+                                  "label": "type",
+                                  "value": "type"
+                                }
+                              ],
+                              "operators": [
+                                {
+                                  "label": "Basic",
+                                  "options": [
+                                    {
+                                      "label": "Is not null",
+                                      "value": "exist"
+                                    },
+                                    {
+                                      "label": "Is null",
+                                      "value": "notexist"
+                                    },
+                                    {
+                                      "label": "Equal to",
+                                      "value": "equal"
+                                    },
+                                    {
+                                      "label": "Not equal to",
+                                      "value": "notequal"
+                                    },
+                                    {
+                                      "label": "Greater than",
+                                      "value": "greater"
+                                    },
+                                    {
+                                      "label": "Greater than or equal to",
+                                      "value": "greaterorequal"
+                                    },
+                                    {
+                                      "label": "Less than",
+                                      "value": "less"
+                                    },
+                                    {
+                                      "label": "Less than or equal to",
+                                      "value": "lessorequal"
+                                    },
+                                    {
+                                      "label": "Contains",
+                                      "value": "contain"
+                                    },
+                                    {
+                                      "label": "Does not contain",
+                                      "value": "notcontain"
+                                    },
+                                    {
+                                      "label": "Starts with",
+                                      "value": "startwith"
+                                    },
+                                    {
+                                      "label": "Does not start with",
+                                      "value": "notstartwith"
+                                    },
+                                    {
+                                      "label": "Ends with",
+                                      "value": "endwith"
+                                    },
+                                    {
+                                      "label": "Does not end with",
+                                      "value": "notendwith"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "sort",
+                            "spec": [
+                              {
+                                "name": "column",
+                                "type": "select",
+                                "label": "Column",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                              },
+                              {
+                                "name": "order",
+                                "type": "select",
+                                "label": "Order",
+                                "options": [
+                                  {
+                                    "label": "Ascending",
+                                    "value": "asc"
+                                  },
+                                  {
+                                    "label": "Descending",
+                                    "value": "desc"
+                                  }
+                                ],
+                                "required": true
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Sort"
+                          },
+                          {
+                            "name": "limit",
+                            "type": "uinteger",
+                            "label": "Limit"
+                          },
+                          {
+                            "name": "where",
+                            "type": "filter",
+                            "label": "Filter",
+                            "options": {
+                              "store": [
+                                {
+                                  "label": "id",
+                                  "value": "id"
+                                },
+                                {
+                                  "label": "user_ref",
+                                  "value": "user_ref"
+                                },
+                                {
+                                  "label": "self_ref",
+                                  "value": "self_ref"
+                                },
+                                {
+                                  "label": "type",
+                                  "value": "type"
+                                }
+                              ],
+                              "operators": [
+                                {
+                                  "label": "Basic",
+                                  "options": [
+                                    {
+                                      "label": "Is not null",
+                                      "value": "exist"
+                                    },
+                                    {
+                                      "label": "Is null",
+                                      "value": "notexist"
+                                    },
+                                    {
+                                      "label": "Equal to",
+                                      "value": "equal"
+                                    },
+                                    {
+                                      "label": "Not equal to",
+                                      "value": "notequal"
+                                    },
+                                    {
+                                      "label": "Greater than",
+                                      "value": "greater"
+                                    },
+                                    {
+                                      "label": "Greater than or equal to",
+                                      "value": "greaterorequal"
+                                    },
+                                    {
+                                      "label": "Less than",
+                                      "value": "less"
+                                    },
+                                    {
+                                      "label": "Less than or equal to",
+                                      "value": "lessorequal"
+                                    },
+                                    {
+                                      "label": "Contains",
+                                      "value": "contain"
+                                    },
+                                    {
+                                      "label": "Does not contain",
+                                      "value": "notcontain"
+                                    },
+                                    {
+                                      "label": "Starts with",
+                                      "value": "startwith"
+                                    },
+                                    {
+                                      "label": "Does not start with",
+                                      "value": "notstartwith"
+                                    },
+                                    {
+                                      "label": "Ends with",
+                                      "value": "endwith"
+                                    },
+                                    {
+                                      "label": "Does not end with",
+                                      "value": "notendwith"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "sort",
+                            "spec": [
+                              {
+                                "name": "column",
+                                "type": "select",
+                                "label": "Column",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                              },
+                              {
+                                "name": "order",
+                                "type": "select",
+                                "label": "Order",
+                                "options": [
+                                  {
+                                    "label": "Ascending",
+                                    "value": "asc"
+                                  },
+                                  {
+                                    "label": "Descending",
+                                    "value": "desc"
+                                  }
+                                ],
+                                "required": true
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Sort"
+                          },
+                          {
+                            "name": "limit",
+                            "type": "uinteger",
+                            "label": "Limit"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.instagram_conversations"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 450,
+                          "name": "Search id conv"
+                        },
+                        "interface": [
+                          {
+                            "name": "__IMTLENGTH__",
+                            "type": "uinteger",
+                            "label": "Total number of bundles"
+                          },
+                          {
+                            "name": "__IMTINDEX__",
+                            "type": "uinteger",
+                            "label": "Bundle order position"
+                          },
+                          {
+                            "name": "id",
+                            "type": "integer",
+                            "label": "id",
+                            "required": false
+                          },
+                          {
+                            "name": "user_ref",
+                            "type": "text",
+                            "label": "user_ref",
+                            "required": false
+                          },
+                          {
+                            "name": "self_ref",
+                            "type": "text",
+                            "label": "self_ref",
+                            "required": false
+                          },
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "type",
+                            "required": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "continueWhenNoRes",
+                            "type": "boolean",
+                            "label": "Continue the execution of the route even if the module returns no rows",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"instagram_conversations\"",
+                        "account": 5484562,
+                        "continueWhenNoRes": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 13,
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 14,
+                              "filter": {
+                                "name": "Exist conv",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{12.id}}",
+                                      "o": "exist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "@id_msg": "",
+                                "@content": "{{7.entry[].messaging[].message.text}}",
+                                "@id_conv": "{{12.id}}",
+                                "@is_user": "{{true}}",
+                                "@date_time": "{{now}}",
+                                "@media_url": "{{7.entry[].messaging[].message.attachments[].payload.url}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id_msg",
+                                    "type": "integer",
+                                    "label": "id_msg"
+                                  },
+                                  {
+                                    "name": "@id_conv",
+                                    "type": "integer",
+                                    "label": "id_conv"
+                                  },
+                                  {
+                                    "name": "@date_time",
+                                    "type": "text",
+                                    "label": "date_time",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "@is_user",
+                                    "type": "text",
+                                    "label": "is_user"
+                                  },
+                                  {
+                                    "name": "@content",
+                                    "type": "text",
+                                    "label": "content"
+                                  },
+                                  {
+                                    "name": "@media_url",
+                                    "type": "text",
+                                    "label": "media_url"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_messages"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 300,
+                                  "name": "Insert row (msg)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_messages\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 15,
+                              "filter": {
+                                "name": "Not exist conv",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{12.id}}",
+                                      "o": "notexist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "@id": "",
+                                "@type": "chat",
+                                "@self_ref": "{{7.entry[].messaging[].recipient.id}}",
+                                "@user_ref": "{{7.entry[].messaging[].sender.id}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id",
+                                    "type": "integer",
+                                    "label": "id"
+                                  },
+                                  {
+                                    "name": "@user_ref",
+                                    "type": "text",
+                                    "label": "user_ref"
+                                  },
+                                  {
+                                    "name": "@self_ref",
+                                    "type": "text",
+                                    "label": "self_ref"
+                                  },
+                                  {
+                                    "name": "@type",
+                                    "type": "text",
+                                    "label": "type",
+                                    "required": true
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_conversations"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 600,
+                                  "name": "Insert row (conv)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_conversations\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 16,
+                              "mapper": {
+                                "sort": [],
+                                "limit": "1",
+                                "where": [
+                                  [
+                                    {
+                                      "a": "self_ref",
+                                      "b": "{{7.entry[].messaging[].recipient.id}}",
+                                      "o": "equal"
+                                    },
+                                    {
+                                      "a": "user_ref",
+                                      "b": "{{7.entry[].messaging[].sender.id}}",
+                                      "o": "equal"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "module": "postgres:SelectFromTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "where",
+                                    "type": "filter",
+                                    "label": "Filter",
+                                    "options": {
+                                      "store": [
+                                        {
+                                          "label": "id",
+                                          "value": "id"
+                                        },
+                                        {
+                                          "label": "user_ref",
+                                          "value": "user_ref"
+                                        },
+                                        {
+                                          "label": "self_ref",
+                                          "value": "self_ref"
+                                        },
+                                        {
+                                          "label": "type",
+                                          "value": "type"
+                                        }
+                                      ],
+                                      "operators": [
+                                        {
+                                          "label": "Basic",
+                                          "options": [
+                                            {
+                                              "label": "Is not null",
+                                              "value": "exist"
+                                            },
+                                            {
+                                              "label": "Is null",
+                                              "value": "notexist"
+                                            },
+                                            {
+                                              "label": "Equal to",
+                                              "value": "equal"
+                                            },
+                                            {
+                                              "label": "Not equal to",
+                                              "value": "notequal"
+                                            },
+                                            {
+                                              "label": "Greater than",
+                                              "value": "greater"
+                                            },
+                                            {
+                                              "label": "Greater than or equal to",
+                                              "value": "greaterorequal"
+                                            },
+                                            {
+                                              "label": "Less than",
+                                              "value": "less"
+                                            },
+                                            {
+                                              "label": "Less than or equal to",
+                                              "value": "lessorequal"
+                                            },
+                                            {
+                                              "label": "Contains",
+                                              "value": "contain"
+                                            },
+                                            {
+                                              "label": "Does not contain",
+                                              "value": "notcontain"
+                                            },
+                                            {
+                                              "label": "Starts with",
+                                              "value": "startwith"
+                                            },
+                                            {
+                                              "label": "Does not start with",
+                                              "value": "notstartwith"
+                                            },
+                                            {
+                                              "label": "Ends with",
+                                              "value": "endwith"
+                                            },
+                                            {
+                                              "label": "Does not end with",
+                                              "value": "notendwith"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "sort",
+                                    "spec": [
+                                      {
+                                        "name": "column",
+                                        "type": "select",
+                                        "label": "Column",
+                                        "dynamic": true,
+                                        "options": [],
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "order",
+                                        "type": "select",
+                                        "label": "Order",
+                                        "options": [
+                                          {
+                                            "label": "Ascending",
+                                            "value": "asc"
+                                          },
+                                          {
+                                            "label": "Descending",
+                                            "value": "desc"
+                                          }
+                                        ],
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Sort"
+                                  },
+                                  {
+                                    "name": "limit",
+                                    "type": "uinteger",
+                                    "label": "Limit"
+                                  },
+                                  {
+                                    "name": "where",
+                                    "type": "filter",
+                                    "label": "Filter",
+                                    "options": {
+                                      "store": [
+                                        {
+                                          "label": "id",
+                                          "value": "id"
+                                        },
+                                        {
+                                          "label": "user_ref",
+                                          "value": "user_ref"
+                                        },
+                                        {
+                                          "label": "self_ref",
+                                          "value": "self_ref"
+                                        },
+                                        {
+                                          "label": "type",
+                                          "value": "type"
+                                        }
+                                      ],
+                                      "operators": [
+                                        {
+                                          "label": "Basic",
+                                          "options": [
+                                            {
+                                              "label": "Is not null",
+                                              "value": "exist"
+                                            },
+                                            {
+                                              "label": "Is null",
+                                              "value": "notexist"
+                                            },
+                                            {
+                                              "label": "Equal to",
+                                              "value": "equal"
+                                            },
+                                            {
+                                              "label": "Not equal to",
+                                              "value": "notequal"
+                                            },
+                                            {
+                                              "label": "Greater than",
+                                              "value": "greater"
+                                            },
+                                            {
+                                              "label": "Greater than or equal to",
+                                              "value": "greaterorequal"
+                                            },
+                                            {
+                                              "label": "Less than",
+                                              "value": "less"
+                                            },
+                                            {
+                                              "label": "Less than or equal to",
+                                              "value": "lessorequal"
+                                            },
+                                            {
+                                              "label": "Contains",
+                                              "value": "contain"
+                                            },
+                                            {
+                                              "label": "Does not contain",
+                                              "value": "notcontain"
+                                            },
+                                            {
+                                              "label": "Starts with",
+                                              "value": "startwith"
+                                            },
+                                            {
+                                              "label": "Does not start with",
+                                              "value": "notstartwith"
+                                            },
+                                            {
+                                              "label": "Ends with",
+                                              "value": "endwith"
+                                            },
+                                            {
+                                              "label": "Does not end with",
+                                              "value": "notendwith"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "sort",
+                                    "spec": [
+                                      {
+                                        "name": "column",
+                                        "type": "select",
+                                        "label": "Column",
+                                        "dynamic": true,
+                                        "options": [],
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "order",
+                                        "type": "select",
+                                        "label": "Order",
+                                        "options": [
+                                          {
+                                            "label": "Ascending",
+                                            "value": "asc"
+                                          },
+                                          {
+                                            "label": "Descending",
+                                            "value": "desc"
+                                          }
+                                        ],
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Sort"
+                                  },
+                                  {
+                                    "name": "limit",
+                                    "type": "uinteger",
+                                    "label": "Limit"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_conversations"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1800,
+                                  "y": 600,
+                                  "name": "Search the id"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "__IMTLENGTH__",
+                                    "type": "uinteger",
+                                    "label": "Total number of bundles"
+                                  },
+                                  {
+                                    "name": "__IMTINDEX__",
+                                    "type": "uinteger",
+                                    "label": "Bundle order position"
+                                  },
+                                  {
+                                    "name": "id",
+                                    "type": "integer",
+                                    "label": "id",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "user_ref",
+                                    "type": "text",
+                                    "label": "user_ref",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "self_ref",
+                                    "type": "text",
+                                    "label": "self_ref",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "type",
+                                    "type": "text",
+                                    "label": "type",
+                                    "required": false
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "continueWhenNoRes",
+                                    "type": "boolean",
+                                    "label": "Continue the execution of the route even if the module returns no rows",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_conversations\"",
+                                "account": 5484562,
+                                "continueWhenNoRes": true,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 17,
+                              "mapper": {
+                                "@id_msg": "",
+                                "@content": "{{7.entry[].messaging[].message.text}}",
+                                "@id_conv": "{{16.id}}",
+                                "@is_user": "{{true}}",
+                                "@date_time": "{{now}}",
+                                "@media_url": "{{7.entry[].messaging[].message.attachments[].payload.url}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id_msg",
+                                    "type": "integer",
+                                    "label": "id_msg"
+                                  },
+                                  {
+                                    "name": "@id_conv",
+                                    "type": "integer",
+                                    "label": "id_conv"
+                                  },
+                                  {
+                                    "name": "@date_time",
+                                    "type": "text",
+                                    "label": "date_time",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "@is_user",
+                                    "type": "text",
+                                    "label": "is_user"
+                                  },
+                                  {
+                                    "name": "@content",
+                                    "type": "text",
+                                    "label": "content"
+                                  },
+                                  {
+                                    "name": "@media_url",
+                                    "type": "text",
+                                    "label": "media_url"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_messages"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 2100,
+                                  "y": 600,
+                                  "name": "Insert row (msg)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_messages\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 1200,
+                          "y": 450,
+                          "name": "¿Exist conv?"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 18,
+                      "filter": {
+                        "name": "Is not user",
+                        "conditions": []
+                      },
+                      "mapper": {
+                        "sort": [],
+                        "limit": "1",
+                        "where": [
+                          [
+                            {
+                              "a": "self_ref",
+                              "b": "{{7.entry[].messaging[].sender.id}}",
+                              "o": "equal"
+                            },
+                            {
+                              "a": "user_ref",
+                              "b": "{{7.entry[].messaging[].recipient.id}}",
+                              "o": "equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "module": "postgres:SelectFromTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "where",
+                            "type": "filter",
+                            "label": "Filter",
+                            "options": {
+                              "store": [
+                                {
+                                  "label": "id",
+                                  "value": "id"
+                                },
+                                {
+                                  "label": "user_ref",
+                                  "value": "user_ref"
+                                },
+                                {
+                                  "label": "self_ref",
+                                  "value": "self_ref"
+                                },
+                                {
+                                  "label": "type",
+                                  "value": "type"
+                                }
+                              ],
+                              "operators": [
+                                {
+                                  "label": "Basic",
+                                  "options": [
+                                    {
+                                      "label": "Is not null",
+                                      "value": "exist"
+                                    },
+                                    {
+                                      "label": "Is null",
+                                      "value": "notexist"
+                                    },
+                                    {
+                                      "label": "Equal to",
+                                      "value": "equal"
+                                    },
+                                    {
+                                      "label": "Not equal to",
+                                      "value": "notequal"
+                                    },
+                                    {
+                                      "label": "Greater than",
+                                      "value": "greater"
+                                    },
+                                    {
+                                      "label": "Greater than or equal to",
+                                      "value": "greaterorequal"
+                                    },
+                                    {
+                                      "label": "Less than",
+                                      "value": "less"
+                                    },
+                                    {
+                                      "label": "Less than or equal to",
+                                      "value": "lessorequal"
+                                    },
+                                    {
+                                      "label": "Contains",
+                                      "value": "contain"
+                                    },
+                                    {
+                                      "label": "Does not contain",
+                                      "value": "notcontain"
+                                    },
+                                    {
+                                      "label": "Starts with",
+                                      "value": "startwith"
+                                    },
+                                    {
+                                      "label": "Does not start with",
+                                      "value": "notstartwith"
+                                    },
+                                    {
+                                      "label": "Ends with",
+                                      "value": "endwith"
+                                    },
+                                    {
+                                      "label": "Does not end with",
+                                      "value": "notendwith"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "sort",
+                            "spec": [
+                              {
+                                "name": "column",
+                                "type": "select",
+                                "label": "Column",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                              },
+                              {
+                                "name": "order",
+                                "type": "select",
+                                "label": "Order",
+                                "options": [
+                                  {
+                                    "label": "Ascending",
+                                    "value": "asc"
+                                  },
+                                  {
+                                    "label": "Descending",
+                                    "value": "desc"
+                                  }
+                                ],
+                                "required": true
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Sort"
+                          },
+                          {
+                            "name": "limit",
+                            "type": "uinteger",
+                            "label": "Limit"
+                          },
+                          {
+                            "name": "where",
+                            "type": "filter",
+                            "label": "Filter",
+                            "options": {
+                              "store": [
+                                {
+                                  "label": "id",
+                                  "value": "id"
+                                },
+                                {
+                                  "label": "user_ref",
+                                  "value": "user_ref"
+                                },
+                                {
+                                  "label": "self_ref",
+                                  "value": "self_ref"
+                                },
+                                {
+                                  "label": "type",
+                                  "value": "type"
+                                }
+                              ],
+                              "operators": [
+                                {
+                                  "label": "Basic",
+                                  "options": [
+                                    {
+                                      "label": "Is not null",
+                                      "value": "exist"
+                                    },
+                                    {
+                                      "label": "Is null",
+                                      "value": "notexist"
+                                    },
+                                    {
+                                      "label": "Equal to",
+                                      "value": "equal"
+                                    },
+                                    {
+                                      "label": "Not equal to",
+                                      "value": "notequal"
+                                    },
+                                    {
+                                      "label": "Greater than",
+                                      "value": "greater"
+                                    },
+                                    {
+                                      "label": "Greater than or equal to",
+                                      "value": "greaterorequal"
+                                    },
+                                    {
+                                      "label": "Less than",
+                                      "value": "less"
+                                    },
+                                    {
+                                      "label": "Less than or equal to",
+                                      "value": "lessorequal"
+                                    },
+                                    {
+                                      "label": "Contains",
+                                      "value": "contain"
+                                    },
+                                    {
+                                      "label": "Does not contain",
+                                      "value": "notcontain"
+                                    },
+                                    {
+                                      "label": "Starts with",
+                                      "value": "startwith"
+                                    },
+                                    {
+                                      "label": "Does not start with",
+                                      "value": "notstartwith"
+                                    },
+                                    {
+                                      "label": "Ends with",
+                                      "value": "endwith"
+                                    },
+                                    {
+                                      "label": "Does not end with",
+                                      "value": "notendwith"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          },
+                          {
+                            "name": "sort",
+                            "spec": [
+                              {
+                                "name": "column",
+                                "type": "select",
+                                "label": "Column",
+                                "dynamic": true,
+                                "options": [],
+                                "required": true
+                              },
+                              {
+                                "name": "order",
+                                "type": "select",
+                                "label": "Order",
+                                "options": [
+                                  {
+                                    "label": "Ascending",
+                                    "value": "asc"
+                                  },
+                                  {
+                                    "label": "Descending",
+                                    "value": "desc"
+                                  }
+                                ],
+                                "required": true
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Sort"
+                          },
+                          {
+                            "name": "limit",
+                            "type": "uinteger",
+                            "label": "Limit"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.instagram_conversations"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 1050,
+                          "name": "Search id conv"
+                        },
+                        "interface": [
+                          {
+                            "name": "__IMTLENGTH__",
+                            "type": "uinteger",
+                            "label": "Total number of bundles"
+                          },
+                          {
+                            "name": "__IMTINDEX__",
+                            "type": "uinteger",
+                            "label": "Bundle order position"
+                          },
+                          {
+                            "name": "id",
+                            "type": "integer",
+                            "label": "id",
+                            "required": false
+                          },
+                          {
+                            "name": "user_ref",
+                            "type": "text",
+                            "label": "user_ref",
+                            "required": false
+                          },
+                          {
+                            "name": "self_ref",
+                            "type": "text",
+                            "label": "self_ref",
+                            "required": false
+                          },
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "type",
+                            "required": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "continueWhenNoRes",
+                            "type": "boolean",
+                            "label": "Continue the execution of the route even if the module returns no rows",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"instagram_conversations\"",
+                        "account": 5484562,
+                        "continueWhenNoRes": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 19,
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 20,
+                              "filter": {
+                                "name": "Exist conv",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{13.id}}",
+                                      "o": "exist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "@id_msg": "",
+                                "@content": "{{7.entry[].messaging[].message.text}}",
+                                "@id_conv": "{{18.id}}",
+                                "@is_user": "{{false}}",
+                                "@date_time": "{{now}}",
+                                "@media_url": "{{7.entry[].messaging[].message.attachments[].payload.url}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id_msg",
+                                    "type": "integer",
+                                    "label": "id_msg"
+                                  },
+                                  {
+                                    "name": "@id_conv",
+                                    "type": "integer",
+                                    "label": "id_conv"
+                                  },
+                                  {
+                                    "name": "@date_time",
+                                    "type": "text",
+                                    "label": "date_time",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "@is_user",
+                                    "type": "text",
+                                    "label": "is_user"
+                                  },
+                                  {
+                                    "name": "@content",
+                                    "type": "text",
+                                    "label": "content"
+                                  },
+                                  {
+                                    "name": "@media_url",
+                                    "type": "text",
+                                    "label": "media_url"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_messages"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 900,
+                                  "name": "Insert row (msg)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_messages\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 21,
+                              "filter": {
+                                "name": "Not exist conv",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{13.id}}",
+                                      "o": "notexist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "@id": "",
+                                "@type": "chat",
+                                "@self_ref": "{{7.entry[].messaging[].recipient.id}}",
+                                "@user_ref": "{{7.entry[].messaging[].sender.id}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id",
+                                    "type": "integer",
+                                    "label": "id"
+                                  },
+                                  {
+                                    "name": "@user_ref",
+                                    "type": "text",
+                                    "label": "user_ref"
+                                  },
+                                  {
+                                    "name": "@self_ref",
+                                    "type": "text",
+                                    "label": "self_ref"
+                                  },
+                                  {
+                                    "name": "@type",
+                                    "type": "text",
+                                    "label": "type",
+                                    "required": true
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.instagram_conversations"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 1200,
+                                  "name": "Insert row (conv)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"instagram_conversations\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 22,
+                              "mapper": {
+                                "sort": [],
+                                "limit": "1",
+                                "where": [
+                                  [
+                                    {
+                                      "a": "self_ref",
+                                      "b": "{{7.entry[].messaging[].recipient.id}}",
+                                      "o": "equal"
+                                    },
+                                    {
+                                      "a": "user_ref",
+                                      "b": "{{7.entry[].messaging[].sender.id}}",
+                                      "o": "equal"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "module": "postgres:SelectFromTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "where",
+                                    "type": "filter",
+                                    "label": "Filter",
+                                    "options": {
+                                      "store": [
+                                        {
+                                          "label": "id",
+                                          "value": "id"
+                                        },
+                                        {
+                                          "label": "user_ref",
+                                          "value": "user_ref"
+                                        },
+                                        {
+                                          "label": "self_ref",
+                                          "value": "self_ref"
+                                        },
+                                        {
+                                          "label": "type",
+                                          "value": "type"
+                                        }
+                                      ],
+                                      "operators": [
+                                        {
+                                          "label": "Basic",
+                                          "options": [
+                                            {
+                                              "label": "Is not null",
+                                              "value": "exist"
+                                            },
+                                            {
+                                              "label": "Is null",
+                                              "value": "notexist"
+                                            },
+                                            {
+                                              "label": "Equal to",
+                                              "value": "equal"
+                                            },
+                                            {
+                                              "label": "Not equal to",
+                                              "value": "notequal"
+                                            },
+                                            {
+                                              "label": "Greater than",
+                                              "value": "greater"
+                                            },
+                                            {
+                                              "label": "Greater than or equal to",
+                                              "value": "greaterorequal"
+                                            },
+                                            {
+                                              "label": "Less than",
+                                              "value": "less"
+                                            },
+                                            {
+                                              "label": "Less than or equal to",
+                                              "value": "lessorequal"
+                                            },
+                                            {
+                                              "label": "Contains",
+                                              "value": "contain"
+                                            },
+                                            {
+                                              "label": "Does not contain",
+                                              "value": "notcontain"
+                                            },
+                                            {
+                                              "label": "Starts with",
+                                              "value": "startwith"
+                                            },
+                                            {
+                                              "label": "Does not start with",
+                                              "value": "notstartwith"
+                                            },
+                                            {
+                                              "label": "Ends with",
+                                              "value": "endwith"
+                                            },
+                                            {
+                                              "label": "Does not end with",
+                                              "value": "notendwith"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "sort",
+                                    "spec": [
+                                      {
+                                        "name": "column",
+                                        "type": "select",
+                                        "label": "Column",
+                                        "dynamic": true,
+                                        "options": [],
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "order",
+                                        "type": "select",
+                                        "label": "Order",
+                                        "options": [
+                                          {
+                                            "label": "Ascending",
+                                            "value": "asc"
+                                          },
+                                          {
+                                            "label": "Descending",
+                                            "value": "desc"
+                                          }
+                                        ],
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Sort"
+                                  },
+                                  {
+                                    "name": "limit",
+                                    "type": "uinteger",
+                                    "label": "Limit"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.messenger_conversations"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1800,
+                                  "y": 1200,
+                                  "name": "Search the id"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "__IMTLENGTH__",
+                                    "type": "uinteger",
+                                    "label": "Total number of bundles"
+                                  },
+                                  {
+                                    "name": "__IMTINDEX__",
+                                    "type": "uinteger",
+                                    "label": "Bundle order position"
+                                  },
+                                  {
+                                    "name": "id",
+                                    "type": "integer",
+                                    "label": "id",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "user_ref",
+                                    "type": "text",
+                                    "label": "user_ref",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "self_ref",
+                                    "type": "text",
+                                    "label": "self_ref",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "type",
+                                    "type": "text",
+                                    "label": "type",
+                                    "required": false
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "continueWhenNoRes",
+                                    "type": "boolean",
+                                    "label": "Continue the execution of the route even if the module returns no rows",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"messenger_conversations\"",
+                                "account": 5484562,
+                                "continueWhenNoRes": true,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 23,
+                              "mapper": {
+                                "@id_msg": "",
+                                "@content": "{{7.entry[].messaging[].message.text}}",
+                                "@id_conv": "{{22.id}}",
+                                "@is_user": "{{false}}",
+                                "@date_time": "{{now}}",
+                                "@media_url": "{{7.entry[].messaging[].message.attachments[].payload.url}}"
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id_msg",
+                                    "type": "integer",
+                                    "label": "id_msg"
+                                  },
+                                  {
+                                    "name": "@id_conv",
+                                    "type": "integer",
+                                    "label": "id_conv"
+                                  },
+                                  {
+                                    "name": "@date_time",
+                                    "type": "text",
+                                    "label": "date_time",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "@is_user",
+                                    "type": "text",
+                                    "label": "is_user"
+                                  },
+                                  {
+                                    "name": "@content",
+                                    "type": "text",
+                                    "label": "content"
+                                  },
+                                  {
+                                    "name": "@media_url",
+                                    "type": "text",
+                                    "label": "media_url"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.messenger_messages"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 2100,
+                                  "y": 1200,
+                                  "name": "Insert row (msg)"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"messenger_messages\"",
+                                "account": 5484562,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 1200,
+                          "y": 1050,
+                          "name": "¿Exist conv?"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 750,
+                  "name": "¿Is this message from user?"
+                }
+              },
+              "parameters": {
+                "else": 1
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 600,
+          "name": "¿Verify or Messages?"
+        }
+      }
+    }
+  ],
+  "name": "IITA - Instagram Messages logs",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "7": {
+          "entry": [
+            {
+              "id": "17841404168256335",
+              "time": 1760537654982,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1145581497544840"
+                  },
+                  "message": {
+                    "mid": "aWdfZAG1faXRlbToxOklHTWVzc2FnZAUlEOjE3ODQxNDA0MTY4MjU2MzM1OjM0MDI4MjM2Njg0MTcxMDMwMTI0NDI2MDA2ODEwNz...",
+                    "text": "Otro msj"
+                  },
+                  "recipient": {
+                    "id": "17841404168256335"
+                  },
+                  "timestamp": 1760537653834
+                }
+              ]
+            }
+          ],
+          "object": "instagram"
+        },
+        "12": {
+          "id": "2",
+          "type": "chat",
+          "self_ref": "17841404168256335",
+          "user_ref": "1145581497544840",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "14": {
+          "rowsAffected": 1
+        },
+        "15": {
+          "rowsAffected": 1
+        },
+        "16": {
+          "id": "2",
+          "type": "chat",
+          "self_ref": "17841404168256335",
+          "user_ref": "1145581497544840",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "17": {
+          "rowsAffected": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

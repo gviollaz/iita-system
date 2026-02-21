@@ -1,0 +1,952 @@
+{
+  "exported_at": "2026-02-18T10:45:45.578326",
+  "region": "us2",
+  "team_id": "954615",
+  "scenario_count": 118,
+  "scenarios": [
+    {
+      "id": 3502129,
+      "name": "Create Google Sheets records",
+      "category": "6_aprobacion",
+      "filename": "6_aprobacion/3502129_create_google_sheets_records.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3730131,
+      "name": "Create new conversation",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/3730131_create_new_conversation.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4097260,
+      "name": "Create new conversation (Dev)",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/4097260_create_new_conversation_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3730125,
+      "name": "Create new interaction",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/3730125_create_new_interaction.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4097381,
+      "name": "Create new interaction (Dev)",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/4097381_create_new_interaction_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3671815,
+      "name": "Find Branches Information",
+      "category": "8_otros",
+      "filename": "8_otros/3671815_find_branches_information.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3522196,
+      "name": "Flujo de Reuniones - Admin. de Enlaces",
+      "category": "8_otros",
+      "filename": "8_otros/3522196_flujo_de_reuniones_-_admin._de_enlaces.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4106306,
+      "name": "Generar interacciones desde Google Sheet (Dev)",
+      "category": "6_aprobacion",
+      "filename": "6_aprobacion/4106306_generar_interacciones_desde_google_sheet_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4168577,
+      "name": "IITA - Approve & Dispatch (Producción)",
+      "category": "8_otros",
+      "filename": "8_otros/4168577_iita_-_approve_y_dispatch_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3759370,
+      "name": "IITA - Message dispatcher (Dev)",
+      "category": "7_envio",
+      "filename": "7_envio/3759370_iita_-_message_dispatcher_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124755,
+      "name": "IITA - Message dispatcher (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124755_iita_-_message_dispatcher_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4114223,
+      "name": "[INPUT] chatbot test (dev)",
+      "category": "1_entrada",
+      "filename": "1_entrada/4114223_input_chatbot_test_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3794481,
+      "name": "[INPUT] IITA 3D - WhatsApp Coexistence",
+      "category": "1_entrada",
+      "filename": "1_entrada/3794481_input_iita_3d_-_whatsapp_coexistence.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4097069,
+      "name": "[INPUT] IITA Chatbot - Whatsapp Cloud API",
+      "category": "1_entrada",
+      "filename": "1_entrada/4097069_input_iita_chatbot_-_whatsapp_cloud_api.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4068107,
+      "name": "[INPUT] IITA Salta/ IITA San Lorenzo - Messenger",
+      "category": "1_entrada",
+      "filename": "1_entrada/4068107_input_iita_salta_iita_san_lorenzo_-_messenger.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4067591,
+      "name": "[INPUT] IITA Salta - Instagram",
+      "category": "1_entrada",
+      "filename": "1_entrada/4067591_input_iita_salta_-_instagram.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4096655,
+      "name": "[INPUT] IITA San Lorenzo - Instagram",
+      "category": "1_entrada",
+      "filename": "1_entrada/4096655_input_iita_san_lorenzo_-_instagram.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4077066,
+      "name": "[INPUT] IITA test - Whatsapp Cloud API",
+      "category": "1_entrada",
+      "filename": "1_entrada/4077066_input_iita_test_-_whatsapp_cloud_api.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4161348,
+      "name": "[INPUT] San Lorenzo Chico - WhatsApp Coexistence",
+      "category": "1_entrada",
+      "filename": "1_entrada/4161348_input_san_lorenzo_chico_-_whatsapp_coexistence.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4132778,
+      "name": "New approved record IA",
+      "category": "8_otros",
+      "filename": "8_otros/4132778_new_approved_record_ia.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3759712,
+      "name": "[OUT] Instagram ~ Salta",
+      "category": "7_envio",
+      "filename": "7_envio/3759712_out_instagram_salta.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124832,
+      "name": "[OUT] Instagram ~ Salta (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124832_out_instagram_salta_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3765739,
+      "name": "[OUT] Instagram ~ San Lorenzo Chico",
+      "category": "7_envio",
+      "filename": "7_envio/3765739_out_instagram_san_lorenzo_chico.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124842,
+      "name": "[OUT] Instagram ~ San Lorenzo Chico (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124842_out_instagram_san_lorenzo_chico_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3759739,
+      "name": "[OUT] Messenger ~ Salta",
+      "category": "7_envio",
+      "filename": "7_envio/3759739_out_messenger_salta.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124865,
+      "name": "[OUT] Messenger ~ Salta (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124865_out_messenger_salta_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3765809,
+      "name": "[OUT] Messenger ~ San Lorenzo Chico",
+      "category": "7_envio",
+      "filename": "7_envio/3765809_out_messenger_san_lorenzo_chico.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124870,
+      "name": "[OUT] Messenger ~ San Lorenzo Chico (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124870_out_messenger_san_lorenzo_chico_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4058054,
+      "name": "[OUT] Whatsapp ~ Chatbot",
+      "category": "7_envio",
+      "filename": "7_envio/4058054_out_whatsapp_chatbot.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124875,
+      "name": "[OUT] Whatsapp ~ Chatbot (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124875_out_whatsapp_chatbot_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3765711,
+      "name": "[OUT] Whatsapp ~ IITA 3D",
+      "category": "7_envio",
+      "filename": "7_envio/3765711_out_whatsapp_iita_3d.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124805,
+      "name": "[OUT] Whatsapp ~ IITA 3D (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124805_out_whatsapp_iita_3d_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3759583,
+      "name": "[OUT] Whatsapp ~ San Lorenzo Chico",
+      "category": "7_envio",
+      "filename": "7_envio/3759583_out_whatsapp_san_lorenzo_chico.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4124821,
+      "name": "[OUT] Whatsapp ~ San Lorenzo Chico (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4124821_out_whatsapp_san_lorenzo_chico_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4105815,
+      "name": "[Prepross] Media Analisis - prod",
+      "category": "3_preprocesamiento",
+      "filename": "3_preprocesamiento/4105815_prepross_media_analisis_-_prod.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4132732,
+      "name": "[Prepross] Media Analisis - prod",
+      "category": "3_preprocesamiento",
+      "filename": "3_preprocesamiento/4132732_prepross_media_analisis_-_prod.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4132827,
+      "name": "[RG] Generate ai response - prod",
+      "category": "4_generacion",
+      "filename": "4_generacion/4132827_rg_generate_ai_response_-_prod.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3729890,
+      "name": "Save media into bucket",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/3729890_save_media_into_bucket.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4097317,
+      "name": "Save media into bucket (Dev)",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/4097317_save_media_into_bucket_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3595321,
+      "name": "Search available courses for registration",
+      "category": "8_otros",
+      "filename": "8_otros/3595321_search_available_courses_for_registration.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3614175,
+      "name": "Search available courses for registration",
+      "category": "8_otros",
+      "filename": "8_otros/3614175_search_available_courses_for_registration.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3794184,
+      "name": "Search courses edition info",
+      "category": "8_otros",
+      "filename": "8_otros/3794184_search_courses_edition_info.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 3794086,
+      "name": "Search courses info by name",
+      "category": "8_otros",
+      "filename": "8_otros/3794086_search_courses_info_by_name.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4058936,
+      "name": "Sending messages (Dev)",
+      "category": "7_envio",
+      "filename": "7_envio/4058936_sending_messages_dev.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4125079,
+      "name": "Sending messages (Producción)",
+      "category": "7_envio",
+      "filename": "7_envio/4125079_sending_messages_produccion.json",
+      "is_active": true,
+      "type": "scenario"
+    },
+    {
+      "id": 4076873,
+      "name": "Analisis de conversacion",
+      "category": "8_otros",
+      "filename": "8_otros/4076873_analisis_de_conversacion.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4068793,
+      "name": "Auditor de calidad",
+      "category": "8_otros",
+      "filename": "8_otros/4068793_auditor_de_calidad.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2023473,
+      "name": "Automatically reply to new Facebook Pages comments",
+      "category": "8_otros",
+      "filename": "8_otros/2023473_automatically_reply_to_new_facebook_pages_comments.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2694205,
+      "name": "Conexion Outlook (Gerardo)",
+      "category": "8_otros",
+      "filename": "8_otros/2694205_conexion_outlook_gerardo.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3314253,
+      "name": "Correos de respuestas a formularios (500)",
+      "category": "8_otros",
+      "filename": "8_otros/3314253_correos_de_respuestas_a_formularios_500.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3439558,
+      "name": "Crear link de pago en tres cuotas en Mercado Pago",
+      "category": "8_otros",
+      "filename": "8_otros/3439558_crear_link_de_pago_en_tres_cuotas_en_mercado_pago.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3402455,
+      "name": "Crear link de pago en una sola cuota en Mercado Pago",
+      "category": "8_otros",
+      "filename": "8_otros/3402455_crear_link_de_pago_en_una_sola_cuota_en_mercado_pago.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3439531,
+      "name": "Crear link de pago en una sola cuota en Mercado Pago",
+      "category": "8_otros",
+      "filename": "8_otros/3439531_crear_link_de_pago_en_una_sola_cuota_en_mercado_pago.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2012714,
+      "name": "Create a basic chatbot for WhatsApp",
+      "category": "8_otros",
+      "filename": "8_otros/2012714_create_a_basic_chatbot_for_whatsapp.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3247857,
+      "name": "Create new conversation (LEGACY)",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/3247857_create_new_conversation_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3240069,
+      "name": "Create new Interaction (LEGACY)",
+      "category": "2_procesamiento",
+      "filename": "2_procesamiento/3240069_create_new_interaction_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3456916,
+      "name": "Enviar mensajes aprobados (Produccion)",
+      "category": "8_otros",
+      "filename": "8_otros/3456916_enviar_mensajes_aprobados_produccion.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2794919,
+      "name": "Flujo maestro IITA 3D",
+      "category": "8_otros",
+      "filename": "8_otros/2794919_flujo_maestro_iita_3d.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2641321,
+      "name": "Generación de contenido para Facebook IITA 3D",
+      "category": "8_otros",
+      "filename": "8_otros/2641321_generacion_de_contenido_para_facebook_iita_3d.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2731283,
+      "name": "Generación Reels con Heygen",
+      "category": "8_otros",
+      "filename": "8_otros/2731283_generacion_reels_con_heygen.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4067547,
+      "name": "Generate ia response (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/4067547_generate_ia_response_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4124998,
+      "name": "Generate interactions from Google Sheets Legacy GV",
+      "category": "6_aprobacion",
+      "filename": "6_aprobacion/4124998_generate_interactions_from_google_sheets_legacy_gv.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2025058,
+      "name": "Generate LinkedIn posts using OpenAI GPT-3 completions",
+      "category": "8_otros",
+      "filename": "8_otros/2025058_generate_linkedin_posts_using_openai_gpt-3_completions.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3276019,
+      "name": "IITA 3D - WhatsApp Coexistence (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3276019_iita_3d_-_whatsapp_coexistence_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3238507,
+      "name": "IITA Administracion - WhatsApp Coexistence (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3238507_iita_administracion_-_whatsapp_coexistence_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3689653,
+      "name": "IITA - AI respond generation",
+      "category": "8_otros",
+      "filename": "8_otros/3689653_iita_-_ai_respond_generation.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4049231,
+      "name": "IITA Chatbot - Whatsapp Cloud API (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/4049231_iita_chatbot_-_whatsapp_cloud_api_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2500830,
+      "name": "IITA - Comunication data extraction",
+      "category": "8_otros",
+      "filename": "8_otros/2500830_iita_-_comunication_data_extraction.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2431308,
+      "name": "IITA - Create content for social media",
+      "category": "8_otros",
+      "filename": "8_otros/2431308_iita_-_create_content_for_social_media.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3360359,
+      "name": "IITA Cursos - WhatsApp Coexistence (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3360359_iita_cursos_-_whatsapp_coexistence_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3113513,
+      "name": "IITA - Gmail Messages Logs",
+      "category": "8_otros",
+      "filename": "8_otros/3113513_iita_-_gmail_messages_logs.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3131595,
+      "name": "IITA - Gmail Messages Logs (From Us)",
+      "category": "8_otros",
+      "filename": "8_otros/3131595_iita_-_gmail_messages_logs_from_us.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3131505,
+      "name": "IITA - Gmail Messages Logs (from User)",
+      "category": "8_otros",
+      "filename": "8_otros/3131505_iita_-_gmail_messages_logs_from_user.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2339154,
+      "name": "IITA - Instagram ads AutoResponse",
+      "category": "8_otros",
+      "filename": "8_otros/2339154_iita_-_instagram_ads_autoresponse.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3079271,
+      "name": "IITA - Instagram Messages logs",
+      "category": "8_otros",
+      "filename": "8_otros/3079271_iita_-_instagram_messages_logs.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2597479,
+      "name": "IITA - Messenger ads AutoResponse",
+      "category": "8_otros",
+      "filename": "8_otros/2597479_iita_-_messenger_ads_autoresponse.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3457916,
+      "name": "IITA Messenger (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3457916_iita_messenger_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3060533,
+      "name": "IITA - Messenger message logs",
+      "category": "8_otros",
+      "filename": "8_otros/3060533_iita_-_messenger_message_logs.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3615381,
+      "name": "IITA - Record ia response",
+      "category": "8_otros",
+      "filename": "8_otros/3615381_iita_-_record_ia_response.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3130884,
+      "name": "IITA - Reports Workflow",
+      "category": "8_otros",
+      "filename": "8_otros/3130884_iita_-_reports_workflow.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3192856,
+      "name": "IITA Salta - Facebook comments response",
+      "category": "8_otros",
+      "filename": "8_otros/3192856_iita_salta_-_facebook_comments_response.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3448697,
+      "name": "IITA Salta - Instagram (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3448697_iita_salta_-_instagram_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3183829,
+      "name": "IITA Salta - New comments response",
+      "category": "8_otros",
+      "filename": "8_otros/3183829_iita_salta_-_new_comments_response.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3744707,
+      "name": "IITA San Lorenzo - Facebook comments response",
+      "category": "8_otros",
+      "filename": "8_otros/3744707_iita_san_lorenzo_-_facebook_comments_response.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3466864,
+      "name": "IITA San Lorenzo - Instagram (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3466864_iita_san_lorenzo_-_instagram_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3494063,
+      "name": "IITA San Lorenzo - New comments Instagram",
+      "category": "8_otros",
+      "filename": "8_otros/3494063_iita_san_lorenzo_-_new_comments_instagram.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3632237,
+      "name": "IITA - Search for last messages in the conversation",
+      "category": "8_otros",
+      "filename": "8_otros/3632237_iita_-_search_for_last_messages_in_the_conversation.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3639861,
+      "name": "IITA - Search unanswered messages",
+      "category": "8_otros",
+      "filename": "8_otros/3639861_iita_-_search_unanswered_messages.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3331438,
+      "name": "IITA Tesorería - WhatsApp Coexistence (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3331438_iita_tesoreria_-_whatsapp_coexistence_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2340618,
+      "name": "IITA - Tiktok ads AutoResponse  (prueba gv)",
+      "category": "8_otros",
+      "filename": "8_otros/2340618_iita_-_tiktok_ads_autoresponse_prueba_gv.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3079651,
+      "name": "IITA - TikTok Messages logs",
+      "category": "8_otros",
+      "filename": "8_otros/3079651_iita_-_tiktok_messages_logs.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3041871,
+      "name": "IITA-TP4-MNC-Finanzas",
+      "category": "8_otros",
+      "filename": "8_otros/3041871_iita-tp4-mnc-finanzas.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3069591,
+      "name": "IITA - WhatsApp API Messages logs",
+      "category": "8_otros",
+      "filename": "8_otros/3069591_iita_-_whatsapp_api_messages_logs.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4115159,
+      "name": "[INPUT] IITA 3D (Dev)",
+      "category": "1_entrada",
+      "filename": "1_entrada/4115159_input_iita_3d_dev.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2974106,
+      "name": "Integration Gmail",
+      "category": "8_otros",
+      "filename": "8_otros/2974106_integration_gmail.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3288032,
+      "name": "Integration Google My Business",
+      "category": "8_otros",
+      "filename": "8_otros/3288032_integration_google_my_business.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3294664,
+      "name": "Integration Google My Business",
+      "category": "8_otros",
+      "filename": "8_otros/3294664_integration_google_my_business.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3238412,
+      "name": "Integration Google Sheets",
+      "category": "6_aprobacion",
+      "filename": "6_aprobacion/3238412_integration_google_sheets.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2012919,
+      "name": "Integration OpenAI (ChatGPT, Whisper, DALL-E)",
+      "category": "8_otros",
+      "filename": "8_otros/2012919_integration_openai_chatgpt_whisper_dall-e.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2430503,
+      "name": "Integration OpenAI (ChatGPT, Whisper, DALL-E)",
+      "category": "8_otros",
+      "filename": "8_otros/2430503_integration_openai_chatgpt_whisper_dall-e.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2694015,
+      "name": "Integration Tools",
+      "category": "8_otros",
+      "filename": "8_otros/2694015_integration_tools.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2740948,
+      "name": "Novedades 3D",
+      "category": "8_otros",
+      "filename": "8_otros/2740948_novedades_3d.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2742620,
+      "name": "Postear novedades 3D autorizadas",
+      "category": "8_otros",
+      "filename": "8_otros/2742620_postear_novedades_3d_autorizadas.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2267884,
+      "name": "Post to Google My Business from Instagram",
+      "category": "8_otros",
+      "filename": "8_otros/2267884_post_to_google_my_business_from_instagram.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3436242,
+      "name": "prueba gv mesenger a sheets",
+      "category": "8_otros",
+      "filename": "8_otros/3436242_prueba_gv_mesenger_a_sheets.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3775722,
+      "name": "Prueba GV whatsapp iita3d",
+      "category": "8_otros",
+      "filename": "8_otros/3775722_prueba_gv_whatsapp_iita3d.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3566366,
+      "name": "Register bank transfer",
+      "category": "8_otros",
+      "filename": "8_otros/3566366_register_bank_transfer.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3324542,
+      "name": "Registro de Contactos (Google Contacts SL)",
+      "category": "8_otros",
+      "filename": "8_otros/3324542_registro_de_contactos_google_contacts_sl.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 4097212,
+      "name": "[RG] Generate ai response - dev",
+      "category": "4_generacion",
+      "filename": "4_generacion/4097212_rg_generate_ai_response_-_dev.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3331421,
+      "name": "San Lorenzo - WhatsApp Coexistence (LEGACY)",
+      "category": "8_otros",
+      "filename": "8_otros/3331421_san_lorenzo_-_whatsapp_coexistence_legacy.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3294758,
+      "name": "Search courses available for enrollment",
+      "category": "8_otros",
+      "filename": "8_otros/3294758_search_courses_available_for_enrollment.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3779087,
+      "name": "Search courses scheduling by id",
+      "category": "8_otros",
+      "filename": "8_otros/3779087_search_courses_scheduling_by_id.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3412117,
+      "name": "Search for customer payments in Mercado Pago",
+      "category": "8_otros",
+      "filename": "8_otros/3412117_search_for_customer_payments_in_mercado_pago.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2023570,
+      "name": "Send messages on Facebook Messenger using a ChatGPT assistant",
+      "category": "8_otros",
+      "filename": "8_otros/2023570_send_messages_on_facebook_messenger_using_a_chatgpt_assistant.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 2730632,
+      "name": "Subir AI posteos autorizados",
+      "category": "8_otros",
+      "filename": "8_otros/2730632_subir_ai_posteos_autorizados.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3069585,
+      "name": "Test general",
+      "category": "8_otros",
+      "filename": "8_otros/3069585_test_general.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3696099,
+      "name": "WhatsApp Templates",
+      "category": "8_otros",
+      "filename": "8_otros/3696099_whatsapp_templates.json",
+      "is_active": false,
+      "type": "scenario"
+    },
+    {
+      "id": 3079682,
+      "name": "WP IA Agent Test",
+      "category": "8_otros",
+      "filename": "8_otros/3079682_wp_ia_agent_test.json",
+      "is_active": false,
+      "type": "scenario"
+    }
+  ]
+}

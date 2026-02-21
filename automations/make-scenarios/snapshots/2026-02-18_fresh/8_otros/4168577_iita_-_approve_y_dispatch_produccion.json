@@ -1,0 +1,140 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "IITA - Message dispatcher Produccion"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "name": "id_interaction",
+            "type": "integer",
+            "label": "id_interaction",
+            "required": true
+          }
+        ],
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1898305,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "data": {
+          "id_interaction": "{{2.id_interaction}}"
+        }
+      },
+      "module": "scenario-service:CallSubscenario",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "data",
+            "spec": [
+              {
+                "help": "Contiene el identificador del registro creado para enviarse.",
+                "name": "id_interaction",
+                "type": "text",
+                "label": "",
+                "default": "",
+                "required": true,
+                "multiline": false
+              }
+            ],
+            "type": "collection",
+            "label": "Scenario Inputs"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "scenario": {
+              "label": "IITA - Message dispatcher (Producción)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Call Dispatcher"
+        },
+        "interface": [
+          {
+            "name": "executionId",
+            "type": "text",
+            "label": "Execution ID"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scenario",
+            "type": "scenario",
+            "label": "Scenario",
+            "required": true
+          },
+          {
+            "name": "shouldWaitForExecutionEnd",
+            "type": "boolean",
+            "label": "Wait for the scenario to finish",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "scenario": "SCN_4124755",
+        "shouldWaitForExecutionEnd": true
+      }
+    }
+  ],
+  "name": "IITA - Approve & Dispatch (Producción)",
+  "metadata": {
+    "zone": "us2.make.com",
+    "notes": [],
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

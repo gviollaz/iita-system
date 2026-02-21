@@ -1,0 +1,785 @@
+{
+  "flow": [
+    {
+      "id": 9,
+      "mapper": {},
+      "module": "facebook-messenger:watchMessages",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Salta Messenger Producción"
+            }
+          }
+        },
+        "designer": {
+          "x": -27,
+          "y": 299,
+          "name": "Mensajes entrantes"
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:facebook-messenger3",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1555364
+      }
+    },
+    {
+      "id": 2,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "filter": {
+                "name": "Mensaje cliente",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{9.message.is_echo}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 4,
+                      "filter": {
+                        "name": "Sin media",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{9.message.attachments[].payload}}",
+                              "o": "notexist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{9.message.text}}",
+                          "status": "new",
+                          "is_user": true,
+                          "external_ref": "{{9.message.mid}}",
+                          "provider_name": "messenger",
+                          "person_address": "{{9.sender.id}}",
+                          "channel_address": "{{9.recipient.id}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 0
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 10,
+                      "filter": {
+                        "name": "",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{9.message.attachments[].payload}}",
+                              "o": "exist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "url": "{{9.message.attachments[].payload.url}}",
+                        "shareCookies": false,
+                        "stopOnHttpError": true
+                      },
+                      "module": "http:DownloadFile",
+                      "version": 4,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "url",
+                            "type": "url",
+                            "label": "URL",
+                            "required": true
+                          },
+                          {
+                            "name": "stopOnHttpError",
+                            "type": "boolean",
+                            "label": "Return error if HTTP request fails",
+                            "required": true
+                          },
+                          {
+                            "name": "shareCookies",
+                            "type": "boolean",
+                            "label": "Share cookies with other HTTP modules",
+                            "required": true
+                          },
+                          {
+                            "name": "headers",
+                            "spec": {
+                              "name": "value",
+                              "spec": [
+                                {
+                                  "name": "name",
+                                  "type": "text",
+                                  "label": "Name",
+                                  "required": true,
+                                  "validate": {
+                                    "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                  }
+                                },
+                                {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Value"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Header"
+                            },
+                            "type": "array",
+                            "label": "Headers"
+                          },
+                          {
+                            "name": "queryParameters",
+                            "spec": {
+                              "name": "value",
+                              "spec": [
+                                {
+                                  "name": "name",
+                                  "type": "text",
+                                  "label": "Name",
+                                  "required": true
+                                },
+                                {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Value"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Parameter"
+                            },
+                            "type": "array",
+                            "label": "Query parameters"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "headers": {
+                              "mode": "chose"
+                            },
+                            "shareCookies": {
+                              "mode": "chose"
+                            },
+                            "queryParameters": {
+                              "mode": "chose"
+                            },
+                            "stopOnHttpError": {
+                              "mode": "chose"
+                            }
+                          },
+                          "parameters": {
+                            "authenticationType": {
+                              "label": "No authenticationUse when no credentials are required for the request."
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 902,
+                          "y": 313
+                        },
+                        "parameters": [
+                          {
+                            "name": "authenticationType",
+                            "type": "select",
+                            "label": "Authentication type",
+                            "required": true,
+                            "validate": {
+                              "enum": [
+                                "noAuth",
+                                "apiKey",
+                                "basicAuth",
+                                "oAuth"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "authenticationType": "noAuth"
+                      }
+                    },
+                    {
+                      "id": 7,
+                      "filter": {
+                        "name": "Contiene media",
+                        "conditions": []
+                      },
+                      "mapper": {
+                        "data": {
+                          "status": "new",
+                          "is_user": true,
+                          "media_data": "{{base64(10.data)}}",
+                          "external_ref": "{{9.message.mid}}",
+                          "provider_name": "messenger",
+                          "person_address": "{{9.sender.id}}",
+                          "channel_address": "{{9.recipient.id}}",
+                          "media_extension": "{{last(split(10.headers.`content-type`; \"/\"))}}",
+                          "media_external_id": "{{10.fileName}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1307,
+                          "y": 313
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 150
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 8,
+              "filter": {
+                "name": "self",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{9.message.is_echo}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "data": {
+                  "text": "{{9.message.text}}",
+                  "status": "new",
+                  "is_user": false,
+                  "external_ref": "{{9.message.mid}}",
+                  "provider_name": "messenger",
+                  "person_address": "{{9.recipient.id}}",
+                  "channel_address": "{{9.sender.id}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": ""
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "ad_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_external_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_data",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_extension",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "status",
+                        "type": "select",
+                        "label": "",
+                        "validate": {
+                          "enum": [
+                            "new",
+                            "preprocessed",
+                            "processed",
+                            "pending_delivery",
+                            "sending",
+                            "send"
+                          ]
+                        }
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "status": {
+                          "mode": "chose",
+                          "label": "new"
+                        },
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "IITA - Create new interaction (new)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 600
+                },
+                "interface": [
+                  {
+                    "name": "executionId",
+                    "type": "text",
+                    "label": "Execution ID"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3730125",
+                "shouldWaitForExecutionEnd": false
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 300
+        }
+      }
+    }
+  ],
+  "name": "[INPUT] IITA Salta/ IITA San Lorenzo - Messenger",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "4": {
+          "id_interaction": "20932",
+          "id_person_conversation": "3281"
+        },
+        "7": {
+          "executionId": "c64c484b96bc46c5935147db97d643c1"
+        },
+        "8": {
+          "executionId": "5e29aca0dde14617b7e40456b4b9049d"
+        },
+        "9": {
+          "sender": {
+            "id": "24106772745619815"
+          },
+          "message": {
+            "mid": "m_Gbt0EZhdA4OH4Yi-3y-dfu41CTiv_ta7YtRcqW3Sz8cQi3dTHGAv57GXIN8tWTseOom0_LvMyhtk-WXl6WqkHg",
+            "text": "mensaje de prueba de iita salta - facebook"
+          },
+          "recipient": {
+            "id": "296373163870909"
+          },
+          "timestamp": "2026-02-09T15:16:04.865Z"
+        },
+        "10": {
+          "data": "IMTBuffer(70393, binary, f36931919acaf72434be004a99aba4a434ee691b): ffd8ffe000104a464946000101000001...",
+          "headers": {
+            "date": "Thu, 05 Feb 2026 15:06:16 GMT",
+            "alt-svc": "h3=\":443\"; ma=86400",
+            "connection": "keep-alive",
+            "content-type": "image/jpeg",
+            "x-robots-tag": "noarchive, noindex",
+            "accept-ranges": "bytes",
+            "cache-control": "max-age=1209600, no-transform",
+            "last-modified": "Thu, 05 Feb 2026 13:42:05 GMT",
+            "x-fb-ptm-uuid": "614D101EE2555D39524EF3EF065823B6",
+            "content-digest": "adler32=3451320316",
+            "content-length": "70393",
+            "x-crypto-project": "3",
+            "x-needle-checksum": "3451320316",
+            "timing-allow-origin": "*",
+            "x-fb-connection-quality": "EXCELLENT; q=0.9, rtt=16, rtx=0, c=13, mss=1380, tbw=3459, tp=-1, tpl=-1, uplat=1, ullat=-1",
+            "x-additional-error-detail": "",
+            "access-control-allow-origin": "*",
+            "cross-origin-resource-policy": "cross-origin"
+          },
+          "fileName": "623805409_1617138186373646_8639341209378055534_n.jpg",
+          "fileSize": 70393,
+          "statusCode": 200
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

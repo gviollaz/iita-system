@@ -1,0 +1,195 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Inputs"
+        },
+        "interface": [
+          {
+            "help": "",
+            "name": "id_person_conversation",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "mapper": {
+        "command": "SELECT i.text, i.id, i.time_stamp\r\nFROM interactions i\r\nWHERE\r\n    i.id_person_conversation={{1.id_person_conversation}}    AND i.time_stamp > (\r\n        SELECT COALESCE(MAX(past_msg.time_stamp), '1970-01-01 00:00:00')\r\n        FROM ai_interaction ai\r\n        JOIN interactions past_msg ON ai.associated_interaction_id = past_msg.id\r\n        WHERE past_msg.id_person_conversation={{1.id_person_conversation}})\r\n    AND i.text IS NOT NULL AND i.text != ''\r\nORDER BY i.time_stamp ASC"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          },
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Search unanswered messages"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "value": "{{6.text}}"
+      },
+      "module": "util:TextAggregator",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "Search unanswered messages - Execute a query (advanced) [6]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "New row"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Group unanswered messages"
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": {
+        "feeder": 6,
+        "rowSeparator": "\n"
+      }
+    },
+    {
+      "id": 8,
+      "mapper": {
+        "unanswered_messages": "{{7.text}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "unanswered_messages",
+            "type": "text",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 900,
+          "y": 0,
+          "name": "Outputs"
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "IITA - Search unanswered messages",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "id_person_conversation": "1",
+          "id_system_conversation": "1"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,241 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "",
+            "name": "course_edition_id",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Value",
+              "default": "",
+              "required": false,
+              "multiline": false
+            },
+            "type": "array",
+            "label": "",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "array": "{{1.course_edition_id}}"
+      },
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "mode": "edit",
+            "name": "array",
+            "spec": [],
+            "type": "array",
+            "label": "Array"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "array": {
+              "mode": "edit"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "value": "'{{2.value}}',"
+      },
+      "module": "util:TextAggregator",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "Iterator [2]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "Empty"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": {
+        "feeder": 2,
+        "rowSeparator": ""
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "command": "SELECT class_day, start_time, end_time FROM course_edition_schedule ces\nJOIN course_editions ce\nON ces.course_edition_id=ce.id\nWHERE ces.disabled_date IS NULL AND\nce.id IN ({{substring(5.text; 0; length(5.text) - 1)}})"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 900,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "search": "course edition: {{1.course_edition_id[]}}\nclass day: {{3.class_day}}\nstart time: {{3.class_day}}\nend time: {{3.end_time}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "search",
+            "type": "text",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 1200,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Search courses scheduling by id",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "course_edition_id": [
+            "1"
+          ]
+        },
+        "2": {
+          "value": "1",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 2
+        },
+        "3": {
+          "end_time": "21:30:00",
+          "class_day": "Wednesday",
+          "start_time": "19:00:00"
+        },
+        "4": {
+          "search": "course edition: \nclass day: Wednesday\nstart time: Wednesday\nend time: 21:30:00"
+        },
+        "5": {
+          "text": "'1','2',"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

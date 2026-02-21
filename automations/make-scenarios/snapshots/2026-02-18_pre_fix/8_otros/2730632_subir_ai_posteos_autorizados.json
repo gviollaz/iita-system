@@ -1,0 +1,462 @@
+{
+  "flow": [
+    {
+      "id": 5,
+      "mapper": {
+        "file": "{{var.input.File_ID}}",
+        "select": "map",
+        "formatDrawings": "image/jpeg",
+        "formatDocuments": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "formatSpreadsheets": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "formatPresentations": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      },
+      "module": "google-drive:getAFile",
+      "version": 4,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Enter a File ID",
+            "required": true,
+            "validate": {
+              "enum": [
+                "map",
+                "value"
+              ]
+            }
+          },
+          {
+            "name": "formatDocuments",
+            "type": "select",
+            "label": "Convert Google Documents Files to Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                "application/pdf",
+                "application/vnd.oasis.opendocument.text",
+                "text/html",
+                "text/plain",
+                "application/rtf",
+                "text/markdown"
+              ]
+            }
+          },
+          {
+            "name": "formatSpreadsheets",
+            "type": "select",
+            "label": "Convert Google Spreadsheets Files to Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "application/x-vnd.oasis.opendocument.spreadsheet",
+                "application/pdf",
+                "text/csv"
+              ]
+            }
+          },
+          {
+            "name": "formatPresentations",
+            "type": "select",
+            "label": "Convert Google Slides Files to Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                "application/pdf"
+              ]
+            }
+          },
+          {
+            "name": "formatDrawings",
+            "type": "select",
+            "label": "Convert Google Drawings Files to Format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "image/jpeg",
+                "image/png",
+                "image/svg+xml",
+                "application/pdf"
+              ]
+            }
+          },
+          {
+            "name": "file",
+            "type": "text",
+            "label": "File ID",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "select": {
+              "label": "Enter manually"
+            },
+            "formatDrawings": {
+              "label": "JPEG"
+            },
+            "formatDocuments": {
+              "label": "MS Word Document"
+            },
+            "formatSpreadsheets": {
+              "label": "MS Excel"
+            },
+            "formatPresentations": {
+              "label": "MS PowerPoint"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "Archivos drive (ejemplo) Agustín Aybar (talitoagustin@gmail.com)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Descargar imagen"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4657119
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "photos": [
+          {
+            "data": "{{5.data}}",
+            "type": "data",
+            "fileName": "{{5.name}}"
+          }
+        ],
+        "message": "{{var.input.Descripcion_Post}}",
+        "page_id": "2153711444892528"
+      },
+      "module": "facebook-pages:CreatePostWithPhotos",
+      "version": 6,
+      "metadata": {
+        "expect": [
+          {
+            "name": "page_id",
+            "type": "select",
+            "label": "Page",
+            "required": true
+          },
+          {
+            "name": "photos",
+            "spec": [
+              {
+                "name": "type",
+                "type": "select",
+                "label": "I want to",
+                "options": [
+                  {
+                    "label": "upload a photo",
+                    "value": "data",
+                    "nested": [
+                      {
+                        "name": "fileName",
+                        "type": "filename",
+                        "label": "File name",
+                        "required": true,
+                        "semantic": "file:name"
+                      },
+                      {
+                        "name": "data",
+                        "type": "buffer",
+                        "label": "Data",
+                        "required": true,
+                        "semantic": "file:data"
+                      }
+                    ],
+                    "default": true
+                  },
+                  {
+                    "label": "download photo from URL",
+                    "value": "url",
+                    "nested": [
+                      {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                      }
+                    ]
+                  }
+                ],
+                "required": true
+              },
+              {
+                "name": "caption",
+                "type": "text",
+                "label": "Caption"
+              }
+            ],
+            "type": "array",
+            "label": "Photos",
+            "required": true,
+            "validate": {
+              "maxItems": 30,
+              "minItems": 1
+            }
+          },
+          {
+            "name": "message",
+            "type": "text",
+            "label": "Message"
+          },
+          {
+            "name": "date",
+            "type": "date",
+            "label": "Date"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "photos": {
+              "mode": "chose",
+              "items": [
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "upload a photo"
+                  }
+                }
+              ]
+            },
+            "page_id": {
+              "mode": "chose",
+              "label": "IITA 3D"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "facebook"
+              },
+              "label": "IITA 3D (Gonzalo Aybar) (Gonzalo Aybar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Posteo con foto"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:facebook",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4891739
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "Post_ID": "{{4.id}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "Post_ID",
+            "type": "number",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Retorna Post ID"
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Subir AI posteos autorizados",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "4": {
+          "id": "691168054088643_122107838378965592",
+          "post_supports_client_mutation_id": true
+        },
+        "5": {
+          "id": "1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh",
+          "data": "IMTBuffer(2590897, binary, 1e3ac279ef07e197c21c974671fe25a630c4f51f): 89504e470d0a1a0a0000000d494844...",
+          "kind": "drive#file",
+          "name": "output1.png",
+          "size": "2590897",
+          "owners": [
+            {
+              "me": true,
+              "kind": "drive#user",
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIBFn8fI3p1Y6MHQTEnWHH3nvCT36gcIFROWhoK8POdXn0ZOeDlIA=s64",
+              "displayName": "Gonzalo Agustín Aybar Oviedo",
+              "emailAddress": "talitoagustin@gmail.com",
+              "permissionId": "07093277817644828304"
+            }
+          ],
+          "shared": true,
+          "spaces": [
+            "drive"
+          ],
+          "parents": [
+            "10TG2lLIRmjOG2f0i0Ld2EL7x6qF75M28"
+          ],
+          "starred": false,
+          "trashed": false,
+          "version": "6",
+          "filesize": 2590897,
+          "iconLink": "https://drive-thirdparty.googleusercontent.com/16/type/image/png",
+          "mimeType": "image/png",
+          "ownedByMe": true,
+          "viewedByMe": true,
+          "createdTime": "2025-08-13T14:02:31.307Z",
+          "md5Checksum": "9049702376490971eb56d791c433f43f",
+          "permissions": [
+            {
+              "id": "07093277817644828304",
+              "kind": "drive#permission",
+              "role": "owner",
+              "type": "user",
+              "deleted": null,
+              "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIBFn8fI3p1Y6MHQTEnWHH3nvCT36gcIFROWhoK8POdXn0ZOeDlIA=s64",
+              "displayName": "Gonzalo Agustín Aybar Oviedo",
+              "emailAddress": "talitoagustin@gmail.com",
+              "pendingOwner": null
+            }
+          ],
+          "webViewLink": "https://drive.google.com/file/d/1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh/view?usp=drivesdk",
+          "capabilities": {
+            "canCopy": true,
+            "canEdit": true,
+            "canShare": true,
+            "canTrash": true,
+            "canDelete": true,
+            "canRename": true,
+            "canComment": true,
+            "canUntrash": true,
+            "canDownload": true,
+            "canReadLabels": false,
+            "canAddChildren": false,
+            "canListChildren": false,
+            "canModifyLabels": false,
+            "canModifyContent": true,
+            "canReadRevisions": true,
+            "canRemoveChildren": false,
+            "canAcceptOwnership": false,
+            "canAddMyDriveParent": false,
+            "canMoveItemOutOfDrive": true,
+            "canMoveItemWithinDrive": true,
+            "canRemoveMyDriveParent": true,
+            "canMoveItemIntoTeamDrive": true,
+            "canMoveChildrenWithinDrive": false,
+            "canModifyContentRestriction": true,
+            "canRemoveContentRestriction": false,
+            "canEnableInheritedPermissions": true,
+            "canChangeSecurityUpdateEnabled": false,
+            "canChangeViewersCanCopyContent": true,
+            "canDisableInheritedPermissions": false,
+            "canChangeItemDownloadRestriction": true,
+            "canModifyOwnerContentRestriction": true,
+            "canModifyEditorContentRestriction": true,
+            "canChangeCopyRequiresWriterPermission": true
+          },
+          "hasThumbnail": true,
+          "modifiedByMe": true,
+          "modifiedTime": "2025-08-13T14:02:44.964Z",
+          "sha1Checksum": "1e3ac279ef07e197c21c974671fe25a630c4f51f",
+          "fileExtension": "png",
+          "permissionIds": [
+            "15165804952902535070"
+          ],
+          "thumbnailLink": "https://lh3.googleusercontent.com/drive-storage/AJQWtBOCMDm0mql8C9g9KJ5230T8CYQamNO_l-9SaBseSvKGw_2l...",
+          "headRevisionId": "0BwCNwE1eY8QjWHg4OG9xME55YmFVT1dCb01hQkZkcU5JRjZvPQ",
+          "quotaBytesUsed": "2590897",
+          "sha256Checksum": "ffd39df707b223f49dfb3e053b38791a1aed4b70a837ab6be300f841fc0a7e31",
+          "viewedByMeTime": "2025-08-13T14:03:11.632Z",
+          "webContentLink": "https://drive.google.com/uc?id=1C432XE7cO-mawA-0gJE4LR8mGMQrFgQh&export=download",
+          "isAppAuthorized": true,
+          "writersCanShare": true,
+          "modifiedByMeTime": "2025-08-13T14:02:44.964Z",
+          "originalFilename": "output1.png",
+          "thumbnailVersion": "1",
+          "explicitlyTrashed": false,
+          "fullFileExtension": "png",
+          "lastModifyingUser": {
+            "me": true,
+            "kind": "drive#user",
+            "photoLink": "https://lh3.googleusercontent.com/a/ACg8ocIBFn8fI3p1Y6MHQTEnWHH3nvCT36gcIFROWhoK8POdXn0ZOeDlIA=s64",
+            "displayName": "Gonzalo Agustín Aybar Oviedo",
+            "emailAddress": "talitoagustin@gmail.com",
+            "permissionId": "07093277817644828304"
+          },
+          "linkShareMetadata": {
+            "securityUpdateEnabled": true,
+            "securityUpdateEligible": false
+          },
+          "imageMediaMetadata": {
+            "width": 1024,
+            "height": 1536,
+            "rotation": 0
+          },
+          "downloadRestrictions": {
+            "itemDownloadRestriction": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            },
+            "effectiveDownloadRestrictionWithContext": {
+              "restrictedForReaders": false,
+              "restrictedForWriters": false
+            }
+          },
+          "viewersCanCopyContent": true,
+          "copyRequiresWriterPermission": false,
+          "inheritedPermissionsDisabled": false
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

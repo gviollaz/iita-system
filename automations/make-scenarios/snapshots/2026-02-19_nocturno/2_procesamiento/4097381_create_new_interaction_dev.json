@@ -1,0 +1,2246 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "sort": [],
+        "limit": "1",
+        "where": [
+          [
+            {
+              "a": "external_ref",
+              "b": "{{var.input.external_ref}}",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.interactions"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": -1403,
+          "y": -66,
+          "name": "Get Interaction"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "external_ref",
+            "type": "text",
+            "label": "external_ref",
+            "required": false
+          },
+          {
+            "name": "id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation",
+            "required": false
+          },
+          {
+            "name": "id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation",
+            "required": false
+          },
+          {
+            "name": "text",
+            "type": "text",
+            "label": "text",
+            "required": false
+          },
+          {
+            "name": "time_stamp",
+            "type": "text",
+            "label": "time_stamp",
+            "required": false
+          },
+          {
+            "name": "ad_id",
+            "type": "integer",
+            "label": "ad_id",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "label": "status",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"interactions\"",
+        "account": 7346367,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 2,
+      "filter": {
+        "name": "La interaccion ya existe",
+        "conditions": [
+          [
+            {
+              "a": "{{1.external_ref}}",
+              "o": "notexist"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "command": "select pc.id as person_conversation_id, sc.id as system_conversation_id\n\n\r\nfrom channel_providers cp\r\n\r\njoin channels c\r\non c.id_channel_provider = cp.id\r\n\r\njoin system_conversation sc\r\non sc.id_channel = c.id\r\n\r\njoin person_conversation pc\r\non pc.id_conversation = sc.id_conversation\r\n\r\nwhere cp.name = '{{var.input.provider_name}}' and c.address = '{{var.input.channel_address}}' and pc.address = '{{var.input.person_address}}'"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          },
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": -1103,
+          "y": -66,
+          "name": "Get person/system Conversation"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 7346367,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 3,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 4,
+              "filter": {
+                "name": "No existe conversacion",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.person_conversation_id}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "@id": "",
+                "@email": "",
+                "@country": "",
+                "@last_name": "",
+                "@birth_date": "",
+                "@first_name": "{{var.input.person_name}}",
+                "@national_id": "",
+                "@state_province": "",
+                "@location_address": "",
+                "@creation_datetime": "{{now}}",
+                "@legal_guardian_id": ""
+              },
+              "module": "postgres:InsertIntoTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@first_name",
+                    "type": "text",
+                    "label": "first_name"
+                  },
+                  {
+                    "name": "@creation_datetime",
+                    "type": "text",
+                    "label": "creation_datetime"
+                  },
+                  {
+                    "name": "@location_address",
+                    "type": "text",
+                    "label": "location_address"
+                  },
+                  {
+                    "name": "@birth_date",
+                    "type": "date",
+                    "label": "birth_date"
+                  },
+                  {
+                    "name": "@country",
+                    "type": "text",
+                    "label": "country"
+                  },
+                  {
+                    "name": "@email",
+                    "type": "text",
+                    "label": "email"
+                  },
+                  {
+                    "name": "@legal_guardian_id",
+                    "type": "integer",
+                    "label": "legal_guardian_id"
+                  },
+                  {
+                    "name": "@national_id",
+                    "type": "text",
+                    "label": "national_id"
+                  },
+                  {
+                    "name": "@state_province",
+                    "type": "text",
+                    "label": "state_province"
+                  },
+                  {
+                    "name": "@last_name",
+                    "type": "text",
+                    "label": "last_name"
+                  },
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@first_name",
+                    "type": "text",
+                    "label": "first_name"
+                  },
+                  {
+                    "name": "@creation_datetime",
+                    "type": "text",
+                    "label": "creation_datetime"
+                  },
+                  {
+                    "name": "@location_address",
+                    "type": "text",
+                    "label": "location_address"
+                  },
+                  {
+                    "name": "@birth_date",
+                    "type": "date",
+                    "label": "birth_date"
+                  },
+                  {
+                    "name": "@country",
+                    "type": "text",
+                    "label": "country"
+                  },
+                  {
+                    "name": "@email",
+                    "type": "text",
+                    "label": "email"
+                  },
+                  {
+                    "name": "@legal_guardian_id",
+                    "type": "integer",
+                    "label": "legal_guardian_id"
+                  },
+                  {
+                    "name": "@national_id",
+                    "type": "text",
+                    "label": "national_id"
+                  },
+                  {
+                    "name": "@state_province",
+                    "type": "text",
+                    "label": "state_province"
+                  },
+                  {
+                    "name": "@last_name",
+                    "type": "text",
+                    "label": "last_name"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.persons"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                    }
+                  }
+                },
+                "advanced": true,
+                "designer": {
+                  "x": -503,
+                  "y": -516,
+                  "name": "Crear persona"
+                },
+                "interface": [
+                  {
+                    "name": "rowsAffected",
+                    "type": "number",
+                    "label": "Affected rows"
+                  },
+                  {
+                    "name": "rows",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "integer"
+                      },
+                      {
+                        "name": "first_name",
+                        "type": "text"
+                      },
+                      {
+                        "name": "creation_datetime",
+                        "type": "text"
+                      },
+                      {
+                        "name": "location_address",
+                        "type": "text"
+                      },
+                      {
+                        "name": "birth_date",
+                        "type": "date"
+                      },
+                      {
+                        "name": "country",
+                        "type": "text"
+                      },
+                      {
+                        "name": "email",
+                        "type": "text"
+                      },
+                      {
+                        "name": "legal_guardian_id",
+                        "type": "integer"
+                      },
+                      {
+                        "name": "national_id",
+                        "type": "text"
+                      },
+                      {
+                        "name": "state_province",
+                        "type": "text"
+                      },
+                      {
+                        "name": "last_name",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Rows"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "returnRows",
+                    "type": "boolean",
+                    "label": "Return Rows"
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"persons\"",
+                "account": 7346367,
+                "returnRows": true,
+                "isToManageDataInSharedTransaction": true
+              }
+            },
+            {
+              "id": 5,
+              "mapper": {
+                "data": {
+                  "person_id": "{{4.rows[].id}}",
+                  "provider_name": "{{var.input.provider_name}}",
+                  "person_address": "{{var.input.person_address}}",
+                  "channel_address": "{{var.input.channel_address}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_id",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "scenario": {
+                      "label": "Create new conversation (Dev)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": -203,
+                  "y": -516
+                },
+                "interface": [
+                  {
+                    "help": "id de la conexion entre la conversacion y el channel",
+                    "name": "id_system_conversation",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": true,
+                    "multiline": false
+                  },
+                  {
+                    "help": "id de la conxion entre la persona y la conversacion",
+                    "name": "id_person_conversation",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": true,
+                    "multiline": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_4097260",
+                "shouldWaitForExecutionEnd": true
+              }
+            },
+            {
+              "id": 6,
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 7,
+                      "filter": {
+                        "name": "is user",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{var.input.is_user}}",
+                              "b": "{{true}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "@id": "",
+                        "@text": "{{var.input.text}}",
+                        "@ad_id": "{{var.input.ad_id}}",
+                        "@status": "{{var.input.status}}",
+                        "@time_stamp": "{{now}}",
+                        "@external_ref": "{{var.input.external_ref}}",
+                        "@id_person_conversation": "{{5.id_person_conversation}}",
+                        "@id_system_conversation": ""
+                      },
+                      "module": "postgres:InsertIntoTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "@id",
+                            "type": "integer",
+                            "label": "id"
+                          },
+                          {
+                            "name": "@external_ref",
+                            "type": "text",
+                            "label": "external_ref"
+                          },
+                          {
+                            "name": "@id_person_conversation",
+                            "type": "integer",
+                            "label": "id_person_conversation"
+                          },
+                          {
+                            "name": "@id_system_conversation",
+                            "type": "integer",
+                            "label": "id_system_conversation"
+                          },
+                          {
+                            "name": "@text",
+                            "type": "text",
+                            "label": "text"
+                          },
+                          {
+                            "name": "@time_stamp",
+                            "type": "text",
+                            "label": "time_stamp"
+                          },
+                          {
+                            "name": "@ad_id",
+                            "type": "integer",
+                            "label": "ad_id"
+                          },
+                          {
+                            "name": "@status",
+                            "type": "text",
+                            "label": "status"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.interactions"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                            }
+                          }
+                        },
+                        "advanced": true,
+                        "designer": {
+                          "x": 397,
+                          "y": -666,
+                          "name": "Crear interaccion"
+                        },
+                        "interface": [
+                          {
+                            "name": "rowsAffected",
+                            "type": "number",
+                            "label": "Affected rows"
+                          },
+                          {
+                            "name": "rows",
+                            "spec": [
+                              {
+                                "name": "id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "external_ref",
+                                "type": "text"
+                              },
+                              {
+                                "name": "id_person_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "id_system_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "text",
+                                "type": "text"
+                              },
+                              {
+                                "name": "time_stamp",
+                                "type": "text"
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "status",
+                                "type": "text"
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Rows"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "returnRows",
+                            "type": "boolean",
+                            "label": "Return Rows"
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"interactions\"",
+                        "account": 7346367,
+                        "returnRows": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 8,
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 9,
+                              "filter": {
+                                "name": "Existe media",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{var.input.media_data}}",
+                                      "o": "exist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "data": {
+                                  "media_name": "interaction_medias/interaction_media_{{7.rows[].id}} (1)",
+                                  "binary_data": "{{var.input.media_data}}",
+                                  "media_extension": "{{var.input.media_extension}}"
+                                }
+                              },
+                              "module": "scenario-service:CallSubscenario",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "data",
+                                    "spec": [
+                                      {
+                                        "name": "binary_data",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "media_name",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "media_extension",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Scenario Inputs"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "scenario": {
+                                      "label": "Save media into bucket (Dev)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 997,
+                                  "y": -816,
+                                  "name": "Save media"
+                                },
+                                "interface": [
+                                  {
+                                    "help": "id con el que se registtro la media en la base de datos",
+                                    "name": "media_id",
+                                    "type": "number",
+                                    "label": "",
+                                    "default": null,
+                                    "required": true
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "scenario",
+                                    "type": "scenario",
+                                    "label": "Scenario",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "shouldWaitForExecutionEnd",
+                                    "type": "boolean",
+                                    "label": "Wait for the scenario to finish",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "scenario": "SCN_4097317",
+                                "shouldWaitForExecutionEnd": true
+                              }
+                            },
+                            {
+                              "id": 10,
+                              "mapper": {
+                                "@id": "",
+                                "@media_id": "{{9.media_id}}",
+                                "@interaction_id": "{{7.rows[].id}}",
+                                "@media_analisis": ""
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id",
+                                    "type": "integer",
+                                    "label": "id"
+                                  },
+                                  {
+                                    "name": "@interaction_id",
+                                    "type": "integer",
+                                    "label": "interaction_id"
+                                  },
+                                  {
+                                    "name": "@media_id",
+                                    "type": "integer",
+                                    "label": "media_id"
+                                  },
+                                  {
+                                    "name": "@media_analisis",
+                                    "type": "text",
+                                    "label": "media_analisis"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.interaction_medias"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                                    }
+                                  }
+                                },
+                                "advanced": true,
+                                "designer": {
+                                  "x": 1297,
+                                  "y": -816
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  },
+                                  {
+                                    "name": "rows",
+                                    "spec": [
+                                      {
+                                        "name": "id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "interaction_id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "media_id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "media_analisis",
+                                        "type": "text"
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"interaction_medias\"",
+                                "account": 7346367,
+                                "returnRows": true,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 11,
+                              "mapper": {
+                                "id_interaction": "{{10.rows[].id}}"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "id_interaction",
+                                    "type": "text",
+                                    "label": ""
+                                  },
+                                  {
+                                    "name": "id_person_conversation",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {},
+                                "designer": {
+                                  "x": 1597,
+                                  "y": -816
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 12,
+                              "mapper": {
+                                "id_interaction": "{{7.rows[].id}}"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "id_interaction",
+                                    "type": "text",
+                                    "label": ""
+                                  },
+                                  {
+                                    "name": "id_person_conversation",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {},
+                                "designer": {
+                                  "x": 997,
+                                  "y": -516
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 697,
+                          "y": -666
+                        }
+                      },
+                      "parameters": {
+                        "else": 1
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 13,
+                      "filter": {
+                        "name": "is not user",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{var.input.is_user}}",
+                              "b": "{{false}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "@id": "",
+                        "@text": "{{var.input.text}}",
+                        "@ad_id": "",
+                        "@status": "{{var.input.status}}",
+                        "@time_stamp": "",
+                        "@external_ref": "{{var.input.external_ref}}",
+                        "@id_person_conversation": "",
+                        "@id_system_conversation": "{{5.id_system_conversation}}"
+                      },
+                      "module": "postgres:InsertIntoTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "@id",
+                            "type": "integer",
+                            "label": "id"
+                          },
+                          {
+                            "name": "@external_ref",
+                            "type": "text",
+                            "label": "external_ref"
+                          },
+                          {
+                            "name": "@id_person_conversation",
+                            "type": "integer",
+                            "label": "id_person_conversation"
+                          },
+                          {
+                            "name": "@id_system_conversation",
+                            "type": "integer",
+                            "label": "id_system_conversation"
+                          },
+                          {
+                            "name": "@text",
+                            "type": "text",
+                            "label": "text"
+                          },
+                          {
+                            "name": "@time_stamp",
+                            "type": "text",
+                            "label": "time_stamp"
+                          },
+                          {
+                            "name": "@ad_id",
+                            "type": "integer",
+                            "label": "ad_id"
+                          },
+                          {
+                            "name": "@status",
+                            "type": "text",
+                            "label": "status"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.interactions"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                            }
+                          }
+                        },
+                        "advanced": true,
+                        "designer": {
+                          "x": 397,
+                          "y": -216,
+                          "name": "Crear interaccion"
+                        },
+                        "interface": [
+                          {
+                            "name": "rowsAffected",
+                            "type": "number",
+                            "label": "Affected rows"
+                          },
+                          {
+                            "name": "rows",
+                            "spec": [
+                              {
+                                "name": "id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "external_ref",
+                                "type": "text"
+                              },
+                              {
+                                "name": "id_person_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "id_system_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "text",
+                                "type": "text"
+                              },
+                              {
+                                "name": "time_stamp",
+                                "type": "text"
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "status",
+                                "type": "text"
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Rows"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "returnRows",
+                            "type": "boolean",
+                            "label": "Return Rows"
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"interactions\"",
+                        "account": 7346367,
+                        "returnRows": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 14,
+                      "mapper": {
+                        "id_interaction": "{{13.rows[].id}}"
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": ""
+                          },
+                          {
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": ""
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 697,
+                          "y": -216
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 97,
+                  "y": -516,
+                  "name": "¿Is user?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 15,
+              "filter": {
+                "name": "SI existe conversacion",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{2.person_conversation_id}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 16,
+                      "filter": {
+                        "name": "is user",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{var.input.is_user}}",
+                              "b": "{{true}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "@id": "",
+                        "@text": "{{var.input.text}}",
+                        "@ad_id": "{{var.input.ad_id}}",
+                        "@status": "{{var.input.status}}",
+                        "@time_stamp": "{{now}}",
+                        "@external_ref": "{{var.input.external_ref}}",
+                        "@id_person_conversation": "{{2.person_conversation_id}}",
+                        "@id_system_conversation": ""
+                      },
+                      "module": "postgres:InsertIntoTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "@id",
+                            "type": "integer",
+                            "label": "id"
+                          },
+                          {
+                            "name": "@external_ref",
+                            "type": "text",
+                            "label": "external_ref"
+                          },
+                          {
+                            "name": "@id_person_conversation",
+                            "type": "integer",
+                            "label": "id_person_conversation"
+                          },
+                          {
+                            "name": "@id_system_conversation",
+                            "type": "integer",
+                            "label": "id_system_conversation"
+                          },
+                          {
+                            "name": "@text",
+                            "type": "text",
+                            "label": "text"
+                          },
+                          {
+                            "name": "@time_stamp",
+                            "type": "text",
+                            "label": "time_stamp"
+                          },
+                          {
+                            "name": "@ad_id",
+                            "type": "integer",
+                            "label": "ad_id"
+                          },
+                          {
+                            "name": "@status",
+                            "type": "text",
+                            "label": "status"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.interactions"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                            }
+                          }
+                        },
+                        "advanced": true,
+                        "designer": {
+                          "x": -203,
+                          "y": 234,
+                          "name": "Create interaction"
+                        },
+                        "interface": [
+                          {
+                            "name": "rowsAffected",
+                            "type": "number",
+                            "label": "Affected rows"
+                          },
+                          {
+                            "name": "rows",
+                            "spec": [
+                              {
+                                "name": "id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "external_ref",
+                                "type": "text"
+                              },
+                              {
+                                "name": "id_person_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "id_system_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "text",
+                                "type": "text"
+                              },
+                              {
+                                "name": "time_stamp",
+                                "type": "text"
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "status",
+                                "type": "text"
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Rows"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "returnRows",
+                            "type": "boolean",
+                            "label": "Return Rows"
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"interactions\"",
+                        "account": 7346367,
+                        "returnRows": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 17,
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 18,
+                              "filter": {
+                                "name": "Existe media",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{var.input.media_data}}",
+                                      "o": "exist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "data": {
+                                  "media_name": "interaction_medias/interaction_media_{{16.rows[].id}} (1)",
+                                  "binary_data": "{{var.input.media_data}}",
+                                  "media_extension": "{{var.input.media_extension}}"
+                                }
+                              },
+                              "module": "scenario-service:CallSubscenario",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "data",
+                                    "spec": [
+                                      {
+                                        "name": "binary_data",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "media_name",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "media_extension",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Scenario Inputs"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "scenario": {
+                                      "label": "Save media into bucket (Dev)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 397,
+                                  "y": 84,
+                                  "name": "Save media"
+                                },
+                                "interface": [
+                                  {
+                                    "help": "id con el que se registtro la media en la base de datos",
+                                    "name": "media_id",
+                                    "type": "number",
+                                    "label": "",
+                                    "default": null,
+                                    "required": true
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "scenario",
+                                    "type": "scenario",
+                                    "label": "Scenario",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "shouldWaitForExecutionEnd",
+                                    "type": "boolean",
+                                    "label": "Wait for the scenario to finish",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "scenario": "SCN_4097317",
+                                "shouldWaitForExecutionEnd": true
+                              }
+                            },
+                            {
+                              "id": 19,
+                              "mapper": {
+                                "@id": "",
+                                "@media_id": "{{18.media_id}}",
+                                "@interaction_id": "{{16.rows[].id}}",
+                                "@media_analisis": ""
+                              },
+                              "module": "postgres:InsertIntoTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "@id",
+                                    "type": "integer",
+                                    "label": "id"
+                                  },
+                                  {
+                                    "name": "@interaction_id",
+                                    "type": "integer",
+                                    "label": "interaction_id"
+                                  },
+                                  {
+                                    "name": "@media_id",
+                                    "type": "integer",
+                                    "label": "media_id"
+                                  },
+                                  {
+                                    "name": "@media_analisis",
+                                    "type": "text",
+                                    "label": "media_analisis"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.interaction_medias"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                                    }
+                                  }
+                                },
+                                "advanced": true,
+                                "designer": {
+                                  "x": 697,
+                                  "y": 84
+                                },
+                                "interface": [
+                                  {
+                                    "name": "rowsAffected",
+                                    "type": "number",
+                                    "label": "Affected rows"
+                                  },
+                                  {
+                                    "name": "rows",
+                                    "spec": [
+                                      {
+                                        "name": "id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "interaction_id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "media_id",
+                                        "type": "integer"
+                                      },
+                                      {
+                                        "name": "media_analisis",
+                                        "type": "text"
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Rows"
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "returnRows",
+                                    "type": "boolean",
+                                    "label": "Return Rows"
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"interaction_medias\"",
+                                "account": 7346367,
+                                "returnRows": true,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 20,
+                              "mapper": {
+                                "id_interaction": "{{19.rows[].id}}"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "id_interaction",
+                                    "type": "text",
+                                    "label": ""
+                                  },
+                                  {
+                                    "name": "id_person_conversation",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {},
+                                "designer": {
+                                  "x": 997,
+                                  "y": 84
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 21,
+                              "mapper": {
+                                "id_interaction": "{{16.rows[].id}}"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "id_interaction",
+                                    "type": "text",
+                                    "label": ""
+                                  },
+                                  {
+                                    "name": "id_person_conversation",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {},
+                                "designer": {
+                                  "x": 397,
+                                  "y": 384
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 97,
+                          "y": 234
+                        }
+                      },
+                      "parameters": {
+                        "else": 1
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 22,
+                      "filter": {
+                        "name": "is not user",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{var.input.is_user}}",
+                              "b": "{{false}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "@id": "",
+                        "@text": "{{var.input.text}}",
+                        "@ad_id": "",
+                        "@status": "{{var.input.status}}",
+                        "@time_stamp": "",
+                        "@external_ref": "{{var.input.external_ref}}",
+                        "@id_person_conversation": "",
+                        "@id_system_conversation": "{{2.system_conversation_id}}"
+                      },
+                      "module": "postgres:InsertIntoTable",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "@id",
+                            "type": "integer",
+                            "label": "id"
+                          },
+                          {
+                            "name": "@external_ref",
+                            "type": "text",
+                            "label": "external_ref"
+                          },
+                          {
+                            "name": "@id_person_conversation",
+                            "type": "integer",
+                            "label": "id_person_conversation"
+                          },
+                          {
+                            "name": "@id_system_conversation",
+                            "type": "integer",
+                            "label": "id_system_conversation"
+                          },
+                          {
+                            "name": "@text",
+                            "type": "text",
+                            "label": "text"
+                          },
+                          {
+                            "name": "@time_stamp",
+                            "type": "text",
+                            "label": "time_stamp"
+                          },
+                          {
+                            "name": "@ad_id",
+                            "type": "integer",
+                            "label": "ad_id"
+                          },
+                          {
+                            "name": "@status",
+                            "type": "text",
+                            "label": "status"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "table": {
+                              "label": "public.interactions"
+                            },
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                            }
+                          }
+                        },
+                        "advanced": true,
+                        "designer": {
+                          "x": -203,
+                          "y": 684,
+                          "name": "Create interaction"
+                        },
+                        "interface": [
+                          {
+                            "name": "rowsAffected",
+                            "type": "number",
+                            "label": "Affected rows"
+                          },
+                          {
+                            "name": "rows",
+                            "spec": [
+                              {
+                                "name": "id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "external_ref",
+                                "type": "text"
+                              },
+                              {
+                                "name": "id_person_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "id_system_conversation",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "text",
+                                "type": "text"
+                              },
+                              {
+                                "name": "time_stamp",
+                                "type": "text"
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "integer"
+                              },
+                              {
+                                "name": "status",
+                                "type": "text"
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Rows"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          },
+                          {
+                            "name": "returnRows",
+                            "type": "boolean",
+                            "label": "Return Rows"
+                          },
+                          {
+                            "name": "table",
+                            "type": "select",
+                            "label": "Table",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "table": "\"public\".\"interactions\"",
+                        "account": 7346367,
+                        "returnRows": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 23,
+                      "mapper": {
+                        "id_interaction": "{{22.rows[].id}}"
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": ""
+                          },
+                          {
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": ""
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 97,
+                          "y": 684
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": -503,
+                  "y": 384,
+                  "name": "¿Is user?"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": -803,
+          "y": -66,
+          "name": "¿Exists conversation?"
+        }
+      }
+    }
+  ],
+  "name": "Create new interaction (Dev)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

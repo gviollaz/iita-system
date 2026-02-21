@@ -1,0 +1,238 @@
+{
+  "flow": [
+    {
+      "id": 5,
+      "mapper": {
+        "command": "SELECT \nc.name as course_name,\nce.id as edition_id, ce.min_age, ce.max_age, ce.tentative_start_date,\nb.name as branch_name, b.location_address as branch_direction,\n\n'Dias de cursado:' || E'\\n' ||\r\n    STRING_AGG(\r\n        '        * ' || ces.class_day || ': ' ||\r\n        ces.start_time || ' - ' || ces.end_time,\r\n        E'\\n'\r\n        ORDER BY ces.class_day, ces.start_time\r\n    ) AS horarios\n\nFROM course_editions as ce\r\nLEFT JOIN courses c \r\nON ce.course_id = c.id\nLEFT JOIN branches b\nON b.id = ce.branch_id\nLEFT JOIN course_edition_schedule ces\nON ces.course_edition_id = ce.id\n\nWHERE \n{{if(var.input.age; var.input.age + \">=ce.min_age and \" + var.input.age + \"<=ce.max_age and \"; )}}\n{{if(var.input.branch_id; \"ce.branch_id =\" + var.input.branch_id + \" and \"; )}}\n{{if(var.input.modality; \"ce.modality = '\" + var.input.modality + \"' and \"; )}}\nc.name = '{{var.input.courses_name}}' and \nce.status = 'Enrolling'\n\nGROUP BY\r\n    c.name,\r\n    ce.id,\r\n    ce.min_age,\r\n    ce.max_age,\r\n    ce.tentative_start_date,\r\n    b.name,\r\n    b.location_address;"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 43,
+      "flags": {
+        "groupBy": "{{5.edition_id}}"
+      },
+      "filter": {
+        "name": "",
+        "conditions": [
+          [
+            {
+              "a": "{{5.course_name}}",
+              "o": "exist"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "max_age": "{{5.max_age}}",
+        "min_age": "{{5.min_age}}",
+        "horarios": "{{5.horarios}}",
+        "edition_id": "{{5.edition_id}}",
+        "branch_name": "{{5.branch_name}}",
+        "course_name": "{{5.course_name}}",
+        "branch_direction": "{{5.branch_direction}}",
+        "tentative_start_date": "{{5.tentative_start_date}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "PostgreSQL - Execute a query (advanced) [5]"
+            },
+            "target": {
+              "label": "Custom"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "feeder": 5
+      }
+    },
+    {
+      "id": 36,
+      "mapper": {
+        "value": "    Edicion: {{43.array[].course_name}}-{{43.`__IMTKEY__`}}\n    Edad minima-maxima: {{43.array[].min_age}}-{{43.array[].max_age}}\n    Fecha tentativa de inicio: {{43.array[].tentative_start_date}}\n    Sede: {{43.array[].branch_name}}, {{43.array[].branch_direction}}\n    {{43.array[].horarios}}\n"
+      },
+      "module": "util:TextAggregator",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "Array aggregator [43]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "New row"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": {
+        "feeder": 43,
+        "rowSeparator": "\n"
+      }
+    },
+    {
+      "id": 23,
+      "mapper": {
+        "Search": "{{if(36.text; 36.text; \"No existe ninguna edicion de  este curso que coincida con los filtros solicitados.\")}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "Search",
+            "type": "text",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Search courses edition info",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "5": {
+          "max_age": 17,
+          "min_age": 11,
+          "horarios": "Dias de cursado:\n        * Monday: 18:30:00 - 21:00:00\n        * Friday: 18:30:00 - 21:00:00",
+          "edition_id": 39,
+          "branch_name": "San Lorenzo Chico",
+          "course_name": "Robotica con arduino proyecto Otto",
+          "branch_direction": "Complejo La Comarca, Las Quintas, Av. Finca Yerba Buena 1500 Primer piso, local 25",
+          "tentative_start_date": "2026-01-19T00:00:00.000Z"
+        },
+        "23": {
+          "Search": "    Edicion: Robotica con arduino proyecto Otto-39\n    Edad minima-maxima: 11-17\n    Fecha tentativa..."
+        },
+        "36": {
+          "text": "    Edicion: Robotica con arduino proyecto Otto-39\n    Edad minima-maxima: 11-17\n    Fecha tentativa..."
+        },
+        "43": {
+          "array": [
+            {
+              "max_age": 17,
+              "min_age": 11,
+              "horarios": "Dias de cursado:\n        * Monday: 18:30:00 - 21:00:00\n        * Friday: 18:30:00 - 21:00:00",
+              "edition_id": 39,
+              "branch_name": "San Lorenzo Chico",
+              "course_name": "Robotica con arduino proyecto Otto",
+              "branch_direction": "Complejo La Comarca, Las Quintas, Av. Finca Yerba Buena 1500 Primer piso, local 25",
+              "tentative_start_date": "2026-01-19T00:00:00.000Z"
+            }
+          ],
+          "__IMTKEY__": 39
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

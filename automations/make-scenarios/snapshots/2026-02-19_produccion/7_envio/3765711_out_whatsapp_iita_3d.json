@@ -1,0 +1,591 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "Contiene el número de télefono desde donde se enviará el mensaje.",
+            "name": "channel_address",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el número de teléfono del destinatario del mensaje.",
+            "name": "person_address",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el mensaje que se enviará al  destinatario.",
+            "name": "text",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contiene el identificador de la interacción del mensaje que se enviará.",
+            "name": "id_interaction",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 4,
+      "filter": {
+        "name": "IITA 3D",
+        "conditions": [
+          [
+            {
+              "a": "{{1.channel_address}}",
+              "b": "5493875809318",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "to": "{{1.person_address}}",
+        "text": {
+          "body": "{{1.text}}",
+          "preview_url": false
+        },
+        "type": "text",
+        "fromId": "105728648930541"
+      },
+      "module": "whatsapp-business-cloud:sendMessage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "fromId",
+            "type": "select",
+            "label": "Sender ID",
+            "required": true
+          },
+          {
+            "name": "to",
+            "type": "text",
+            "label": "Receiver",
+            "required": true
+          },
+          {
+            "name": "type",
+            "type": "select",
+            "label": "Message Type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "text",
+                "image",
+                "audio",
+                "video",
+                "document",
+                "sticker",
+                "location",
+                "contacts",
+                "interactive"
+              ]
+            }
+          },
+          {
+            "name": "text",
+            "spec": [
+              {
+                "name": "body",
+                "type": "text",
+                "label": "Body",
+                "required": true,
+                "validate": {
+                  "max": 4096
+                }
+              },
+              {
+                "name": "preview_url",
+                "type": "boolean",
+                "label": "Preview URL",
+                "required": true
+              }
+            ],
+            "type": "collection",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "text": {
+              "nested": {
+                "preview_url": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "type": {
+              "label": "Text"
+            },
+            "fromId": {
+              "mode": "edit"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "whatsapp-business-cloud"
+              },
+              "label": "IITA 3d - Flujo de entrada (Instituto de Innovación y Tecnología Aplicada (111869345312688))"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "IITA 3D"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:whatsapp-business-cloud,whatsapp-business-cloud2",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 6007817
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "@id": "",
+        "@text": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{1.id_interaction}}",
+              "o": "equal"
+            },
+            {
+              "a": "status",
+              "b": "sending",
+              "o": "equal"
+            }
+          ]
+        ],
+        "@ad_id": "",
+        "@status": "send",
+        "@time_stamp": "{{now}}",
+        "@external_ref": "{{4.messages[].id}}",
+        "@id_person_conversation": "",
+        "@id_system_conversation": ""
+      },
+      "module": "postgres:UpdateTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.interactions"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Update record"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"interactions\"",
+        "account": 7346367,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "[OUT] Whatsapp ~ IITA 3D",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "text": "¡Buenos días! Soy **Ana de IITA** 😊  \nClaro, te paso info. Para recomendarte bien (y con fechas/hor...",
+          "id_interaction": "38",
+          "person_address": "5493874545078",
+          "channel_address": "5493875809318"
+        },
+        "4": {
+          "contacts": [
+            {
+              "input": "5493874545078",
+              "wa_id": "5493874545078"
+            }
+          ],
+          "messages": [
+            {
+              "id": "wamid.HBgNNTQ5Mzg3NDU0NTA3OBUCABEYEjRFNDMzNDZFREVGQ0JGQkU2NQA="
+            }
+          ],
+          "messaging_product": "whatsapp"
+        },
+        "7": {
+          "rowsAffected": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

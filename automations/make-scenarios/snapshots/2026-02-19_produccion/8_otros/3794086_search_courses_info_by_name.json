@@ -1,0 +1,174 @@
+{
+  "flow": [
+    {
+      "id": 5,
+      "mapper": {
+        "command": "SELECT \ndistinct(c.id) as course_id, c.name, c.bill_type, c.registration_price, c.quota_price, c.duration, c.description\n\nFROM course_editions as ce\r\nLEFT JOIN courses c \r\nON ce.course_id = c.id\n\nWHERE c.name in ('{{join(var.input.courses_names; \"','\")}}') and ce.status = 'Enrolling'"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 36,
+      "mapper": {
+        "value": "ID del curso: {{5.course_id}}\nCurso: {{5.name}}\nTipo de pago: {{5.bill_type}}\nPrecio de inscripcion: {{5.registration_price}}\nPrecio de cuotas: {{5.quota_price}}\nDuracion: {{5.duration}}\nDescripcion: {{5.description}}\n"
+      },
+      "module": "util:TextAggregator",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "value",
+            "type": "text",
+            "label": "Text"
+          }
+        ],
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "PostgreSQL - Execute a query (advanced) [5]"
+            }
+          },
+          "parameters": {
+            "rowSeparator": {
+              "label": "New row"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "rowSeparator",
+            "type": "select",
+            "label": "Row separator",
+            "validate": {
+              "enum": [
+                "\n",
+                "\t",
+                "other"
+              ]
+            }
+          }
+        ]
+      },
+      "parameters": {
+        "feeder": 5,
+        "rowSeparator": "\n"
+      }
+    },
+    {
+      "id": 23,
+      "mapper": {
+        "Search": "{{36.text}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "Search",
+            "type": "text",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Search courses info by name",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "5": {
+          "name": "Marketing digital presencial",
+          "duration": "3 meses",
+          "bill_type": "ONLY_REGISTRATION",
+          "course_id": 1,
+          "description": "🚀 Curso de Marketing Digital – Potencia tu Negocio\\n\\n📢 ¿Por qué es importante aprender Marketing ...",
+          "quota_price": 0,
+          "registration_price": 270000
+        },
+        "23": {
+          "Search": "ID del curso: 1\nCurso: Marketing digital presencial\nTipo de pago: ONLY_REGISTRATION\nPrecio de inscri..."
+        },
+        "36": {
+          "text": "ID del curso: 1\nCurso: Marketing digital presencial\nTipo de pago: ONLY_REGISTRATION\nPrecio de inscri..."
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

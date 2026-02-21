@@ -1,0 +1,370 @@
+{
+  "flow": [
+    {
+      "id": 11,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "contenido de la media en formato binario",
+            "name": "binary_data",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "nombre que se le desea poner a la media en el storage",
+            "name": "media_name",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "extension de la media",
+            "name": "media_extension",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "id externo del archivo",
+            "name": "media_external_id",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "upsert": true,
+        "bucketID": "media",
+        "file_data": "{{toBinary(var.input.binary_data; \"base64\")}}",
+        "file_name": "{{var.input.media_name}}.{{var.input.media_extension}}"
+      },
+      "module": "supabase:uploadAFile",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "bucketID",
+            "type": "select",
+            "label": "Bucket ID",
+            "required": true
+          },
+          {
+            "name": "file_name",
+            "type": "text",
+            "label": "Name",
+            "required": true
+          },
+          {
+            "name": "file_data",
+            "type": "buffer",
+            "label": "Data",
+            "required": true
+          },
+          {
+            "name": "upsert",
+            "type": "boolean",
+            "label": "Upsert"
+          },
+          {
+            "name": "bucketID",
+            "type": "select",
+            "label": "Bucket ID",
+            "required": true
+          },
+          {
+            "name": "file_name",
+            "type": "text",
+            "label": "Name",
+            "required": true
+          },
+          {
+            "name": "file_data",
+            "type": "buffer",
+            "label": "Data",
+            "required": true
+          },
+          {
+            "name": "upsert",
+            "type": "boolean",
+            "label": "Upsert"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "upsert": {
+              "mode": "chose"
+            },
+            "bucketID": {
+              "mode": "chose",
+              "label": "media"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "supabase"
+              },
+              "label": "IITA - Produccion"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Upload media into bucket"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:supabase",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 7346927
+      }
+    },
+    {
+      "id": 15,
+      "mapper": {
+        "@id": "",
+        "@name": "{{var.input.media_name}}",
+        "@type": "{{var.input.media_extension}}",
+        "@disabled": "",
+        "@content_dir": "{{7.Key}}",
+        "@description": ""
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@name",
+            "type": "text",
+            "label": "name"
+          },
+          {
+            "name": "@content_dir",
+            "type": "text",
+            "label": "content_dir"
+          },
+          {
+            "name": "@type",
+            "type": "text",
+            "label": "type"
+          },
+          {
+            "name": "@description",
+            "type": "text",
+            "label": "description"
+          },
+          {
+            "name": "@disabled",
+            "type": "text",
+            "label": "disabled"
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@name",
+            "type": "text",
+            "label": "name"
+          },
+          {
+            "name": "@content_dir",
+            "type": "text",
+            "label": "content_dir"
+          },
+          {
+            "name": "@type",
+            "type": "text",
+            "label": "type"
+          },
+          {
+            "name": "@description",
+            "type": "text",
+            "label": "description"
+          },
+          {
+            "name": "@disabled",
+            "type": "text",
+            "label": "disabled"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.medias"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          },
+          {
+            "name": "rows",
+            "spec": [
+              {
+                "name": "id",
+                "type": "integer"
+              },
+              {
+                "name": "name",
+                "type": "text"
+              },
+              {
+                "name": "content_dir",
+                "type": "text"
+              },
+              {
+                "name": "type",
+                "type": "text"
+              },
+              {
+                "name": "description",
+                "type": "text"
+              },
+              {
+                "name": "disabled",
+                "type": "text"
+              }
+            ],
+            "type": "array",
+            "label": "Rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"medias\"",
+        "account": 6184753,
+        "returnRows": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 16,
+      "mapper": {
+        "media_id": "{{15.rows[].id}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "media_id",
+            "type": "number",
+            "label": "",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Save media into bucket",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "7": {
+          "Id": "25b295b0-f76b-44f5-8905-bd18cd8320d9",
+          "Key": "test-bucket/file.jpg"
+        },
+        "11": {
+          "binary_data": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVFRkVIh4kHhweJB42KiYmKjY+...",
+          "id_interaction": "22"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

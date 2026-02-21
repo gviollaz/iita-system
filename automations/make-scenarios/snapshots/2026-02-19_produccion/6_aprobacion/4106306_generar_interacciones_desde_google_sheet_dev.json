@@ -1,0 +1,1476 @@
+{
+  "flow": [
+    {
+      "id": 48,
+      "mapper": {},
+      "module": "google-sheets:watchUpdatedCells",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Entorno de pruebas"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 150,
+          "name": "Watch events in real time"
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:google-sheets2",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1871960
+      }
+    },
+    {
+      "id": 45,
+      "filter": {
+        "name": "Casillero OK",
+        "conditions": [
+          [
+            {
+              "a": "{{48.rowValues[].`7`}}",
+              "b": "true",
+              "o": "text:equal:ci"
+            },
+            {
+              "a": "{{48.rowValues[].`8`}}",
+              "o": "notexist"
+            },
+            {
+              "a": "{{48.rowValues[].`1`}}",
+              "o": "exist"
+            }
+          ]
+        ]
+      },
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 46,
+              "filter": {
+                "name": "Yes",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{now}}",
+                      "b": "{{addDays(addHours(48.rowValues[].`1`; -3); 1)}}",
+                      "o": "date:greater"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "mode": "fromAll",
+                "values": {
+                  "8": "Fuera de plazo"
+                },
+                "sheetId": "{{48.sheetName}}",
+                "rowNumber": "{{48.range.rowStart}}",
+                "spreadsheetId": "1z7DFdi9aLXEeU-MnG4bbkIQZz6z9N_Q0mXJeHjn5n24",
+                "includesHeaders": true,
+                "valueInputOption": "USER_ENTERED"
+              },
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "mode",
+                    "type": "select",
+                    "label": "Search Method",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        "select",
+                        "fromAll",
+                        "map"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "valueInputOption",
+                    "type": "select",
+                    "label": "Value input option",
+                    "validate": {
+                      "enum": [
+                        "USER_ENTERED",
+                        "RAW"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "spreadsheetId",
+                    "type": "text",
+                    "label": "Spreadsheet ID",
+                    "required": true
+                  },
+                  {
+                    "mode": "edit",
+                    "name": "sheetId",
+                    "type": "select",
+                    "label": "Sheet Name",
+                    "required": true
+                  },
+                  {
+                    "name": "rowNumber",
+                    "type": "uinteger",
+                    "label": "Row number",
+                    "required": true
+                  },
+                  {
+                    "name": "includesHeaders",
+                    "type": "select",
+                    "label": "Table contains headers",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        true,
+                        false
+                      ]
+                    }
+                  },
+                  {
+                    "name": "values",
+                    "spec": [
+                      {
+                        "name": "0",
+                        "type": "text",
+                        "label": "ID (A)"
+                      },
+                      {
+                        "name": "1",
+                        "type": "text",
+                        "label": "Fecha y hora (B)"
+                      },
+                      {
+                        "name": "2",
+                        "type": "text",
+                        "label": "Canal (C)"
+                      },
+                      {
+                        "name": "3",
+                        "type": "text",
+                        "label": "ID Conversación (D)"
+                      },
+                      {
+                        "name": "4",
+                        "type": "text",
+                        "label": "Mensaje recibido (E)"
+                      },
+                      {
+                        "name": "5",
+                        "type": "text",
+                        "label": "ID Mensaje (F)"
+                      },
+                      {
+                        "name": "6",
+                        "type": "text",
+                        "label": "Respuesta generada (G)"
+                      },
+                      {
+                        "name": "7",
+                        "type": "text",
+                        "label": "OK (H)"
+                      },
+                      {
+                        "name": "8",
+                        "type": "text",
+                        "label": "Estado del envío (I)"
+                      },
+                      {
+                        "name": "9",
+                        "type": "text",
+                        "label": "Fecha y hora de salida (J)"
+                      },
+                      {
+                        "name": "10",
+                        "type": "text",
+                        "label": "ID DB (K)"
+                      },
+                      {
+                        "name": "11",
+                        "type": "text",
+                        "label": "ID generado (L)"
+                      },
+                      {
+                        "name": "12",
+                        "type": "text",
+                        "label": "Evaluación (M)"
+                      },
+                      {
+                        "name": "13",
+                        "type": "text",
+                        "label": "Puntaje (N)"
+                      },
+                      {
+                        "name": "14",
+                        "type": "text",
+                        "label": "Devolución (O)"
+                      },
+                      {
+                        "name": "15",
+                        "type": "text",
+                        "label": "(P)"
+                      },
+                      {
+                        "name": "16",
+                        "type": "text",
+                        "label": "(Q)"
+                      },
+                      {
+                        "name": "17",
+                        "type": "text",
+                        "label": "(R)"
+                      },
+                      {
+                        "name": "18",
+                        "type": "text",
+                        "label": "(S)"
+                      },
+                      {
+                        "name": "19",
+                        "type": "text",
+                        "label": "(T)"
+                      },
+                      {
+                        "name": "20",
+                        "type": "text",
+                        "label": "(U)"
+                      },
+                      {
+                        "name": "21",
+                        "type": "text",
+                        "label": "(V)"
+                      },
+                      {
+                        "name": "22",
+                        "type": "text",
+                        "label": "(W)"
+                      },
+                      {
+                        "name": "23",
+                        "type": "text",
+                        "label": "(X)"
+                      },
+                      {
+                        "name": "24",
+                        "type": "text",
+                        "label": "(Y)"
+                      },
+                      {
+                        "name": "25",
+                        "type": "text",
+                        "label": "(Z)"
+                      },
+                      {
+                        "name": "26",
+                        "type": "text",
+                        "label": "(AA)"
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Values"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "mode": {
+                      "label": "Select from all"
+                    },
+                    "sheetId": {
+                      "mode": "edit"
+                    },
+                    "includesHeaders": {
+                      "label": "Yes",
+                      "nested": [
+                        {
+                          "name": "values",
+                          "spec": [
+                            {
+                              "name": "0",
+                              "type": "text",
+                              "label": "ID (A)"
+                            },
+                            {
+                              "name": "1",
+                              "type": "text",
+                              "label": "Fecha y hora (B)"
+                            },
+                            {
+                              "name": "2",
+                              "type": "text",
+                              "label": "Canal (C)"
+                            },
+                            {
+                              "name": "3",
+                              "type": "text",
+                              "label": "ID Conversación (D)"
+                            },
+                            {
+                              "name": "4",
+                              "type": "text",
+                              "label": "Mensaje recibido (E)"
+                            },
+                            {
+                              "name": "5",
+                              "type": "text",
+                              "label": "ID Mensaje (F)"
+                            },
+                            {
+                              "name": "6",
+                              "type": "text",
+                              "label": "Respuesta generada (G)"
+                            },
+                            {
+                              "name": "7",
+                              "type": "text",
+                              "label": "OK (H)"
+                            },
+                            {
+                              "name": "8",
+                              "type": "text",
+                              "label": "Estado del envío (I)"
+                            },
+                            {
+                              "name": "9",
+                              "type": "text",
+                              "label": "Fecha y hora de salida (J)"
+                            },
+                            {
+                              "name": "10",
+                              "type": "text",
+                              "label": "ID DB (K)"
+                            },
+                            {
+                              "name": "11",
+                              "type": "text",
+                              "label": "ID generado (L)"
+                            },
+                            {
+                              "name": "12",
+                              "type": "text",
+                              "label": "Evaluación (M)"
+                            },
+                            {
+                              "name": "13",
+                              "type": "text",
+                              "label": "Puntaje (N)"
+                            },
+                            {
+                              "name": "14",
+                              "type": "text",
+                              "label": "Devolución (O)"
+                            },
+                            {
+                              "name": "15",
+                              "type": "text",
+                              "label": "(P)"
+                            },
+                            {
+                              "name": "16",
+                              "type": "text",
+                              "label": "(Q)"
+                            },
+                            {
+                              "name": "17",
+                              "type": "text",
+                              "label": "(R)"
+                            },
+                            {
+                              "name": "18",
+                              "type": "text",
+                              "label": "(S)"
+                            },
+                            {
+                              "name": "19",
+                              "type": "text",
+                              "label": "(T)"
+                            },
+                            {
+                              "name": "20",
+                              "type": "text",
+                              "label": "(U)"
+                            },
+                            {
+                              "name": "21",
+                              "type": "text",
+                              "label": "(V)"
+                            },
+                            {
+                              "name": "22",
+                              "type": "text",
+                              "label": "(W)"
+                            },
+                            {
+                              "name": "23",
+                              "type": "text",
+                              "label": "(X)"
+                            },
+                            {
+                              "name": "24",
+                              "type": "text",
+                              "label": "(Y)"
+                            },
+                            {
+                              "name": "25",
+                              "type": "text",
+                              "label": "(Z)"
+                            },
+                            {
+                              "name": "26",
+                              "type": "text",
+                              "label": "(AA)"
+                            }
+                          ],
+                          "type": "collection",
+                          "label": "Values"
+                        }
+                      ]
+                    },
+                    "valueInputOption": {
+                      "mode": "chose",
+                      "label": "User entered"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "google"
+                      },
+                      "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 0,
+                  "name": "Update status"
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 5710354
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 43,
+              "filter": {
+                "name": "No",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{now}}",
+                      "b": "{{addDays(addHours(48.rowValues[].`1`; -3); 1)}}",
+                      "o": "date:less"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "data": {
+                  "text": "{{48.rowValues[].`6`}}",
+                  "status": "pending_delivery",
+                  "is_user": false,
+                  "provider_name": "{{lower(48.rowValues[].`2`)}}",
+                  "person_address": "{{48.rowValues[].`3`}}",
+                  "channel_address": "{{48.rowValues[].`0`}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "ad_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_external_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_extension",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "status",
+                        "type": "select",
+                        "label": "",
+                        "validate": {
+                          "enum": [
+                            "new",
+                            "preprocessed",
+                            "processed",
+                            "pending_delivery",
+                            "sending",
+                            "send"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "media_data",
+                        "type": "text",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "status": {
+                          "mode": "chose",
+                          "label": "pending_delivery"
+                        },
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "Create new interaction (Dev)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 300,
+                  "name": "Create pending_delivery"
+                },
+                "interface": [
+                  {
+                    "help": "",
+                    "name": "id_interaction",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  },
+                  {
+                    "help": "",
+                    "name": "id_person_conversation",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_4097381",
+                "shouldWaitForExecutionEnd": true
+              }
+            },
+            {
+              "id": 44,
+              "mapper": {
+                "@id": "",
+                "where": [
+                  [
+                    {
+                      "a": "associated_interaction_id",
+                      "b": "{{48.rowValues[].`10`}}",
+                      "o": "equal"
+                    }
+                  ]
+                ],
+                "@score": "",
+                "@feedback": "",
+                "@response": "",
+                "@evaluation": "approved",
+                "@system_prompt": "",
+                "@generated_interaction_id": "{{43.id_interaction}}",
+                "@associated_interaction_id": ""
+              },
+              "module": "postgres:UpdateTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@associated_interaction_id",
+                    "type": "integer",
+                    "label": "associated_interaction_id"
+                  },
+                  {
+                    "name": "@generated_interaction_id",
+                    "type": "integer",
+                    "label": "generated_interaction_id"
+                  },
+                  {
+                    "name": "@response",
+                    "type": "text",
+                    "label": "response"
+                  },
+                  {
+                    "name": "@system_prompt",
+                    "type": "text",
+                    "label": "system_prompt"
+                  },
+                  {
+                    "name": "@evaluation",
+                    "type": "text",
+                    "label": "evaluation"
+                  },
+                  {
+                    "name": "where",
+                    "type": "filter",
+                    "label": "Filter",
+                    "options": {
+                      "store": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        },
+                        {
+                          "label": "associated_interaction_id",
+                          "value": "associated_interaction_id"
+                        },
+                        {
+                          "label": "generated_interaction_id",
+                          "value": "generated_interaction_id"
+                        },
+                        {
+                          "label": "response",
+                          "value": "response"
+                        },
+                        {
+                          "label": "system_prompt",
+                          "value": "system_prompt"
+                        },
+                        {
+                          "label": "evaluation",
+                          "value": "evaluation"
+                        }
+                      ],
+                      "operators": [
+                        {
+                          "label": "Basic",
+                          "options": [
+                            {
+                              "label": "Is not null",
+                              "value": "exist"
+                            },
+                            {
+                              "label": "Is null",
+                              "value": "notexist"
+                            },
+                            {
+                              "label": "Equal to",
+                              "value": "equal"
+                            },
+                            {
+                              "label": "Not equal to",
+                              "value": "notequal"
+                            },
+                            {
+                              "label": "Greater than",
+                              "value": "greater"
+                            },
+                            {
+                              "label": "Greater than or equal to",
+                              "value": "greaterorequal"
+                            },
+                            {
+                              "label": "Less than",
+                              "value": "less"
+                            },
+                            {
+                              "label": "Less than or equal to",
+                              "value": "lessorequal"
+                            },
+                            {
+                              "label": "Contains",
+                              "value": "contain"
+                            },
+                            {
+                              "label": "Does not contain",
+                              "value": "notcontain"
+                            },
+                            {
+                              "label": "Starts with",
+                              "value": "startwith"
+                            },
+                            {
+                              "label": "Does not start with",
+                              "value": "notstartwith"
+                            },
+                            {
+                              "label": "Ends with",
+                              "value": "endwith"
+                            },
+                            {
+                              "label": "Does not end with",
+                              "value": "notendwith"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@associated_interaction_id",
+                    "type": "integer",
+                    "label": "associated_interaction_id"
+                  },
+                  {
+                    "name": "@generated_interaction_id",
+                    "type": "integer",
+                    "label": "generated_interaction_id"
+                  },
+                  {
+                    "name": "@response",
+                    "type": "text",
+                    "label": "response"
+                  },
+                  {
+                    "name": "@system_prompt",
+                    "type": "text",
+                    "label": "system_prompt"
+                  },
+                  {
+                    "name": "@evaluation",
+                    "type": "text",
+                    "label": "evaluation"
+                  },
+                  {
+                    "name": "@feedback",
+                    "type": "text",
+                    "label": "feedback"
+                  },
+                  {
+                    "name": "@score",
+                    "type": "integer",
+                    "label": "score"
+                  },
+                  {
+                    "name": "where",
+                    "type": "filter",
+                    "label": "Filter",
+                    "options": {
+                      "store": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        },
+                        {
+                          "label": "associated_interaction_id",
+                          "value": "associated_interaction_id"
+                        },
+                        {
+                          "label": "generated_interaction_id",
+                          "value": "generated_interaction_id"
+                        },
+                        {
+                          "label": "response",
+                          "value": "response"
+                        },
+                        {
+                          "label": "system_prompt",
+                          "value": "system_prompt"
+                        },
+                        {
+                          "label": "evaluation",
+                          "value": "evaluation"
+                        },
+                        {
+                          "label": "feedback",
+                          "value": "feedback"
+                        },
+                        {
+                          "label": "score",
+                          "value": "score"
+                        }
+                      ],
+                      "operators": [
+                        {
+                          "label": "Basic",
+                          "options": [
+                            {
+                              "label": "Is not null",
+                              "value": "exist"
+                            },
+                            {
+                              "label": "Is null",
+                              "value": "notexist"
+                            },
+                            {
+                              "label": "Equal to",
+                              "value": "equal"
+                            },
+                            {
+                              "label": "Not equal to",
+                              "value": "notequal"
+                            },
+                            {
+                              "label": "Greater than",
+                              "value": "greater"
+                            },
+                            {
+                              "label": "Greater than or equal to",
+                              "value": "greaterorequal"
+                            },
+                            {
+                              "label": "Less than",
+                              "value": "less"
+                            },
+                            {
+                              "label": "Less than or equal to",
+                              "value": "lessorequal"
+                            },
+                            {
+                              "label": "Contains",
+                              "value": "contain"
+                            },
+                            {
+                              "label": "Does not contain",
+                              "value": "notcontain"
+                            },
+                            {
+                              "label": "Starts with",
+                              "value": "startwith"
+                            },
+                            {
+                              "label": "Does not start with",
+                              "value": "notstartwith"
+                            },
+                            {
+                              "label": "Ends with",
+                              "value": "endwith"
+                            },
+                            {
+                              "label": "Does not end with",
+                              "value": "notendwith"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.ai_interaction"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 900,
+                  "y": 300,
+                  "name": "Update record ia"
+                },
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"ai_interaction\"",
+                "account": 7346367,
+                "isToManageDataInSharedTransaction": true
+              }
+            },
+            {
+              "id": 56,
+              "mapper": {
+                "mode": "fromAll",
+                "values": {
+                  "8": "Pendiente",
+                  "11": "{{43.id_interaction}}"
+                },
+                "sheetId": "{{48.sheetName}}",
+                "rowNumber": "{{48.range.rowStart}}",
+                "spreadsheetId": "1z7DFdi9aLXEeU-MnG4bbkIQZz6z9N_Q0mXJeHjn5n24",
+                "includesHeaders": true,
+                "valueInputOption": "USER_ENTERED"
+              },
+              "module": "google-sheets:updateRow",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "mode",
+                    "type": "select",
+                    "label": "Search Method",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        "select",
+                        "fromAll",
+                        "map"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "valueInputOption",
+                    "type": "select",
+                    "label": "Value input option",
+                    "validate": {
+                      "enum": [
+                        "USER_ENTERED",
+                        "RAW"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "spreadsheetId",
+                    "type": "text",
+                    "label": "Spreadsheet ID",
+                    "required": true
+                  },
+                  {
+                    "mode": "edit",
+                    "name": "sheetId",
+                    "type": "select",
+                    "label": "Sheet Name",
+                    "required": true
+                  },
+                  {
+                    "name": "rowNumber",
+                    "type": "uinteger",
+                    "label": "Row number",
+                    "required": true
+                  },
+                  {
+                    "name": "includesHeaders",
+                    "type": "select",
+                    "label": "Table contains headers",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        true,
+                        false
+                      ]
+                    }
+                  },
+                  {
+                    "name": "values",
+                    "spec": [
+                      {
+                        "name": "0",
+                        "type": "text",
+                        "label": "ID (A)"
+                      },
+                      {
+                        "name": "1",
+                        "type": "text",
+                        "label": "Fecha y hora (B)"
+                      },
+                      {
+                        "name": "2",
+                        "type": "text",
+                        "label": "Canal (C)"
+                      },
+                      {
+                        "name": "3",
+                        "type": "text",
+                        "label": "ID Conversación (D)"
+                      },
+                      {
+                        "name": "4",
+                        "type": "text",
+                        "label": "Mensaje recibido (E)"
+                      },
+                      {
+                        "name": "5",
+                        "type": "text",
+                        "label": "ID Mensaje (F)"
+                      },
+                      {
+                        "name": "6",
+                        "type": "text",
+                        "label": "Respuesta generada (G)"
+                      },
+                      {
+                        "name": "7",
+                        "type": "text",
+                        "label": "OK (H)"
+                      },
+                      {
+                        "name": "8",
+                        "type": "text",
+                        "label": "Estado del envío (I)"
+                      },
+                      {
+                        "name": "9",
+                        "type": "text",
+                        "label": "Fecha y hora de salida (J)"
+                      },
+                      {
+                        "name": "10",
+                        "type": "text",
+                        "label": "ID DB (K)"
+                      },
+                      {
+                        "name": "11",
+                        "type": "text",
+                        "label": "ID generado (L)"
+                      },
+                      {
+                        "name": "12",
+                        "type": "text",
+                        "label": "Evaluación (M)"
+                      },
+                      {
+                        "name": "13",
+                        "type": "text",
+                        "label": "Puntaje (N)"
+                      },
+                      {
+                        "name": "14",
+                        "type": "text",
+                        "label": "Devolución (O)"
+                      },
+                      {
+                        "name": "15",
+                        "type": "text",
+                        "label": "(P)"
+                      },
+                      {
+                        "name": "16",
+                        "type": "text",
+                        "label": "(Q)"
+                      },
+                      {
+                        "name": "17",
+                        "type": "text",
+                        "label": "(R)"
+                      },
+                      {
+                        "name": "18",
+                        "type": "text",
+                        "label": "(S)"
+                      },
+                      {
+                        "name": "19",
+                        "type": "text",
+                        "label": "(T)"
+                      },
+                      {
+                        "name": "20",
+                        "type": "text",
+                        "label": "(U)"
+                      },
+                      {
+                        "name": "21",
+                        "type": "text",
+                        "label": "(V)"
+                      },
+                      {
+                        "name": "22",
+                        "type": "text",
+                        "label": "(W)"
+                      },
+                      {
+                        "name": "23",
+                        "type": "text",
+                        "label": "(X)"
+                      },
+                      {
+                        "name": "24",
+                        "type": "text",
+                        "label": "(Y)"
+                      },
+                      {
+                        "name": "25",
+                        "type": "text",
+                        "label": "(Z)"
+                      },
+                      {
+                        "name": "26",
+                        "type": "text",
+                        "label": "(AA)"
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Values"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "mode": {
+                      "label": "Select from all"
+                    },
+                    "sheetId": {
+                      "mode": "edit"
+                    },
+                    "includesHeaders": {
+                      "label": "Yes",
+                      "nested": [
+                        {
+                          "name": "values",
+                          "spec": [
+                            {
+                              "name": "0",
+                              "type": "text",
+                              "label": "ID (A)"
+                            },
+                            {
+                              "name": "1",
+                              "type": "text",
+                              "label": "Fecha y hora (B)"
+                            },
+                            {
+                              "name": "2",
+                              "type": "text",
+                              "label": "Canal (C)"
+                            },
+                            {
+                              "name": "3",
+                              "type": "text",
+                              "label": "ID Conversación (D)"
+                            },
+                            {
+                              "name": "4",
+                              "type": "text",
+                              "label": "Mensaje recibido (E)"
+                            },
+                            {
+                              "name": "5",
+                              "type": "text",
+                              "label": "ID Mensaje (F)"
+                            },
+                            {
+                              "name": "6",
+                              "type": "text",
+                              "label": "Respuesta generada (G)"
+                            },
+                            {
+                              "name": "7",
+                              "type": "text",
+                              "label": "OK (H)"
+                            },
+                            {
+                              "name": "8",
+                              "type": "text",
+                              "label": "Estado del envío (I)"
+                            },
+                            {
+                              "name": "9",
+                              "type": "text",
+                              "label": "Fecha y hora de salida (J)"
+                            },
+                            {
+                              "name": "10",
+                              "type": "text",
+                              "label": "ID DB (K)"
+                            },
+                            {
+                              "name": "11",
+                              "type": "text",
+                              "label": "ID generado (L)"
+                            },
+                            {
+                              "name": "12",
+                              "type": "text",
+                              "label": "Evaluación (M)"
+                            },
+                            {
+                              "name": "13",
+                              "type": "text",
+                              "label": "Puntaje (N)"
+                            },
+                            {
+                              "name": "14",
+                              "type": "text",
+                              "label": "Devolución (O)"
+                            },
+                            {
+                              "name": "15",
+                              "type": "text",
+                              "label": "(P)"
+                            },
+                            {
+                              "name": "16",
+                              "type": "text",
+                              "label": "(Q)"
+                            },
+                            {
+                              "name": "17",
+                              "type": "text",
+                              "label": "(R)"
+                            },
+                            {
+                              "name": "18",
+                              "type": "text",
+                              "label": "(S)"
+                            },
+                            {
+                              "name": "19",
+                              "type": "text",
+                              "label": "(T)"
+                            },
+                            {
+                              "name": "20",
+                              "type": "text",
+                              "label": "(U)"
+                            },
+                            {
+                              "name": "21",
+                              "type": "text",
+                              "label": "(V)"
+                            },
+                            {
+                              "name": "22",
+                              "type": "text",
+                              "label": "(W)"
+                            },
+                            {
+                              "name": "23",
+                              "type": "text",
+                              "label": "(X)"
+                            },
+                            {
+                              "name": "24",
+                              "type": "text",
+                              "label": "(Y)"
+                            },
+                            {
+                              "name": "25",
+                              "type": "text",
+                              "label": "(Z)"
+                            },
+                            {
+                              "name": "26",
+                              "type": "text",
+                              "label": "(AA)"
+                            }
+                          ],
+                          "type": "collection",
+                          "label": "Values"
+                        }
+                      ]
+                    },
+                    "valueInputOption": {
+                      "mode": "chose",
+                      "label": "User entered"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "google"
+                      },
+                      "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 300,
+                  "name": "Pending"
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 5710354
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 150,
+          "name": "¿Out of deadline?"
+        }
+      }
+    }
+  ],
+  "name": "Generar interacciones desde Google Sheet (Dev)",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "48": {
+          "user": {
+            "email": "gonzaloaybar@fundacioninnovar.org.ar",
+            "nickname": "gonzaloaybar"
+          },
+          "range": {
+            "rowEnd": 32,
+            "rowStart": 32,
+            "columnEnd": 8,
+            "columnStart": 8
+          },
+          "value": "TRUE",
+          "sheetId": 1611780830,
+          "oldValue": "false",
+          "rowValues": [
+            {
+              "0": 5493875809318,
+              "1": "2026-02-12T17:01:00.000Z",
+              "2": "Whatsapp",
+              "3": "5493874545078",
+              "4": "Buenos días, Iita 3d mensaje de prueba (2)",
+              "5": "wamid.HBgNNTQ5Mzg3NDU0NTA3OBUCABIYIEFDNjM3Q0ZBQ0UxODdFOEE1ODAyQTBDRkQ2QzAwMzhFAA==",
+              "6": "¡Buenos días! Soy Ana de IITA 😊  \n¡Recibí tu mensaje de prueba! ¿Te interesa info del área **3D** (...",
+              "7": true,
+              "8": "",
+              "9": "",
+              "10": 8,
+              "11": "",
+              "12": "",
+              "13": "",
+              "14": ""
+            }
+          ],
+          "sheetName": "Salta",
+          "spreadsheetId": "1z7DFdi9aLXEeU-MnG4bbkIQZz6z9N_Q0mXJeHjn5n24",
+          "rangeA1Notation": "H32",
+          "spreadsheetName": "Entorno de pruebas de mensajes"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

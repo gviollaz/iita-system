@@ -1,0 +1,209 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "n": "1",
+        "size": "1024x1024",
+        "model": "dall-e-2",
+        "prompt": "Creame una imagen tipo publicitaria, que me permita dar visibilidad al siguiente curso y detalle información util sobre el mismo para que parezca interesante para futuros clientes:\n💡 CURSO DE AUTOMATIZACIÓN CON IA, MAKE y n8n\r\nAutomatizá tareas, conectá servicios y ganá tiempo sin necesidad de programar.\r\n\r\nAprendé a usar herramientas visuales como Make y n8n para crear flujos inteligentes que integren servicios como Gmail, WhatsApp, Google Sheets, APIs externas y modelos de Inteligencia Artificial. Todo sin escribir una sola línea de código.",
+        "response_format": "url"
+      },
+      "module": "openai-gpt-3:GenerateImage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true,
+            "validate": {
+              "enum": [
+                "gpt-image-1",
+                "dall-e-3",
+                "dall-e-2"
+              ]
+            }
+          },
+          {
+            "name": "prompt",
+            "type": "text",
+            "label": "Prompt",
+            "required": true,
+            "validate": {
+              "max": 1000,
+              "min": 0
+            }
+          },
+          {
+            "name": "size",
+            "type": "select",
+            "label": "Size",
+            "validate": {
+              "enum": [
+                "256x256",
+                "512x512",
+                "1024x1024"
+              ]
+            }
+          },
+          {
+            "name": "n",
+            "type": "integer",
+            "label": "Number",
+            "validate": {
+              "max": 10,
+              "min": 1
+            }
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "url",
+                "b64_json"
+              ]
+            }
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true,
+            "validate": {
+              "enum": [
+                "gpt-image-1",
+                "dall-e-3",
+                "dall-e-2"
+              ]
+            }
+          },
+          {
+            "name": "prompt",
+            "type": "text",
+            "label": "Prompt",
+            "required": true,
+            "validate": {
+              "max": 1000,
+              "min": 0
+            }
+          },
+          {
+            "name": "size",
+            "type": "select",
+            "label": "Size",
+            "validate": {
+              "enum": [
+                "256x256",
+                "512x512",
+                "1024x1024"
+              ]
+            }
+          },
+          {
+            "name": "n",
+            "type": "integer",
+            "label": "Number",
+            "validate": {
+              "max": 10,
+              "min": 1
+            }
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "url",
+                "b64_json"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "size": {
+              "mode": "chose",
+              "label": "1024x1024"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "Dall-E 2"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "URL"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "url",
+                "type": "url",
+                "label": "URL"
+              }
+            ],
+            "type": "array",
+            "label": "Data"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    }
+  ],
+  "name": "Integration OpenAI (ChatGPT, Whisper, DALL-E)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}
