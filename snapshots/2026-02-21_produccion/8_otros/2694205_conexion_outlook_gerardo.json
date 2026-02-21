@@ -1,0 +1,331 @@
+{
+  "flow": [
+    {
+      "id": 4,
+      "mapper": {},
+      "module": "google-email:TriggerNewEmail",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "folder": {
+              "path": [
+                "INBOX"
+              ]
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "iitaautomations (Gerardo) (iitaautomations@gmail.com)"
+            },
+            "criteria": {
+              "label": "Only Unread emails"
+            },
+            "searchType": {
+              "label": "Simple filter"
+            }
+          }
+        },
+        "designer": {
+          "x": -1154,
+          "y": 92
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "searchType",
+            "type": "select",
+            "label": "Filter type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "simple",
+                "gmail"
+              ]
+            }
+          },
+          {
+            "name": "markSeen",
+            "type": "boolean",
+            "label": "Mark email message(s) as read when fetched"
+          },
+          {
+            "name": "maxResults",
+            "type": "uinteger",
+            "label": "Maximum number of results",
+            "required": true
+          },
+          {
+            "name": "folder",
+            "type": "folder",
+            "label": "Folder",
+            "required": true
+          },
+          {
+            "name": "criteria",
+            "type": "select",
+            "label": "Criteria",
+            "required": true,
+            "validate": {
+              "enum": [
+                "ALL",
+                "SEEN",
+                "UNSEEN"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "type": "email",
+            "label": "Sender email address"
+          },
+          {
+            "name": "subject",
+            "type": "text",
+            "label": "Subject"
+          },
+          {
+            "name": "text",
+            "type": "text",
+            "label": "Search phrase"
+          }
+        ]
+      },
+      "parameters": {
+        "from": "",
+        "text": "",
+        "folder": "INBOX",
+        "account": 4827772,
+        "subject": "",
+        "criteria": "UNSEEN",
+        "markSeen": true,
+        "maxResults": 10,
+        "searchType": "simple"
+      }
+    },
+    {
+      "id": 5,
+      "filter": {
+        "name": "Asunto urgente?",
+        "conditions": [
+          [
+            {
+              "a": "{{4.subject}}",
+              "b": "urgente",
+              "o": "text:contain:ci"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "cc": [],
+        "to": [
+          "{{4.from.address}}"
+        ],
+        "bcc": [],
+        "from": "",
+        "html": "Se recibio su respuesta",
+        "subject": "Confirmacion",
+        "attachments": []
+      },
+      "module": "google-email:ActionSendEmail",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "from",
+            "type": "text",
+            "label": "From"
+          },
+          {
+            "name": "to",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Email address",
+              "required": true
+            },
+            "type": "array",
+            "label": "To",
+            "required": true
+          },
+          {
+            "name": "subject",
+            "type": "text",
+            "label": "Subject"
+          },
+          {
+            "name": "html",
+            "type": "text",
+            "label": "Content"
+          },
+          {
+            "name": "attachments",
+            "spec": [
+              {
+                "name": "fileName",
+                "type": "filename",
+                "label": "File name",
+                "required": true,
+                "semantic": "file:name"
+              },
+              {
+                "name": "data",
+                "type": "buffer",
+                "label": "Data",
+                "required": true,
+                "semantic": "file:data"
+              },
+              {
+                "name": "cid",
+                "type": "text",
+                "label": "Content-ID"
+              }
+            ],
+            "type": "array",
+            "label": "Attachments"
+          },
+          {
+            "name": "cc",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Email address"
+            },
+            "type": "array",
+            "label": "Copy recipient"
+          },
+          {
+            "name": "bcc",
+            "spec": {
+              "name": "value",
+              "type": "email",
+              "label": "Email address"
+            },
+            "type": "array",
+            "label": "Blind copy recipient"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "cc": {
+              "mode": "chose"
+            },
+            "to": {
+              "mode": "chose",
+              "items": [
+                null
+              ]
+            },
+            "bcc": {
+              "mode": "chose"
+            },
+            "attachments": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "iitaautomations (Gerardo) (iitaautomations@gmail.com)"
+            }
+          }
+        },
+        "designer": {
+          "x": -748,
+          "y": 96
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 4827772
+      }
+    }
+  ],
+  "name": "Conexion Outlook (Gerardo)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "4": {
+          "cc": null,
+          "id": 9,
+          "to": [
+            {
+              "name": "IITA_AUTOMATIONS",
+              "address": "iitaautomations@gmail.com"
+            }
+          ],
+          "bcc": null,
+          "date": "2025-08-09T14:01:49.000Z",
+          "from": {
+            "name": "IITA_AUTOMATIONS",
+            "address": "iitaautomations@gmail.com"
+          },
+          "html": "<div dir=\"ltr\">adios<div><br></div></div>\n",
+          "size": 575,
+          "text": "adios\n",
+          "labels": [
+            "\\Important"
+          ],
+          "headers": {
+            "replyTo": null,
+            "received": null,
+            "messageId": "<CAM1VF4KurqRPr=0s6xMZVRHyXbgVSF2pCLUoo7Z=jJhAO14-Uw@mail.gmail.com>",
+            "deliveredTo": null,
+            "xOriginalFrom": null
+          },
+          "subject": "hola",
+          "priority": "normal",
+          "threadId": "1988f22ff77ed440",
+          "xGmMsgid": "1839986751913861937",
+          "inReplyTo": null,
+          "messageId": "1988f233c3402331",
+          "references": null,
+          "attachments": [],
+          "headersList": [
+            {
+              "key": "content-type",
+              "value": "multipart/alternative; boundary=\"000000000000a94a46063bef21a9\""
+            }
+          ],
+          "messageLink": "https://mail.google.com/mail/u/0/#inbox/1988f233c3402331"
+        },
+        "5": {
+          "messageId": "<7abd8b66-1d1a-f120-2afb-ca9a94171b9e@gmail.com>"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

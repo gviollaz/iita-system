@@ -1,0 +1,1047 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "facebook-messenger:watchMessages",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "IITA Salta Messenger"
+            }
+          }
+        },
+        "designer": {
+          "x": 7,
+          "y": -24
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:facebook-messenger3",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1472949
+      }
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "mode": "fromAll",
+        "values": {
+          "0": "{{`1`}}",
+          "1": "{{1.sender}}",
+          "2": "{{1.sender.id}}",
+          "3": "{{1.sender.user_ref}}",
+          "4": "{{1.recipient}}",
+          "5": "{{1.recipient.id}}",
+          "6": "{{1.timestamp}}",
+          "7": "{{1.message}}",
+          "8": "{{1.message.mid}}",
+          "9": "{{1.message.text}}",
+          "10": "{{1.message.reply_to}}",
+          "11": "{{1.message.reply_to.mid}}",
+          "12": "{{1.message.quick_reply}}",
+          "13": "{{1.message.quick_reply.payload}}",
+          "14": "{{1.message.attachments}}",
+          "15": "{{1.message.attachments[].type}}",
+          "16": "{{1.message.attachments[].payload}}",
+          "17": "{{1.message.attachments[].payload.url}}",
+          "18": "{{1.message.attachments[].payload.title}}",
+          "19": "{{1.message.attachments[].payload.sticker_id}}",
+          "20": "{{1.message.attachments[].payload.coordinates}}",
+          "21": "{{1.message.attachments[].payload.coordinates.lat}}",
+          "22": "{{1.message.attachments[].payload.coordinates.long}}",
+          "23": "{{1.message.attachments[].payload.product}}",
+          "24": "{{1.message.attachments[].payload.product.elements}}",
+          "25": "{{1.message.attachments[].payload.product.elements[].id}}",
+          "26": "{{1.message.attachments[].payload.product.elements[].retailer_id}}",
+          "27": "{{1.message.attachments[].payload.product.elements[].image_url}}",
+          "28": "{{1.message.attachments[].payload.product.elements[].title}}",
+          "29": "{{1.message.attachments[].payload.product.elements[].subtitle}}",
+          "30": "{{1.message.referral}}",
+          "31": "{{1.message.referral.product}}",
+          "32": "{{1.message.referral.product.id}}"
+        },
+        "sheetId": "Hoja 1",
+        "spreadsheetId": "1g4dLyFVsYok1ZwDXqyzOjlA0Uyb2UUeXzvatJqT1sAg",
+        "tableFirstRow": "A1:BZ1",
+        "includesHeaders": false,
+        "insertDataOption": "INSERT_ROWS",
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "tableFirstRow",
+            "type": "select",
+            "label": "Column range",
+            "required": true,
+            "validate": {
+              "enum": [
+                "A1:Z1",
+                "A1:BZ1",
+                "A1:CZ1",
+                "A1:DZ1",
+                "A1:MZ1",
+                "A1:ZZ1"
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "A"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "B"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "C"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "D"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "E"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "F"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "G"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "H"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "I"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "J"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "K"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "L"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "M"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "N"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "O"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "P"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "Q"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "R"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "S"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "T"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "U"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "V"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "W"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "X"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "Y"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "Z"
+              },
+              {
+                "name": "26",
+                "type": "text",
+                "label": "AA"
+              },
+              {
+                "name": "27",
+                "type": "text",
+                "label": "AB"
+              },
+              {
+                "name": "28",
+                "type": "text",
+                "label": "AC"
+              },
+              {
+                "name": "29",
+                "type": "text",
+                "label": "AD"
+              },
+              {
+                "name": "30",
+                "type": "text",
+                "label": "AE"
+              },
+              {
+                "name": "31",
+                "type": "text",
+                "label": "AF"
+              },
+              {
+                "name": "32",
+                "type": "text",
+                "label": "AG"
+              },
+              {
+                "name": "33",
+                "type": "text",
+                "label": "AH"
+              },
+              {
+                "name": "34",
+                "type": "text",
+                "label": "AI"
+              },
+              {
+                "name": "35",
+                "type": "text",
+                "label": "AJ"
+              },
+              {
+                "name": "36",
+                "type": "text",
+                "label": "AK"
+              },
+              {
+                "name": "37",
+                "type": "text",
+                "label": "AL"
+              },
+              {
+                "name": "38",
+                "type": "text",
+                "label": "AM"
+              },
+              {
+                "name": "39",
+                "type": "text",
+                "label": "AN"
+              },
+              {
+                "name": "40",
+                "type": "text",
+                "label": "AO"
+              },
+              {
+                "name": "41",
+                "type": "text",
+                "label": "AP"
+              },
+              {
+                "name": "42",
+                "type": "text",
+                "label": "AQ"
+              },
+              {
+                "name": "43",
+                "type": "text",
+                "label": "AR"
+              },
+              {
+                "name": "44",
+                "type": "text",
+                "label": "AS"
+              },
+              {
+                "name": "45",
+                "type": "text",
+                "label": "AT"
+              },
+              {
+                "name": "46",
+                "type": "text",
+                "label": "AU"
+              },
+              {
+                "name": "47",
+                "type": "text",
+                "label": "AV"
+              },
+              {
+                "name": "48",
+                "type": "text",
+                "label": "AW"
+              },
+              {
+                "name": "49",
+                "type": "text",
+                "label": "AX"
+              },
+              {
+                "name": "50",
+                "type": "text",
+                "label": "AY"
+              },
+              {
+                "name": "51",
+                "type": "text",
+                "label": "AZ"
+              },
+              {
+                "name": "52",
+                "type": "text",
+                "label": "BA"
+              },
+              {
+                "name": "53",
+                "type": "text",
+                "label": "BB"
+              },
+              {
+                "name": "54",
+                "type": "text",
+                "label": "BC"
+              },
+              {
+                "name": "55",
+                "type": "text",
+                "label": "BD"
+              },
+              {
+                "name": "56",
+                "type": "text",
+                "label": "BE"
+              },
+              {
+                "name": "57",
+                "type": "text",
+                "label": "BF"
+              },
+              {
+                "name": "58",
+                "type": "text",
+                "label": "BG"
+              },
+              {
+                "name": "59",
+                "type": "text",
+                "label": "BH"
+              },
+              {
+                "name": "60",
+                "type": "text",
+                "label": "BI"
+              },
+              {
+                "name": "61",
+                "type": "text",
+                "label": "BJ"
+              },
+              {
+                "name": "62",
+                "type": "text",
+                "label": "BK"
+              },
+              {
+                "name": "63",
+                "type": "text",
+                "label": "BL"
+              },
+              {
+                "name": "64",
+                "type": "text",
+                "label": "BM"
+              },
+              {
+                "name": "65",
+                "type": "text",
+                "label": "BN"
+              },
+              {
+                "name": "66",
+                "type": "text",
+                "label": "BO"
+              },
+              {
+                "name": "67",
+                "type": "text",
+                "label": "BP"
+              },
+              {
+                "name": "68",
+                "type": "text",
+                "label": "BQ"
+              },
+              {
+                "name": "69",
+                "type": "text",
+                "label": "BR"
+              },
+              {
+                "name": "70",
+                "type": "text",
+                "label": "BS"
+              },
+              {
+                "name": "71",
+                "type": "text",
+                "label": "BT"
+              },
+              {
+                "name": "72",
+                "type": "text",
+                "label": "BU"
+              },
+              {
+                "name": "73",
+                "type": "text",
+                "label": "BV"
+              },
+              {
+                "name": "74",
+                "type": "text",
+                "label": "BW"
+              },
+              {
+                "name": "75",
+                "type": "text",
+                "label": "BX"
+              },
+              {
+                "name": "76",
+                "type": "text",
+                "label": "BY"
+              },
+              {
+                "name": "77",
+                "type": "text",
+                "label": "BZ"
+              }
+            ],
+            "type": "collection",
+            "label": "Values"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "mode": {
+              "label": "Select from all"
+            },
+            "sheetId": {
+              "mode": "chose",
+              "label": "Hoja 1"
+            },
+            "spreadsheetId": {
+              "rpcSearch": {
+                "label": "leadsiita",
+                "value": "1g4dLyFVsYok1ZwDXqyzOjlA0Uyb2UUeXzvatJqT1sAg"
+              }
+            },
+            "tableFirstRow": {
+              "label": "A-BZ",
+              "nested": [
+                {
+                  "name": "values",
+                  "spec": [
+                    {
+                      "name": "0",
+                      "type": "text",
+                      "label": "A"
+                    },
+                    {
+                      "name": "1",
+                      "type": "text",
+                      "label": "B"
+                    },
+                    {
+                      "name": "2",
+                      "type": "text",
+                      "label": "C"
+                    },
+                    {
+                      "name": "3",
+                      "type": "text",
+                      "label": "D"
+                    },
+                    {
+                      "name": "4",
+                      "type": "text",
+                      "label": "E"
+                    },
+                    {
+                      "name": "5",
+                      "type": "text",
+                      "label": "F"
+                    },
+                    {
+                      "name": "6",
+                      "type": "text",
+                      "label": "G"
+                    },
+                    {
+                      "name": "7",
+                      "type": "text",
+                      "label": "H"
+                    },
+                    {
+                      "name": "8",
+                      "type": "text",
+                      "label": "I"
+                    },
+                    {
+                      "name": "9",
+                      "type": "text",
+                      "label": "J"
+                    },
+                    {
+                      "name": "10",
+                      "type": "text",
+                      "label": "K"
+                    },
+                    {
+                      "name": "11",
+                      "type": "text",
+                      "label": "L"
+                    },
+                    {
+                      "name": "12",
+                      "type": "text",
+                      "label": "M"
+                    },
+                    {
+                      "name": "13",
+                      "type": "text",
+                      "label": "N"
+                    },
+                    {
+                      "name": "14",
+                      "type": "text",
+                      "label": "O"
+                    },
+                    {
+                      "name": "15",
+                      "type": "text",
+                      "label": "P"
+                    },
+                    {
+                      "name": "16",
+                      "type": "text",
+                      "label": "Q"
+                    },
+                    {
+                      "name": "17",
+                      "type": "text",
+                      "label": "R"
+                    },
+                    {
+                      "name": "18",
+                      "type": "text",
+                      "label": "S"
+                    },
+                    {
+                      "name": "19",
+                      "type": "text",
+                      "label": "T"
+                    },
+                    {
+                      "name": "20",
+                      "type": "text",
+                      "label": "U"
+                    },
+                    {
+                      "name": "21",
+                      "type": "text",
+                      "label": "V"
+                    },
+                    {
+                      "name": "22",
+                      "type": "text",
+                      "label": "W"
+                    },
+                    {
+                      "name": "23",
+                      "type": "text",
+                      "label": "X"
+                    },
+                    {
+                      "name": "24",
+                      "type": "text",
+                      "label": "Y"
+                    },
+                    {
+                      "name": "25",
+                      "type": "text",
+                      "label": "Z"
+                    },
+                    {
+                      "name": "26",
+                      "type": "text",
+                      "label": "AA"
+                    },
+                    {
+                      "name": "27",
+                      "type": "text",
+                      "label": "AB"
+                    },
+                    {
+                      "name": "28",
+                      "type": "text",
+                      "label": "AC"
+                    },
+                    {
+                      "name": "29",
+                      "type": "text",
+                      "label": "AD"
+                    },
+                    {
+                      "name": "30",
+                      "type": "text",
+                      "label": "AE"
+                    },
+                    {
+                      "name": "31",
+                      "type": "text",
+                      "label": "AF"
+                    },
+                    {
+                      "name": "32",
+                      "type": "text",
+                      "label": "AG"
+                    },
+                    {
+                      "name": "33",
+                      "type": "text",
+                      "label": "AH"
+                    },
+                    {
+                      "name": "34",
+                      "type": "text",
+                      "label": "AI"
+                    },
+                    {
+                      "name": "35",
+                      "type": "text",
+                      "label": "AJ"
+                    },
+                    {
+                      "name": "36",
+                      "type": "text",
+                      "label": "AK"
+                    },
+                    {
+                      "name": "37",
+                      "type": "text",
+                      "label": "AL"
+                    },
+                    {
+                      "name": "38",
+                      "type": "text",
+                      "label": "AM"
+                    },
+                    {
+                      "name": "39",
+                      "type": "text",
+                      "label": "AN"
+                    },
+                    {
+                      "name": "40",
+                      "type": "text",
+                      "label": "AO"
+                    },
+                    {
+                      "name": "41",
+                      "type": "text",
+                      "label": "AP"
+                    },
+                    {
+                      "name": "42",
+                      "type": "text",
+                      "label": "AQ"
+                    },
+                    {
+                      "name": "43",
+                      "type": "text",
+                      "label": "AR"
+                    },
+                    {
+                      "name": "44",
+                      "type": "text",
+                      "label": "AS"
+                    },
+                    {
+                      "name": "45",
+                      "type": "text",
+                      "label": "AT"
+                    },
+                    {
+                      "name": "46",
+                      "type": "text",
+                      "label": "AU"
+                    },
+                    {
+                      "name": "47",
+                      "type": "text",
+                      "label": "AV"
+                    },
+                    {
+                      "name": "48",
+                      "type": "text",
+                      "label": "AW"
+                    },
+                    {
+                      "name": "49",
+                      "type": "text",
+                      "label": "AX"
+                    },
+                    {
+                      "name": "50",
+                      "type": "text",
+                      "label": "AY"
+                    },
+                    {
+                      "name": "51",
+                      "type": "text",
+                      "label": "AZ"
+                    },
+                    {
+                      "name": "52",
+                      "type": "text",
+                      "label": "BA"
+                    },
+                    {
+                      "name": "53",
+                      "type": "text",
+                      "label": "BB"
+                    },
+                    {
+                      "name": "54",
+                      "type": "text",
+                      "label": "BC"
+                    },
+                    {
+                      "name": "55",
+                      "type": "text",
+                      "label": "BD"
+                    },
+                    {
+                      "name": "56",
+                      "type": "text",
+                      "label": "BE"
+                    },
+                    {
+                      "name": "57",
+                      "type": "text",
+                      "label": "BF"
+                    },
+                    {
+                      "name": "58",
+                      "type": "text",
+                      "label": "BG"
+                    },
+                    {
+                      "name": "59",
+                      "type": "text",
+                      "label": "BH"
+                    },
+                    {
+                      "name": "60",
+                      "type": "text",
+                      "label": "BI"
+                    },
+                    {
+                      "name": "61",
+                      "type": "text",
+                      "label": "BJ"
+                    },
+                    {
+                      "name": "62",
+                      "type": "text",
+                      "label": "BK"
+                    },
+                    {
+                      "name": "63",
+                      "type": "text",
+                      "label": "BL"
+                    },
+                    {
+                      "name": "64",
+                      "type": "text",
+                      "label": "BM"
+                    },
+                    {
+                      "name": "65",
+                      "type": "text",
+                      "label": "BN"
+                    },
+                    {
+                      "name": "66",
+                      "type": "text",
+                      "label": "BO"
+                    },
+                    {
+                      "name": "67",
+                      "type": "text",
+                      "label": "BP"
+                    },
+                    {
+                      "name": "68",
+                      "type": "text",
+                      "label": "BQ"
+                    },
+                    {
+                      "name": "69",
+                      "type": "text",
+                      "label": "BR"
+                    },
+                    {
+                      "name": "70",
+                      "type": "text",
+                      "label": "BS"
+                    },
+                    {
+                      "name": "71",
+                      "type": "text",
+                      "label": "BT"
+                    },
+                    {
+                      "name": "72",
+                      "type": "text",
+                      "label": "BU"
+                    },
+                    {
+                      "name": "73",
+                      "type": "text",
+                      "label": "BV"
+                    },
+                    {
+                      "name": "74",
+                      "type": "text",
+                      "label": "BW"
+                    },
+                    {
+                      "name": "75",
+                      "type": "text",
+                      "label": "BX"
+                    },
+                    {
+                      "name": "76",
+                      "type": "text",
+                      "label": "BY"
+                    },
+                    {
+                      "name": "77",
+                      "type": "text",
+                      "label": "BZ"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Values"
+                }
+              ]
+            },
+            "includesHeaders": {
+              "label": "No"
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              },
+              "label": "IITALEADS (gviollaz@gmail.com)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 6163028
+      }
+    }
+  ],
+  "name": "prueba gv mesenger a sheets",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

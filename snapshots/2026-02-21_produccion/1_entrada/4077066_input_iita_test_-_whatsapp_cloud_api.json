@@ -1,0 +1,879 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "Messenger Facebook IITA"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 300
+        },
+        "interface": [
+          {
+            "name": "hub.mode",
+            "type": "text"
+          },
+          {
+            "name": "hub.challenge",
+            "type": "text"
+          },
+          {
+            "name": "hub.verify_token",
+            "type": "text"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1165547,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 2,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 3,
+              "filter": {
+                "name": "Verificacion",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.`hub.mode`}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{1.`hub.mode`}}",
+                      "b": "subscribe",
+                      "o": "text:equal"
+                    },
+                    {
+                      "a": "{{1.`hub.verify_token`}}",
+                      "b": "iita",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "body": "{{1.`hub.challenge`}}",
+                "status": "200",
+                "headers": []
+              },
+              "module": "gateway:WebhookRespond",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "status",
+                    "type": "uinteger",
+                    "label": "Status",
+                    "required": true,
+                    "validate": {
+                      "min": 100
+                    }
+                  },
+                  {
+                    "name": "body",
+                    "type": "any",
+                    "label": "Body"
+                  },
+                  {
+                    "name": "headers",
+                    "spec": [
+                      {
+                        "name": "key",
+                        "type": "text",
+                        "label": "Key",
+                        "required": true,
+                        "validate": {
+                          "max": 256
+                        }
+                      },
+                      {
+                        "name": "value",
+                        "type": "text",
+                        "label": "Value",
+                        "required": true,
+                        "validate": {
+                          "max": 4096
+                        }
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Custom headers",
+                    "validate": {
+                      "maxItems": 16
+                    }
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "headers": {
+                      "mode": "chose"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 0
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 16,
+              "filter": {
+                "name": "Mensaje",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.entry}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{1.entry[].id}}",
+                      "b": "320037831181784",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 17,
+                      "filter": {
+                        "name": "Sin media",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].image}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].video}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].audio}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].document}}",
+                              "o": "notexist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{1.entry[].changes[].value.messages[].text.body}}",
+                          "status": "new",
+                          "is_user": true,
+                          "person_name": "{{1.entry[].changes[].value.contacts[].profile.name}}",
+                          "external_ref": "{{1.entry[].changes[].value.messages[].id}}",
+                          "provider_name": "Whatsapp Cloud API",
+                          "person_address": "{{1.entry[].changes[].value.contacts[].wa_id}}",
+                          "channel_address": "{{1.entry[].id}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 300
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 19,
+                      "filter": {
+                        "name": "Contiene media",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].image}}",
+                              "o": "exist"
+                            }
+                          ],
+                          [
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].video}}",
+                              "o": "exist"
+                            }
+                          ],
+                          [
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].document}}",
+                              "o": "exist"
+                            }
+                          ],
+                          [
+                            {
+                              "a": "{{1.entry[].changes[].value.messages[].audio}}",
+                              "o": "exist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "name": "Messages",
+                        "scope": "roundtrip",
+                        "value": "{{if(1.entry[].changes[].value.messages[].image.caption; 1.entry[].changes[].value.messages[].image.caption; if(1.entry[].changes[].value.messages[].video.caption; 1.entry[].changes[].value.messages[].video.caption; if(1.entry[].changes[].value.messages[].document; 1.entry[].changes[].value.messages[].document.caption; )))}}"
+                      },
+                      "module": "util:SetVariable2",
+                      "version": 1,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Variable name",
+                            "required": true
+                          },
+                          {
+                            "name": "scope",
+                            "type": "select",
+                            "label": "Variable lifetime",
+                            "required": true,
+                            "validate": {
+                              "enum": [
+                                "roundtrip",
+                                "execution"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "value",
+                            "type": "any",
+                            "label": "Variable value"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "scope": {
+                              "label": "One cycle"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 600,
+                          "name": "Obtener caption"
+                        },
+                        "interface": [
+                          {
+                            "name": "Messages",
+                            "type": "any",
+                            "label": "Messages"
+                          }
+                        ]
+                      },
+                      "parameters": {}
+                    },
+                    {
+                      "id": 24,
+                      "mapper": {
+                        "url": "{{if(1.entry[].changes[].value.messages[].image.url; 1.entry[].changes[].value.messages[].image.url; if(1.entry[].changes[].value.messages[].video.url; 1.entry[].changes[].value.messages[].video.url; if(1.entry[].changes[].value.messages[].audio.url; 1.entry[].changes[].value.messages[].audio.url; if(1.entry[].changes[].value.messages[].document.url; 1.entry[].changes[].value.messages[].document.url; ))))}}",
+                        "shareCookies": false,
+                        "stopOnHttpError": true
+                      },
+                      "module": "http:DownloadFile",
+                      "version": 4,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "url",
+                            "type": "url",
+                            "label": "URL",
+                            "required": true
+                          },
+                          {
+                            "name": "stopOnHttpError",
+                            "type": "boolean",
+                            "label": "Return error if HTTP request fails",
+                            "required": true
+                          },
+                          {
+                            "name": "shareCookies",
+                            "type": "boolean",
+                            "label": "Share cookies with other HTTP modules",
+                            "required": true
+                          },
+                          {
+                            "name": "headers",
+                            "spec": {
+                              "name": "value",
+                              "spec": [
+                                {
+                                  "name": "name",
+                                  "type": "text",
+                                  "label": "Name",
+                                  "required": true,
+                                  "validate": {
+                                    "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                  }
+                                },
+                                {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Value"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Header"
+                            },
+                            "type": "array",
+                            "label": "Headers"
+                          },
+                          {
+                            "name": "queryParameters",
+                            "spec": {
+                              "name": "value",
+                              "spec": [
+                                {
+                                  "name": "name",
+                                  "type": "text",
+                                  "label": "Name",
+                                  "required": true
+                                },
+                                {
+                                  "name": "value",
+                                  "type": "text",
+                                  "label": "Value"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Parameter"
+                            },
+                            "type": "array",
+                            "label": "Query parameters"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "headers": {
+                              "mode": "chose"
+                            },
+                            "shareCookies": {
+                              "mode": "chose"
+                            },
+                            "queryParameters": {
+                              "mode": "chose"
+                            },
+                            "stopOnHttpError": {
+                              "mode": "chose"
+                            }
+                          },
+                          "parameters": {
+                            "apiKeyKeychain": {
+                              "label": "meta app IITA - Pruebas (whatsapp Cloud API)"
+                            },
+                            "authenticationType": {
+                              "label": "API keyUse when the service requires an API key."
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1200,
+                          "y": 600
+                        },
+                        "parameters": [
+                          {
+                            "name": "authenticationType",
+                            "type": "select",
+                            "label": "Authentication type",
+                            "required": true,
+                            "validate": {
+                              "enum": [
+                                "noAuth",
+                                "apiKey",
+                                "basicAuth",
+                                "oAuth"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "apiKeyKeychain",
+                            "type": "keychain:apikeyauth",
+                            "label": "Credentials",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "apiKeyKeychain": 109907,
+                        "authenticationType": "apiKey"
+                      }
+                    },
+                    {
+                      "id": 20,
+                      "mapper": {
+                        "data": {
+                          "text": "{{1.entry[].changes[].value.messages[].image.caption}}",
+                          "status": "new",
+                          "is_user": true,
+                          "media_data": "{{base64(24.data)}}",
+                          "person_name": "{{1.entry[].changes[].value.contacts[].profile.name}}",
+                          "external_ref": "{{1.entry[].changes[].value.messages[].id}}",
+                          "provider_name": "Whatsapp Cloud API",
+                          "person_address": "{{1.entry[].changes[].value.messages[].from}}",
+                          "channel_address": "{{1.entry[].id}}",
+                          "media_extension": "{{last(split(24.headers.`content-type`; \"/\"))}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 600
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 450
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 300
+        }
+      }
+    }
+  ],
+  "name": "[INPUT] IITA test - Whatsapp Cloud API",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "entry": [
+            {
+              "id": "320037831181784",
+              "changes": [
+                {
+                  "field": "messages",
+                  "value": {
+                    "contacts": [
+                      {
+                        "wa_id": "5493875354413",
+                        "profile": {
+                          "name": "Nico Martinelli"
+                        }
+                      }
+                    ],
+                    "messages": [
+                      {
+                        "id": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYFjNFQjAzQTA3Q0JBM0NBMTMxNEIwNTgA",
+                        "from": "5493875354413",
+                        "type": "document",
+                        "document": {
+                          "id": "1900869530791980",
+                          "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=1900869530791980&source=webhook&ext=1...",
+                          "sha256": "NSSjrrDHdErC9DLB52KvvZrhtAvASl0uz2du+njhsBg=",
+                          "caption": "asd",
+                          "filename": "HORARIOS_1ºSEMESTRE 2024.pdf",
+                          "mime_type": "application/pdf"
+                        },
+                        "timestamp": "1770646676"
+                      }
+                    ],
+                    "metadata": {
+                      "phone_number_id": "326139457242025",
+                      "display_phone_number": "5493872550002"
+                    },
+                    "messaging_product": "whatsapp"
+                  }
+                }
+              ]
+            }
+          ],
+          "object": "whatsapp_business_account"
+        },
+        "17": {
+          "id_interaction": "9",
+          "id_person_conversation": "1"
+        },
+        "19": {
+          "Messages": null
+        },
+        "20": {
+          "id_interaction": "11",
+          "id_person_conversation": "1"
+        },
+        "24": {
+          "data": "IMTBuffer(105563, binary, b249b6129dd1c619b7eeacbef44eb43b0c7eb308): 255044462d312e350d0a25b5b5b5b50...",
+          "headers": {
+            "date": "Mon, 09 Feb 2026 14:17:58 GMT",
+            "etag": "5509970516093286725",
+            "vary": "Accept-Encoding",
+            "connection": "keep-alive",
+            "content-type": "application/pdf",
+            "accept-ranges": "bytes",
+            "cache-control": "private, no-cache, no-store, must-revalidate",
+            "content-digest": "adler32=1322311435",
+            "content-length": "105563",
+            "content-disposition": "inline;filename=HORARIOS_1_SEMESTRE_2024.pdf;filename*= UTF-8''HORARIOS_1%C2%BASEMESTRE%202024.pdf",
+            "x-manifold-obj-ctime": "1770646676",
+            "x-manifold-obj-entrytype": "1",
+            "x-manifold-obj-expiresat": "0",
+            "cross-origin-resource-policy": "cross-origin",
+            "x-manifold-obj-blobsizebytes": "108971",
+            "x-manifold-obj-canonicalpath": "flat/1539037423872540",
+            "x-manifold-obj-symlinktarget": "",
+            "x-manifold-obj-propertiesjson": "{\"blob_state\":\"associated\",\"__fileSizeBytes\":\"0\",\"__ctime\":\"1770646676\",\"__canonicalPath\":\"flat/186d..."
+          },
+          "fileName": "HORARIOS_1ºSEMESTRE 2024.pdf",
+          "fileSize": 105563,
+          "statusCode": 200
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

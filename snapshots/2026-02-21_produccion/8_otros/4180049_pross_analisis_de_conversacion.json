@@ -1,0 +1,1900 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "prcessing dev"
+            }
+          }
+        },
+        "designer": {
+          "x": -252,
+          "y": -12
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1903956
+      }
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "command": "with current_conversation as (\r\n    select id_conversation\r\n    from person_conversation\r\n\r\n    where id = {{2.record.id_person_conversation}}\r\n    limit 1\r\n),\r\n\r\nperson_data as (\r\n    select p.id as person_id\r\n    from persons p\r\n    \r\n    join person_conversation pc\r\n    on p.id = pc.id_person\r\n\r\n    where pc.id = {{2.record.id_person_conversation}}\r\n),\r\n\r\nfiltered_conversation as (\r\n    select i.id, i.text, i.time_stamp, i.external_ref, m.description as media,\r\n        case\r\n            when i.id_person_conversation is null then 'assistant'\r\n            else 'user'\r\n        end as role\r\n\r\n    from interactions i\r\n\r\n    left join system_conversation sc\r\n    on i.id_system_conversation = sc.id\r\n\r\n    left join person_conversation pc\r\n    on i.id_person_conversation = pc.id\r\n\r\n    left join interaction_medias im\r\n    on i.id = im.interaction_id\r\n\r\n    left join medias m\r\n    on m.id = im.media_id\r\n\r\n    where coalesce(sc.id_conversation, pc.id_conversation) = (select id_conversation from current_conversation)\r\n    order by i.time_stamp desc\r\n    limit 20\r\n),\r\n\r\nconversation_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as conversation_text\r\n    from filtered_conversation\r\n),\r\n\r\n\r\nconversation_list as (\r\n    select\r\n        jsonb_agg(to_jsonb(filtered_conversation) order by time_stamp asc) as interactions\r\n    from filtered_conversation\r\n)\r\n\r\nselect cl.interactions, ct.conversation_text, pd.person_id\r\nfrom conversation_list cl, conversation_text ct, person_data pd"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 48,
+          "y": -12
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 7346367,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 9,
+      "mapper": {
+        "input": "{{5.conversation_text}}",
+        "fields": [
+          {
+            "name": "first_name",
+            "type": "string",
+            "description": "Name of the person we are talking to"
+          },
+          {
+            "name": "last_name",
+            "type": "string",
+            "description": "last name of the person we are talking to"
+          },
+          {
+            "name": "location_address",
+            "type": "string",
+            "description": "main address where the person we are talking to lives"
+          },
+          {
+            "name": "birth_date",
+            "type": "string",
+            "description": "date of birth of the person we are talking to"
+          },
+          {
+            "name": "country",
+            "type": "string",
+            "description": "Country where the person we are talking to is from"
+          },
+          {
+            "name": "email",
+            "type": "string",
+            "description": "email address of the person we are talking to"
+          },
+          {
+            "name": "national_id",
+            "type": "string",
+            "description": "document, identity card (DNI in Argentina) or identification number of the country of origin"
+          },
+          {
+            "name": "state_province",
+            "type": "string",
+            "description": "State or province where the person we are talking to is from"
+          }
+        ]
+      },
+      "module": "ai-tools:Extract",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "input",
+            "type": "text",
+            "label": "Text",
+            "required": true
+          },
+          {
+            "name": "fields",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "name",
+                  "type": "text",
+                  "label": "Name",
+                  "required": true
+                },
+                {
+                  "name": "description",
+                  "type": "text",
+                  "label": "Description",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "string"
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number"
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean"
+                    }
+                  ],
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Information"
+            },
+            "type": "array",
+            "label": "Information",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "fields": {
+              "items": [
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "Text"
+                  }
+                }
+              ]
+            }
+          },
+          "parameters": {
+            "model": {
+              "mode": "chose",
+              "label": "GPT-5.2The best model for coding and agentic tasks with configurable reasoning effort",
+              "nested": []
+            },
+            "makeConnectionId": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "Open AI connection (produccion)"
+            }
+          }
+        },
+        "designer": {
+          "x": 348,
+          "y": -12,
+          "name": "Extraccion de informacion"
+        },
+        "parameters": [
+          {
+            "name": "makeConnectionId",
+            "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "model": "gpt-5.2",
+        "makeConnectionId": 4371900
+      }
+    },
+    {
+      "id": 15,
+      "mapper": {
+        "model": "gpt-5.2",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a senior commercial intent analyst.\r\n\r\nYour task is to evaluate the buyer purchase intent expressed in a conversation and assign a score from 1 to 100.\r\n\r\nYou must return ONLY valid JSON with this exact structure:\r\n\r\n{\r\n  \"purchase_intent_score\": <integer between 1 and 100>,\r\n  \"confidence\": <integer between 1 and 100>,\r\n  \"reason\": \"<short explanation under 200 characters>\"\r\n}\r\n\r\nStrict rules:\r\n\r\n- Base your evaluation ONLY on explicit evidence in the conversation.\r\n- Do NOT assume intent if it is not clearly expressed.\r\n- If signals are weak or ambiguous, assign a lower score.\r\n- The score must reflect the highest level of intent shown by the buyer.\r\n- If the conversation is unrelated to purchasing, assign a very low score (1–10).\r\n- Never return text outside the JSON object.\r\n- Never add formatting, markdown, or commentary.\r\n\r\nScoring scale:\r\n\r\n 0–20: General curiosity or basic inquiry. Informational questions without commitment signals.\r\n 21–40: Mild interest. Broad questions about price, features, or availability, but no concrete action.\r\n 41–60: Moderate interest. Asks for specific details, compares options, or explores suitability.\r\n 61–80: High intent. Requests next steps, requirements, payment methods, dates, enrollment process.\r\n 81–100: Immediate intent. Explicit desire to buy/enroll/pay, confirms decision, asks for payment link or final action."
+          },
+          {
+            "role": "user",
+            "content": "Conversation:\r\n{{5.conversation_text}}\n\n\nEvaluate the purchase intent.\r\nReturn only the JSON object."
+          }
+        ],
+        "max_tokens": "2048",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "chat",
+                "prompt"
+              ]
+            }
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "n_completions",
+            "type": "number",
+            "label": "Number"
+          },
+          {
+            "name": "frequency_penalty",
+            "type": "number",
+            "label": "Frequency Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "presence_penalty",
+            "type": "number",
+            "label": "Presence Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "logit_bias",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "token",
+                  "type": "text",
+                  "label": "Token ID",
+                  "required": true
+                },
+                {
+                  "name": "probability",
+                  "type": "number",
+                  "label": "Probability",
+                  "required": true,
+                  "validate": {
+                    "max": 100,
+                    "min": -100
+                  }
+                }
+              ],
+              "type": "collection",
+              "label": "Token Probability"
+            },
+            "type": "array",
+            "label": "Token Probability"
+          },
+          {
+            "name": "seed",
+            "type": "integer",
+            "label": "Seed"
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ]
+            }
+          },
+          {
+            "name": "stop",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Stop Sequence"
+            },
+            "type": "array",
+            "label": "Stop Sequences",
+            "validate": {
+              "maxItems": 4
+            }
+          },
+          {
+            "name": "additionalParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Parameter Name",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Input Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "text",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Parameter Value"
+                        }
+                      ],
+                      "default": true
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "number",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "boolean",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Date",
+                      "value": "date",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "date",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Any",
+                      "value": "any",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "any",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "collection",
+              "label": "Input Parameter"
+            },
+            "type": "array",
+            "label": "Other Input Parameters"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "max_tokens",
+            "type": "uinteger",
+            "label": "Max Output Tokens"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "role",
+                  "type": "select",
+                  "label": "Role",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "User",
+                        "value": "user",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ],
+                        "default": true
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "mode": "edit",
+                            "name": "tool_calls",
+                            "spec": {
+                              "spec": [
+                                {
+                                  "name": "type",
+                                  "type": "hidden",
+                                  "default": "function"
+                                },
+                                {
+                                  "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                  "name": "id",
+                                  "type": "text",
+                                  "label": "Tool call ID"
+                                },
+                                {
+                                  "name": "function",
+                                  "spec": [
+                                    {
+                                      "help": "The name of the function previously called.",
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "help": "The arguments previously output by the AI.",
+                                      "name": "arguments",
+                                      "type": "text",
+                                      "label": "Arguments",
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Function"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Tool Call"
+                            },
+                            "type": "array",
+                            "label": "Tool Calls",
+                            "labels": {
+                              "add": "Add tool call"
+                            },
+                            "mappable": {
+                              "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Developer / System",
+                        "value": "system",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool",
+                        "nested": [
+                          {
+                            "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content",
+                            "required": true
+                          },
+                          {
+                            "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                            "name": "tool_call_id",
+                            "type": "text",
+                            "label": "Tool Call ID.",
+                            "required": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "text",
+                "json_object"
+              ]
+            }
+          },
+          {
+            "name": "reasoning_effort",
+            "type": "select",
+            "label": "Reasoning Effort",
+            "validate": {
+              "enum": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "stop": {
+              "mode": "chose"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "gpt-5.2 (system)The best model for coding and agentic tasks across industries"
+            },
+            "select": {
+              "label": "Create a Chat Completion (GPT and o1 models)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "Developer / System"
+                  }
+                },
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "User"
+                  }
+                }
+              ]
+            },
+            "logit_bias": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Text"
+            },
+            "reasoning_effort": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "additionalParameters": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "Open AI connection (produccion)"
+            }
+          }
+        },
+        "designer": {
+          "x": 648,
+          "y": -12,
+          "name": "Evaluacion de intencion de compra"
+        },
+        "interface": [
+          {
+            "name": "result",
+            "type": "any",
+            "label": "Result"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "ID"
+          },
+          {
+            "name": "object",
+            "type": "text",
+            "label": "Object"
+          },
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "model",
+            "type": "text",
+            "label": "Model"
+          },
+          {
+            "name": "choices",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text"
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "label": "Index"
+              },
+              {
+                "name": "logprobs",
+                "type": "text",
+                "label": "Log Probs"
+              },
+              {
+                "name": "finish_reason",
+                "type": "text",
+                "label": "Finish Reason"
+              },
+              {
+                "name": "message",
+                "spec": [
+                  {
+                    "name": "role",
+                    "type": "text",
+                    "label": "Role"
+                  },
+                  {
+                    "name": "content",
+                    "type": "text",
+                    "label": "Content"
+                  },
+                  {
+                    "name": "tool_calls",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                      },
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "function",
+                        "spec": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Name"
+                          },
+                          {
+                            "name": "arguments",
+                            "type": "text",
+                            "label": "Arguments"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Function"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Tool Calls"
+                  },
+                  {
+                    "name": "refusal",
+                    "type": "text",
+                    "label": "Refusal"
+                  },
+                  {
+                    "name": "annotations",
+                    "spec": [
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "url_citation",
+                        "spec": [
+                          {
+                            "name": "end_index",
+                            "type": "number",
+                            "label": "End Index"
+                          },
+                          {
+                            "name": "start_index",
+                            "type": "number",
+                            "label": "Start Index"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          },
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "URL Citation"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Annotations"
+                  }
+                ],
+                "type": "collection",
+                "label": "Message"
+              }
+            ],
+            "type": "array",
+            "label": "Choices"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "prompt_tokens",
+                "type": "number",
+                "label": "Prompt Tokens"
+              },
+              {
+                "name": "completion_tokens",
+                "type": "text",
+                "label": "Completion Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "number",
+                "label": "Total Tokens"
+              },
+              {
+                "name": "prompt_tokens_details",
+                "spec": [
+                  {
+                    "name": "cached_tokens",
+                    "type": "uinteger",
+                    "label": "Cached Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Prompt Tokens Details"
+              },
+              {
+                "name": "completion_tokens_details",
+                "spec": [
+                  {
+                    "name": "reasoning_tokens",
+                    "type": "uinteger",
+                    "label": "Reasoning Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  },
+                  {
+                    "name": "accepted_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Accepted Prediction Tokens"
+                  },
+                  {
+                    "name": "rejected_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Rejected Prediction Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Completion Tokens Details"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          },
+          {
+            "name": "service_tier",
+            "type": "text",
+            "label": "Service Tier"
+          },
+          {
+            "name": "system_fingerprint",
+            "type": "text",
+            "label": "System Fingerprint"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 18,
+      "mapper": {
+        "model": "gpt-5.2",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are a commercial emotional analysis specialist.\r\n\r\nYour task is to evaluate the emotional tone expressed by the buyer in a sales conversation.\r\n\r\nReturn ONLY valid JSON with this exact structure:\r\n\r\n{\r\n  \"emotional_score\": <integer between 1 and 100>,\r\n  \"confidence\": <integer between 1 and 100>,\r\n  \"reason\": \"<brief explanation under 200 characters>\"\r\n}\r\n\r\nCORE DEFINITION:\r\n\r\nThe emotional_score measures emotional polarity toward the interaction.\r\n\r\n1 = Extremely negative emotional state  \r\n50 = Emotionally neutral  \r\n100 = Extremely positive emotional state  \r\n\r\nThe scale must be interpreted as follows:\r\n\r\n1–20:\r\nStrong negative emotions that may block conversion.\r\nExamples: anger, frustration, hostility, distrust, complaints, threats.\r\n\r\n21–40:\r\nMild negative tone. Skepticism, doubt, concern, dissatisfaction, objections with emotional weight.\r\n\r\n41–59:\r\nEmotionally neutral to slightly negative. Informational tone, cautious language, emotionally flat responses.\r\n\r\n60–79:\r\nPositive and receptive tone. Polite, friendly, appreciative, open-minded, comfortable.\r\n\r\n80–100:\r\nHighly positive or enthusiastic tone. Excitement, strong approval, emotional alignment, eagerness.\r\n\r\nSTRICT RULES:\r\n\r\n- Evaluate emotional tone only, not purchase intent.\r\n- If the conversation is purely informational and emotionally flat, assign a score between 45 and 55.\r\n- Negative signals dominate → score below 50.\r\n- Positive signals dominate → score above 50.\r\n- If both positive and negative signals appear, weight the dominant tone.\r\n- Do not assume hidden emotions.\r\n- Use the full 1–100 range when justified.\r\n- Do not output text outside the JSON object.\r\n- Do not use markdown.\r\n​"
+          },
+          {
+            "role": "user",
+            "content": "Conversation:\n{{5.conversation_text}}\n\nEvaluate the emotional tone using the defined scale.\r\nReturn only the JSON object.\r\n"
+          }
+        ],
+        "max_tokens": "2048",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Select Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "chat",
+                "prompt"
+              ]
+            }
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "n_completions",
+            "type": "number",
+            "label": "Number"
+          },
+          {
+            "name": "frequency_penalty",
+            "type": "number",
+            "label": "Frequency Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "presence_penalty",
+            "type": "number",
+            "label": "Presence Penalty",
+            "validate": {
+              "max": 2,
+              "min": -2
+            }
+          },
+          {
+            "name": "logit_bias",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "token",
+                  "type": "text",
+                  "label": "Token ID",
+                  "required": true
+                },
+                {
+                  "name": "probability",
+                  "type": "number",
+                  "label": "Probability",
+                  "required": true,
+                  "validate": {
+                    "max": 100,
+                    "min": -100
+                  }
+                }
+              ],
+              "type": "collection",
+              "label": "Token Probability"
+            },
+            "type": "array",
+            "label": "Token Probability"
+          },
+          {
+            "name": "seed",
+            "type": "integer",
+            "label": "Seed"
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required"
+              ]
+            }
+          },
+          {
+            "name": "stop",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Stop Sequence"
+            },
+            "type": "array",
+            "label": "Stop Sequences",
+            "validate": {
+              "maxItems": 4
+            }
+          },
+          {
+            "name": "additionalParameters",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "key",
+                  "type": "text",
+                  "label": "Parameter Name",
+                  "required": true
+                },
+                {
+                  "name": "type",
+                  "type": "select",
+                  "label": "Input Type",
+                  "options": [
+                    {
+                      "label": "Text",
+                      "value": "text",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "text",
+                          "label": "Parameter Value"
+                        }
+                      ],
+                      "default": true
+                    },
+                    {
+                      "label": "Number",
+                      "value": "number",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "number",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Boolean",
+                      "value": "boolean",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "boolean",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Date",
+                      "value": "date",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "date",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Any",
+                      "value": "any",
+                      "nested": [
+                        {
+                          "name": "value",
+                          "type": "any",
+                          "label": "Parameter Value"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "type": "collection",
+              "label": "Input Parameter"
+            },
+            "type": "array",
+            "label": "Other Input Parameters"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "max_tokens",
+            "type": "uinteger",
+            "label": "Max Output Tokens"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "spec": [
+                {
+                  "name": "role",
+                  "type": "select",
+                  "label": "Role",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "User",
+                        "value": "user",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ],
+                        "default": true
+                      },
+                      {
+                        "label": "Assistant",
+                        "value": "assistant",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          },
+                          {
+                            "mode": "edit",
+                            "name": "tool_calls",
+                            "spec": {
+                              "spec": [
+                                {
+                                  "name": "type",
+                                  "type": "hidden",
+                                  "default": "function"
+                                },
+                                {
+                                  "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                                  "name": "id",
+                                  "type": "text",
+                                  "label": "Tool call ID"
+                                },
+                                {
+                                  "name": "function",
+                                  "spec": [
+                                    {
+                                      "help": "The name of the function previously called.",
+                                      "name": "name",
+                                      "type": "text",
+                                      "label": "Name",
+                                      "required": true
+                                    },
+                                    {
+                                      "help": "The arguments previously output by the AI.",
+                                      "name": "arguments",
+                                      "type": "text",
+                                      "label": "Arguments",
+                                      "required": true
+                                    }
+                                  ],
+                                  "type": "collection",
+                                  "label": "Function"
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Tool Call"
+                            },
+                            "type": "array",
+                            "label": "Tool Calls",
+                            "labels": {
+                              "add": "Add tool call"
+                            },
+                            "mappable": {
+                              "help": "You can map the entire `Choices[]: Message.Tool Calls` array from a previous Create a Completion module here."
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Developer / System",
+                        "value": "system",
+                        "nested": [
+                          {
+                            "help": "Text content of the message on behalf of the selected __Role__.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Tool",
+                        "value": "tool",
+                        "nested": [
+                          {
+                            "help": "The return of the function. This role should only be used when you have processed a previous function call and want to send the output of the function execution back to the AI.",
+                            "name": "content",
+                            "type": "text",
+                            "label": "Text Content",
+                            "required": true
+                          },
+                          {
+                            "help": "Map this directly from the output of a previous **Create a Completion** module. Look for `Choices[]: Message.Tool Calls[]: ID`.",
+                            "name": "tool_call_id",
+                            "type": "text",
+                            "label": "Tool Call ID.",
+                            "required": true
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "text",
+                "json_object"
+              ]
+            }
+          },
+          {
+            "name": "reasoning_effort",
+            "type": "select",
+            "label": "Reasoning Effort",
+            "validate": {
+              "enum": [
+                "minimal",
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "stop": {
+              "mode": "chose"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "gpt-5.2 (system)The best model for coding and agentic tasks across industries"
+            },
+            "select": {
+              "label": "Create a Chat Completion (GPT and o1 models)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "Developer / System"
+                  }
+                },
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "User"
+                  }
+                }
+              ]
+            },
+            "logit_bias": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Text"
+            },
+            "reasoning_effort": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "additionalParameters": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "Open AI connection (produccion)"
+            }
+          }
+        },
+        "designer": {
+          "x": 948,
+          "y": -12,
+          "name": "Analisis de sentimientos"
+        },
+        "interface": [
+          {
+            "name": "result",
+            "type": "any",
+            "label": "Result"
+          },
+          {
+            "name": "id",
+            "type": "text",
+            "label": "ID"
+          },
+          {
+            "name": "object",
+            "type": "text",
+            "label": "Object"
+          },
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "model",
+            "type": "text",
+            "label": "Model"
+          },
+          {
+            "name": "choices",
+            "spec": [
+              {
+                "name": "text",
+                "type": "text",
+                "label": "Text"
+              },
+              {
+                "name": "index",
+                "type": "number",
+                "label": "Index"
+              },
+              {
+                "name": "logprobs",
+                "type": "text",
+                "label": "Log Probs"
+              },
+              {
+                "name": "finish_reason",
+                "type": "text",
+                "label": "Finish Reason"
+              },
+              {
+                "name": "message",
+                "spec": [
+                  {
+                    "name": "role",
+                    "type": "text",
+                    "label": "Role"
+                  },
+                  {
+                    "name": "content",
+                    "type": "text",
+                    "label": "Content"
+                  },
+                  {
+                    "name": "tool_calls",
+                    "spec": [
+                      {
+                        "name": "id",
+                        "type": "text",
+                        "label": "ID"
+                      },
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "function",
+                        "spec": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Name"
+                          },
+                          {
+                            "name": "arguments",
+                            "type": "text",
+                            "label": "Arguments"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Function"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Tool Calls"
+                  },
+                  {
+                    "name": "refusal",
+                    "type": "text",
+                    "label": "Refusal"
+                  },
+                  {
+                    "name": "annotations",
+                    "spec": [
+                      {
+                        "name": "type",
+                        "type": "text",
+                        "label": "Type"
+                      },
+                      {
+                        "name": "url_citation",
+                        "spec": [
+                          {
+                            "name": "end_index",
+                            "type": "number",
+                            "label": "End Index"
+                          },
+                          {
+                            "name": "start_index",
+                            "type": "number",
+                            "label": "Start Index"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          },
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "URL Citation"
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Annotations"
+                  }
+                ],
+                "type": "collection",
+                "label": "Message"
+              }
+            ],
+            "type": "array",
+            "label": "Choices"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "prompt_tokens",
+                "type": "number",
+                "label": "Prompt Tokens"
+              },
+              {
+                "name": "completion_tokens",
+                "type": "text",
+                "label": "Completion Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "number",
+                "label": "Total Tokens"
+              },
+              {
+                "name": "prompt_tokens_details",
+                "spec": [
+                  {
+                    "name": "cached_tokens",
+                    "type": "uinteger",
+                    "label": "Cached Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Prompt Tokens Details"
+              },
+              {
+                "name": "completion_tokens_details",
+                "spec": [
+                  {
+                    "name": "reasoning_tokens",
+                    "type": "uinteger",
+                    "label": "Reasoning Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  },
+                  {
+                    "name": "audio_tokens",
+                    "type": "uinteger",
+                    "label": "Audio Tokens"
+                  },
+                  {
+                    "name": "accepted_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Accepted Prediction Tokens"
+                  },
+                  {
+                    "name": "rejected_prediction_tokens",
+                    "type": "uinteger",
+                    "label": "Rejected Prediction Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Completion Tokens Details"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          },
+          {
+            "name": "service_tier",
+            "type": "text",
+            "label": "Service Tier"
+          },
+          {
+            "name": "system_fingerprint",
+            "type": "text",
+            "label": "System Fingerprint"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    },
+    {
+      "id": 22,
+      "mapper": {
+        "command": "update persons\nset\n first_name = '{{9.information.first_name}}',\n last_name = '{{9.information.last_name}}',\n location_address = '{{9.information.location_address}}',\n birth_date = '{{9.information.birth_date}}',\n country = '{{9.information.country}}',\n email = '{{9.information.email}}',\n national_id = '{{9.information.national_id}}',\n state_province = '{{9.information.state_province}}'\n\nwhere id = {{5.person_id}};\n\n\n\ninsert into conversation_evaluations(purchase_probability, emotion_score)\nvalues ()\n"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 1248,
+          "y": -12
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 7346367,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "[pross] Analisis de Conversacion",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "type": "UPDATE",
+          "table": "interactions",
+          "record": {
+            "id": 7,
+            "text": null,
+            "ad_id": null,
+            "status": "new",
+            "user_id": null,
+            "time_stamp": "2026-02-12T15:35:25.367",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDNzFFMjMyMjY5NTcxOEFCQTgyNDIyMjhDRTE3NDc3AA==",
+            "id_person_conversation": 1,
+            "id_system_conversation": null
+          },
+          "schema": "public",
+          "old_record": {
+            "id": 7,
+            "text": null,
+            "ad_id": null,
+            "status": "preprocessed",
+            "user_id": null,
+            "time_stamp": "2026-02-12T15:35:25.367",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDNzFFMjMyMjY5NTcxOEFCQTgyNDIyMjhDRTE3NDc3AA==",
+            "id_person_conversation": 1,
+            "id_system_conversation": null
+          }
+        },
+        "5": {
+          "person_id": 1,
+          "interactions": [
+            {
+              "id": 9,
+              "role": "user",
+              "text": "Tenés razón: me faltó el costo.\n\n**Robótica Educativa (Pre-inicial NXT) – 6 años**\n📌 **Costo de ins...",
+              "media": "Contenido del audio:\nChe, ¿no nombra algo de... ¿cómo se llama esto? Videjuegos, que creo haber vist...",
+              "time_stamp": "2026-02-12T15:52:22.314",
+              "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDNjBERjI3Q0IyQjg4NUIwRDAxMDJDNjI3NEUyQjhDAA=="
+            }
+          ],
+          "conversation_text": "- user (2026-02-12 15:03:57.264):\n    [texto del mensaje]: Buen día. Tienen cursos para niños de 6 a..."
+        },
+        "9": {
+          "AIUsage": {
+            "inputTokens": 1937,
+            "outputTokens": 47
+          },
+          "information": {
+            "email": "",
+            "country": "",
+            "last_name": "",
+            "birth_date": "",
+            "first_name": "",
+            "national_id": "",
+            "state_province": "",
+            "location_address": ""
+          }
+        },
+        "15": {
+          "id": "chatcmpl-DB0fAOcsnnmBpMsiUUgNpWttK42QZ",
+          "model": "gpt-5.2-2025-12-11",
+          "usage": {
+            "total_tokens": 1476,
+            "prompt_tokens": 1421,
+            "completion_tokens": 55,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "object": "chat.completion",
+          "result": "{\n  \"purchase_intent_score\": 52,\n  \"confidence\": 78,\n  \"reason\": \"Pide costo, fecha de inicio y mate...",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"purchase_intent_score\": 52,\n  \"confidence\": 78,\n  \"reason\": \"Pide costo, fecha de inicio y mate...",
+                "refusal": null,
+                "annotations": []
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "created": "2026-02-19T15:55:28.000Z",
+          "service_tier": "default",
+          "system_fingerprint": null
+        },
+        "18": {
+          "id": "chatcmpl-DB0fCAmQKdvz7ciTJ0VsIOwJn9hgM",
+          "model": "gpt-5.2-2025-12-11",
+          "usage": {
+            "total_tokens": 1541,
+            "prompt_tokens": 1471,
+            "completion_tokens": 70,
+            "prompt_tokens_details": {
+              "audio_tokens": 0,
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "audio_tokens": 0,
+              "reasoning_tokens": 0,
+              "accepted_prediction_tokens": 0,
+              "rejected_prediction_tokens": 0
+            }
+          },
+          "object": "chat.completion",
+          "result": "{\n  \"emotional_score\": 42,\n  \"confidence\": 78,\n  \"reason\": \"Tono mixto: al inicio hay urgencia y ame...",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "{\n  \"emotional_score\": 42,\n  \"confidence\": 78,\n  \"reason\": \"Tono mixto: al inicio hay urgencia y ame...",
+                "refusal": null,
+                "annotations": []
+              },
+              "finish_reason": "stop"
+            }
+          ],
+          "created": "2026-02-19T15:55:30.000Z",
+          "service_tier": "default",
+          "system_fingerprint": null
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "flow": [
+    {
+      "id": 16,
+      "mapper": {
+        "command": "with channel_data as (\r\nselect c.id as channel_id\r\nfrom channel_providers cp\r\njoin channels c\r\non c.id_channel_provider = cp.id\r\nwhere cp.name = '{{var.input.provider_name}}' and c.address = '{{var.input.channel_address}}'\r\n),\r\n\r\nperson_data as (\r\nselect id as person_id\r\nfrom persons\r\nwhere id = {{var.input.person_id}}\r\n),\r\n\r\nconversation_data as (\r\nINSERT INTO conversations DEFAULT VALUES\r\nreturning id as conversation_id\r\n),\r\n\r\nsystem_data as (\r\nINSERT INTO system_conversation (id_channel, id_conversation)\r\n  select channel_data.channel_id, conversation_data.conversation_id\r\n  from channel_data, conversation_data\r\nreturning id as system_conversation_id\r\n),\r\n\r\nperson_conversation_data as (\r\nINSERT INTO person_conversation (id_person, id_conversation, address)\r\n  select person_data.person_id, conversation_data.conversation_id, '{{var.input.person_address}}'\r\n  from person_data, conversation_data\r\nreturning id as person_conversation_id\r\n)\r\n\r\nselect system_data.system_conversation_id, person_conversation_data.person_conversation_id\r\nfrom system_data, person_conversation_data"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          },
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 17,
+      "mapper": {
+        "id_person_conversation": "{{16.person_conversation_id}}",
+        "id_system_conversation": "{{16.system_conversation_id}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "id_system_conversation",
+            "type": "text",
+            "label": "",
+            "required": true
+          },
+          {
+            "name": "id_person_conversation",
+            "type": "text",
+            "label": "",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Create new conversation",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "16": {
+          "channel_id": 2
+        },
+        "17": {
+          "id_person_conversation": "1",
+          "id_system_conversation": "4"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

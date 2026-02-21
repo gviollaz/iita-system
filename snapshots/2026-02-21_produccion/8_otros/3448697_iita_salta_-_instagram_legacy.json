@@ -1,0 +1,1704 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "IITA San Lorenzo - Instagram (mensajes)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 750,
+          "name": "Mensajes entrantes"
+        },
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1550838,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 79,
+      "mapper": {
+        "body": "OK",
+        "status": "200",
+        "headers": []
+      },
+      "module": "gateway:WebhookRespond",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "status",
+            "type": "uinteger",
+            "label": "Status",
+            "required": true,
+            "validate": {
+              "min": 100
+            }
+          },
+          {
+            "name": "body",
+            "type": "any",
+            "label": "Body"
+          },
+          {
+            "name": "headers",
+            "spec": [
+              {
+                "name": "key",
+                "type": "text",
+                "label": "Key",
+                "required": true,
+                "validate": {
+                  "max": 256
+                }
+              },
+              {
+                "name": "value",
+                "type": "text",
+                "label": "Value",
+                "required": true,
+                "validate": {
+                  "max": 4096
+                }
+              }
+            ],
+            "type": "array",
+            "label": "Custom headers",
+            "validate": {
+              "maxItems": 16
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "headers": {
+              "mode": "chose"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 750,
+          "name": "Response 200"
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 78,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 2,
+              "filter": {
+                "name": "User",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.entry[].messaging[].message.is_echo}}",
+                      "b": "true",
+                      "o": "text:notequal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 6,
+                      "filter": {
+                        "name": "Verificación",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{1.`hub.mode`}}",
+                              "b": "subscribe",
+                              "o": "text:equal"
+                            },
+                            {
+                              "a": "{{1.`hub.verify_token`}}",
+                              "b": "iitasalta2025",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "body": "{{1.`hub.challenge`}}",
+                        "status": "200",
+                        "headers": []
+                      },
+                      "module": "gateway:WebhookRespond",
+                      "version": 1,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "status",
+                            "type": "uinteger",
+                            "label": "Status",
+                            "required": true,
+                            "validate": {
+                              "min": 100
+                            }
+                          },
+                          {
+                            "name": "body",
+                            "type": "any",
+                            "label": "Body"
+                          },
+                          {
+                            "name": "headers",
+                            "spec": [
+                              {
+                                "name": "key",
+                                "type": "text",
+                                "label": "Key",
+                                "required": true,
+                                "validate": {
+                                  "max": 256
+                                }
+                              },
+                              {
+                                "name": "value",
+                                "type": "text",
+                                "label": "Value",
+                                "required": true,
+                                "validate": {
+                                  "max": 4096
+                                }
+                              }
+                            ],
+                            "type": "array",
+                            "label": "Custom headers",
+                            "validate": {
+                              "maxItems": 16
+                            }
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "headers": {
+                              "mode": "chose"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1200,
+                          "y": 0,
+                          "name": "Response 200"
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 68,
+                      "filter": {
+                        "name": "Mensaje",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{1.entry[].messaging[].message.text}}",
+                              "o": "exist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 70,
+                              "filter": {
+                                "name": "Si",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{1.entry[].messaging[].message.referral.ad_id}}{{1.entry[].messaging[].message.referral.ad_id}}",
+                                      "o": "exist"
+                                    }
+                                  ],
+                                  [
+                                    {
+                                      "a": "{{1.entry[].messaging[].message.referral.ads_context_data.post_id}}",
+                                      "o": "exist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "sort": [],
+                                "limit": "1",
+                                "where": [
+                                  [
+                                    {
+                                      "a": "ad_provider_id",
+                                      "b": "1",
+                                      "o": "equal"
+                                    },
+                                    {
+                                      "a": "external_ref",
+                                      "b": "{{1.entry[].messaging[].message.referral.ad_id}}",
+                                      "o": "equal"
+                                    }
+                                  ],
+                                  [
+                                    {
+                                      "a": "ad_provider_id",
+                                      "b": "1",
+                                      "o": "equal"
+                                    },
+                                    {
+                                      "a": "external_ref",
+                                      "b": "{{1.entry[].messaging[].message.referral.ads_context_data.post_id}}",
+                                      "o": "equal"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "module": "postgres:SelectFromTable",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "where",
+                                    "type": "filter",
+                                    "label": "Filter",
+                                    "options": {
+                                      "store": [
+                                        {
+                                          "label": "id",
+                                          "value": "id"
+                                        },
+                                        {
+                                          "label": "ad_provider_id",
+                                          "value": "ad_provider_id"
+                                        },
+                                        {
+                                          "label": "course_id",
+                                          "value": "course_id"
+                                        },
+                                        {
+                                          "label": "title",
+                                          "value": "title"
+                                        },
+                                        {
+                                          "label": "external_ref",
+                                          "value": "external_ref"
+                                        }
+                                      ],
+                                      "operators": [
+                                        {
+                                          "label": "Basic",
+                                          "options": [
+                                            {
+                                              "label": "Is not null",
+                                              "value": "exist"
+                                            },
+                                            {
+                                              "label": "Is null",
+                                              "value": "notexist"
+                                            },
+                                            {
+                                              "label": "Equal to",
+                                              "value": "equal"
+                                            },
+                                            {
+                                              "label": "Not equal to",
+                                              "value": "notequal"
+                                            },
+                                            {
+                                              "label": "Greater than",
+                                              "value": "greater"
+                                            },
+                                            {
+                                              "label": "Greater than or equal to",
+                                              "value": "greaterorequal"
+                                            },
+                                            {
+                                              "label": "Less than",
+                                              "value": "less"
+                                            },
+                                            {
+                                              "label": "Less than or equal to",
+                                              "value": "lessorequal"
+                                            },
+                                            {
+                                              "label": "Contains",
+                                              "value": "contain"
+                                            },
+                                            {
+                                              "label": "Does not contain",
+                                              "value": "notcontain"
+                                            },
+                                            {
+                                              "label": "Starts with",
+                                              "value": "startwith"
+                                            },
+                                            {
+                                              "label": "Does not start with",
+                                              "value": "notstartwith"
+                                            },
+                                            {
+                                              "label": "Ends with",
+                                              "value": "endwith"
+                                            },
+                                            {
+                                              "label": "Does not end with",
+                                              "value": "notendwith"
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "sort",
+                                    "spec": [
+                                      {
+                                        "name": "column",
+                                        "type": "select",
+                                        "label": "Column",
+                                        "dynamic": true,
+                                        "options": [],
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "order",
+                                        "type": "select",
+                                        "label": "Order",
+                                        "options": [
+                                          {
+                                            "label": "Ascending",
+                                            "value": "asc"
+                                          },
+                                          {
+                                            "label": "Descending",
+                                            "value": "desc"
+                                          }
+                                        ],
+                                        "required": true
+                                      }
+                                    ],
+                                    "type": "array",
+                                    "label": "Sort"
+                                  },
+                                  {
+                                    "name": "limit",
+                                    "type": "uinteger",
+                                    "label": "Limit"
+                                  }
+                                ],
+                                "restore": {
+                                  "parameters": {
+                                    "table": {
+                                      "label": "public.ads"
+                                    },
+                                    "account": {
+                                      "data": {
+                                        "scoped": "true",
+                                        "connection": "postgres"
+                                      },
+                                      "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 450,
+                                  "name": "Buscar anuncio"
+                                },
+                                "interface": [
+                                  {
+                                    "name": "__IMTLENGTH__",
+                                    "type": "uinteger",
+                                    "label": "Total number of bundles"
+                                  },
+                                  {
+                                    "name": "__IMTINDEX__",
+                                    "type": "uinteger",
+                                    "label": "Bundle order position"
+                                  },
+                                  {
+                                    "name": "id",
+                                    "type": "integer",
+                                    "label": "id",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "ad_provider_id",
+                                    "type": "integer",
+                                    "label": "ad_provider_id",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "course_id",
+                                    "type": "integer",
+                                    "label": "course_id",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "title",
+                                    "type": "text",
+                                    "label": "title",
+                                    "required": false
+                                  },
+                                  {
+                                    "name": "external_ref",
+                                    "type": "text",
+                                    "label": "external_ref",
+                                    "required": false
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "account",
+                                    "type": "account:postgres",
+                                    "label": "Connection",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "continueWhenNoRes",
+                                    "type": "boolean",
+                                    "label": "Continue the execution of the route even if the module returns no rows",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "isToManageDataInSharedTransaction",
+                                    "type": "boolean",
+                                    "label": "Manage data within the shared transaction",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "table",
+                                    "type": "select",
+                                    "label": "Table",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "table": "\"public\".\"ads\"",
+                                "account": 6184753,
+                                "continueWhenNoRes": false,
+                                "isToManageDataInSharedTransaction": true
+                              }
+                            },
+                            {
+                              "id": 71,
+                              "mapper": null,
+                              "module": "builtin:BasicRouter",
+                              "routes": [
+                                {
+                                  "flow": [
+                                    {
+                                      "id": 72,
+                                      "filter": {
+                                        "name": "No",
+                                        "conditions": [
+                                          [
+                                            {
+                                              "a": "{{70.`__IMTLENGTH__`}}",
+                                              "b": "0",
+                                              "o": "text:equal"
+                                            }
+                                          ]
+                                        ]
+                                      },
+                                      "mapper": {
+                                        "@id": "",
+                                        "@title": "{{1.entry[].messaging[].message.referral.ads_context_data.ad_title}}",
+                                        "@course_id": "",
+                                        "@external_ref": "{{1.entry[].messaging[].message.referral.ads_context_data.post_id}}",
+                                        "@ad_provider_id": "1"
+                                      },
+                                      "module": "postgres:InsertIntoTable",
+                                      "version": 2,
+                                      "metadata": {
+                                        "expect": [
+                                          {
+                                            "name": "@id",
+                                            "type": "integer",
+                                            "label": "id"
+                                          },
+                                          {
+                                            "name": "@ad_provider_id",
+                                            "type": "integer",
+                                            "label": "ad_provider_id"
+                                          },
+                                          {
+                                            "name": "@course_id",
+                                            "type": "integer",
+                                            "label": "course_id"
+                                          },
+                                          {
+                                            "name": "@title",
+                                            "type": "text",
+                                            "label": "title"
+                                          },
+                                          {
+                                            "name": "@external_ref",
+                                            "type": "text",
+                                            "label": "external_ref"
+                                          }
+                                        ],
+                                        "restore": {
+                                          "parameters": {
+                                            "table": {
+                                              "label": "public.ads"
+                                            },
+                                            "account": {
+                                              "data": {
+                                                "scoped": "true",
+                                                "connection": "postgres"
+                                              },
+                                              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                                            }
+                                          }
+                                        },
+                                        "designer": {
+                                          "x": 2100,
+                                          "y": 300,
+                                          "name": "Añadir anuncio"
+                                        },
+                                        "interface": [
+                                          {
+                                            "name": "rowsAffected",
+                                            "type": "number",
+                                            "label": "Affected rows"
+                                          }
+                                        ],
+                                        "parameters": [
+                                          {
+                                            "name": "account",
+                                            "type": "account:postgres",
+                                            "label": "Connection",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "isToManageDataInSharedTransaction",
+                                            "type": "boolean",
+                                            "label": "Manage data within the shared transaction",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "returnRows",
+                                            "type": "boolean",
+                                            "label": "Return Rows"
+                                          },
+                                          {
+                                            "name": "table",
+                                            "type": "select",
+                                            "label": "Table",
+                                            "required": true
+                                          }
+                                        ]
+                                      },
+                                      "parameters": {
+                                        "table": "\"public\".\"ads\"",
+                                        "account": 6184753,
+                                        "isToManageDataInSharedTransaction": true
+                                      }
+                                    },
+                                    {
+                                      "id": 75,
+                                      "mapper": {
+                                        "command": "SELECT id FROM ads\nORDER BY id DESC\nLIMIT 1"
+                                      },
+                                      "module": "postgres:Query",
+                                      "version": 2,
+                                      "metadata": {
+                                        "expect": [
+                                          {
+                                            "name": "command",
+                                            "type": "text",
+                                            "label": "Command",
+                                            "required": true
+                                          }
+                                        ],
+                                        "restore": {
+                                          "parameters": {
+                                            "account": {
+                                              "data": {
+                                                "scoped": "true",
+                                                "connection": "postgres"
+                                              },
+                                              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                                            }
+                                          }
+                                        },
+                                        "designer": {
+                                          "x": 2400,
+                                          "y": 300,
+                                          "name": "Buscar id"
+                                        },
+                                        "parameters": [
+                                          {
+                                            "name": "account",
+                                            "type": "account:postgres",
+                                            "label": "Connection",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "continueWhenNoRes",
+                                            "type": "boolean",
+                                            "label": "Continue the execution of the route even if the module returns no rows",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "isToManageDataInSharedTransaction",
+                                            "type": "boolean",
+                                            "label": "Manage data within the shared transaction",
+                                            "required": true
+                                          }
+                                        ]
+                                      },
+                                      "parameters": {
+                                        "account": 6184753,
+                                        "continueWhenNoRes": false,
+                                        "isToManageDataInSharedTransaction": true
+                                      }
+                                    },
+                                    {
+                                      "id": 74,
+                                      "mapper": {
+                                        "data": {
+                                          "text": "{{1.entry[].messaging[].message.text}}",
+                                          "ad_id": "{{75.id}}",
+                                          "is_user": true,
+                                          "external_ref": "{{1.entry[].messaging[].message.mid}}",
+                                          "provider_name": "instagram",
+                                          "person_address": "{{1.entry[].messaging[].sender.id}}",
+                                          "channel_address": "{{1.entry[].id}}"
+                                        }
+                                      },
+                                      "module": "scenario-service:CallSubscenario",
+                                      "version": 2,
+                                      "metadata": {
+                                        "expect": [
+                                          {
+                                            "name": "data",
+                                            "spec": [
+                                              {
+                                                "name": "external_ref",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "provider_name",
+                                                "type": "text",
+                                                "label": "",
+                                                "required": true
+                                              },
+                                              {
+                                                "name": "channel_address",
+                                                "type": "text",
+                                                "label": "",
+                                                "required": true
+                                              },
+                                              {
+                                                "name": "person_address",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "text",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "is_user",
+                                                "type": "boolean",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "person_name",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "ad_id",
+                                                "type": "text",
+                                                "label": ""
+                                              }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Scenario Inputs"
+                                          }
+                                        ],
+                                        "restore": {
+                                          "expect": {
+                                            "data": {
+                                              "nested": {
+                                                "is_user": {
+                                                  "mode": "chose"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "parameters": {
+                                            "scenario": {
+                                              "label": "IITA - Create new Interaction"
+                                            }
+                                          }
+                                        },
+                                        "designer": {
+                                          "x": 2700,
+                                          "y": 300,
+                                          "name": "Create interaction user"
+                                        },
+                                        "interface": [
+                                          {
+                                            "name": "executionId",
+                                            "type": "text",
+                                            "label": "Execution ID"
+                                          }
+                                        ],
+                                        "parameters": [
+                                          {
+                                            "name": "scenario",
+                                            "type": "scenario",
+                                            "label": "Scenario",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "shouldWaitForExecutionEnd",
+                                            "type": "boolean",
+                                            "label": "Wait for subscenario output",
+                                            "required": true
+                                          }
+                                        ]
+                                      },
+                                      "parameters": {
+                                        "scenario": "SCN_3240069",
+                                        "shouldWaitForExecutionEnd": false
+                                      }
+                                    }
+                                  ]
+                                },
+                                {
+                                  "flow": [
+                                    {
+                                      "id": 76,
+                                      "filter": {
+                                        "name": "Si",
+                                        "conditions": []
+                                      },
+                                      "mapper": {
+                                        "data": {
+                                          "text": "{{1.entry[].messaging[].message.text}}",
+                                          "ad_id": "{{70.id}}",
+                                          "is_user": true,
+                                          "external_ref": "{{1.entry[].messaging[].message.mid}}",
+                                          "provider_name": "instagram",
+                                          "person_address": "{{1.entry[].messaging[].sender.id}}",
+                                          "channel_address": "{{1.entry[].id}}"
+                                        }
+                                      },
+                                      "module": "scenario-service:CallSubscenario",
+                                      "version": 2,
+                                      "metadata": {
+                                        "expect": [
+                                          {
+                                            "name": "data",
+                                            "spec": [
+                                              {
+                                                "name": "external_ref",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "provider_name",
+                                                "type": "text",
+                                                "label": "",
+                                                "required": true
+                                              },
+                                              {
+                                                "name": "channel_address",
+                                                "type": "text",
+                                                "label": "",
+                                                "required": true
+                                              },
+                                              {
+                                                "name": "person_address",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "text",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "is_user",
+                                                "type": "boolean",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "person_name",
+                                                "type": "text",
+                                                "label": ""
+                                              },
+                                              {
+                                                "name": "ad_id",
+                                                "type": "text",
+                                                "label": ""
+                                              }
+                                            ],
+                                            "type": "collection",
+                                            "label": "Scenario Inputs"
+                                          }
+                                        ],
+                                        "restore": {
+                                          "expect": {
+                                            "data": {
+                                              "nested": {
+                                                "is_user": {
+                                                  "mode": "chose"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "parameters": {
+                                            "scenario": {
+                                              "label": "IITA - Create new Interaction"
+                                            }
+                                          }
+                                        },
+                                        "designer": {
+                                          "x": 2100,
+                                          "y": 600,
+                                          "name": "Create interaction user"
+                                        },
+                                        "interface": [
+                                          {
+                                            "name": "executionId",
+                                            "type": "text",
+                                            "label": "Execution ID"
+                                          }
+                                        ],
+                                        "parameters": [
+                                          {
+                                            "name": "scenario",
+                                            "type": "scenario",
+                                            "label": "Scenario",
+                                            "required": true
+                                          },
+                                          {
+                                            "name": "shouldWaitForExecutionEnd",
+                                            "type": "boolean",
+                                            "label": "Wait for subscenario output",
+                                            "required": true
+                                          }
+                                        ]
+                                      },
+                                      "parameters": {
+                                        "scenario": "SCN_3240069",
+                                        "shouldWaitForExecutionEnd": false
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "version": 1,
+                              "metadata": {
+                                "designer": {
+                                  "x": 1800,
+                                  "y": 450,
+                                  "name": "¿Existe anuncio?"
+                                }
+                              },
+                              "parameters": {
+                                "else": 1
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 62,
+                              "filter": {
+                                "name": "No",
+                                "conditions": []
+                              },
+                              "mapper": {
+                                "data": {
+                                  "text": "{{1.entry[].messaging[].message.text}}",
+                                  "is_user": true,
+                                  "external_ref": "{{1.entry[].messaging[].message.mid}}",
+                                  "provider_name": "instagram",
+                                  "person_address": "{{1.entry[].messaging[].sender.id}}",
+                                  "channel_address": "{{1.entry[].id}}"
+                                }
+                              },
+                              "module": "scenario-service:CallSubscenario",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "data",
+                                    "spec": [
+                                      {
+                                        "name": "external_ref",
+                                        "type": "text",
+                                        "label": ""
+                                      },
+                                      {
+                                        "name": "provider_name",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "channel_address",
+                                        "type": "text",
+                                        "label": "",
+                                        "required": true
+                                      },
+                                      {
+                                        "name": "person_address",
+                                        "type": "text",
+                                        "label": ""
+                                      },
+                                      {
+                                        "name": "text",
+                                        "type": "text",
+                                        "label": ""
+                                      },
+                                      {
+                                        "name": "is_user",
+                                        "type": "boolean",
+                                        "label": ""
+                                      },
+                                      {
+                                        "name": "person_name",
+                                        "type": "text",
+                                        "label": ""
+                                      }
+                                    ],
+                                    "type": "collection",
+                                    "label": "Scenario Inputs"
+                                  }
+                                ],
+                                "restore": {
+                                  "expect": {
+                                    "data": {
+                                      "nested": {
+                                        "is_user": {
+                                          "mode": "chose"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "parameters": {
+                                    "scenario": {
+                                      "label": "IITA - Create new Interaction"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 1500,
+                                  "y": 900,
+                                  "name": "Create interaction user"
+                                },
+                                "interface": [
+                                  {
+                                    "help": "",
+                                    "name": "id_interaction",
+                                    "type": "text",
+                                    "label": "",
+                                    "default": "",
+                                    "required": false,
+                                    "multiline": false
+                                  },
+                                  {
+                                    "help": "",
+                                    "name": "id_person_conversation",
+                                    "type": "text",
+                                    "label": "",
+                                    "default": "",
+                                    "required": false,
+                                    "multiline": false
+                                  }
+                                ],
+                                "parameters": [
+                                  {
+                                    "name": "scenario",
+                                    "type": "scenario",
+                                    "label": "Scenario",
+                                    "required": true
+                                  },
+                                  {
+                                    "name": "shouldWaitForExecutionEnd",
+                                    "type": "boolean",
+                                    "label": "Wait for subscenario output",
+                                    "required": true
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "scenario": "SCN_3240069",
+                                "shouldWaitForExecutionEnd": true
+                              }
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 1200,
+                          "y": 600,
+                          "name": "¿Anuncio?"
+                        }
+                      },
+                      "parameters": {
+                        "else": 1
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 13,
+                      "filter": {
+                        "name": "Imagen",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{1.entry[].messaging[].message.attachments[].payload.url}}",
+                              "o": "exist"
+                            },
+                            {
+                              "a": "{{1.entry[].messaging[].message.attachments[].type}}",
+                              "b": "image",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "url": "{{1.entry[].messaging[].message.attachments[].payload.url}}",
+                        "method": "get",
+                        "serializeUrl": false,
+                        "shareCookies": false
+                      },
+                      "module": "http:ActionGetFile",
+                      "version": 3,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "url",
+                            "type": "url",
+                            "label": "URL",
+                            "required": true
+                          },
+                          {
+                            "name": "serializeUrl",
+                            "type": "boolean",
+                            "label": "Serialize URL",
+                            "required": true
+                          },
+                          {
+                            "name": "method",
+                            "type": "hidden",
+                            "label": "Method"
+                          },
+                          {
+                            "name": "shareCookies",
+                            "type": "boolean",
+                            "label": "Share cookies with other HTTP modules",
+                            "required": true
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 1200,
+                          "y": 1200
+                        },
+                        "parameters": [
+                          {
+                            "name": "handleErrors",
+                            "type": "boolean",
+                            "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "handleErrors": false
+                      }
+                    },
+                    {
+                      "id": 16,
+                      "mapper": {
+                        "model": "gpt-4.1",
+                        "top_p": "1",
+                        "images": [
+                          {
+                            "imageFileData": "{{13.data}}",
+                            "imageUploadType": "imageFile"
+                          }
+                        ],
+                        "prompt": "Extrae datos bancarios de la imagen de manera enlistada y sin más agregados. Debes obtener: \n- ID de pago \nmonto\n- fecha y hora del pago\n- banco emisor\n- cbu, cuil y nombre completo del emisor\n- cbu y banco receptor.\nSi incluye detalle deberás incluirlo.",
+                        "max_tokens": "2048",
+                        "temperature": "0.3",
+                        "n_completions": "1"
+                      },
+                      "module": "openai-gpt-3:analyzeImages",
+                      "version": 1,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "prompt",
+                            "type": "text",
+                            "label": "Prompt",
+                            "required": true
+                          },
+                          {
+                            "name": "images",
+                            "spec": {
+                              "name": "value",
+                              "spec": [
+                                {
+                                  "name": "imageUploadType",
+                                  "type": "select",
+                                  "label": "How would you like to specify an image?",
+                                  "options": [
+                                    {
+                                      "label": "Image URL",
+                                      "value": "url",
+                                      "nested": [
+                                        {
+                                          "help": "Public URL of the image. For example, `https://getmyimage.com/myimage.png`.",
+                                          "mode": "edit",
+                                          "name": "imageUrl",
+                                          "type": "url",
+                                          "label": "Image URL",
+                                          "mappable": {
+                                            "help": "Public URL of the image. For example, `https://getmyimage.com/myimage.png`."
+                                          },
+                                          "required": true
+                                        }
+                                      ],
+                                      "default": true
+                                    },
+                                    {
+                                      "label": "Image File",
+                                      "value": "imageFile",
+                                      "nested": [
+                                        {
+                                          "help": "Binary data of the image. For example, you can retrieve the binary data of your image using the __HTTP: Get a file__ module.",
+                                          "name": "imageFileData",
+                                          "type": "buffer",
+                                          "label": "Image File",
+                                          "required": true,
+                                          "semantic": "file:data"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "required": true
+                                }
+                              ],
+                              "type": "collection",
+                              "label": "Image"
+                            },
+                            "type": "array",
+                            "label": "Images",
+                            "required": true
+                          },
+                          {
+                            "name": "model",
+                            "type": "select",
+                            "label": "Model",
+                            "required": true
+                          },
+                          {
+                            "name": "max_tokens",
+                            "type": "uinteger",
+                            "label": "Max Completion Tokens"
+                          },
+                          {
+                            "name": "temperature",
+                            "type": "number",
+                            "label": "Temperature",
+                            "validate": {
+                              "max": 2,
+                              "min": 0
+                            }
+                          },
+                          {
+                            "name": "top_p",
+                            "type": "number",
+                            "label": "Top P",
+                            "validate": {
+                              "max": 1,
+                              "min": 0
+                            }
+                          },
+                          {
+                            "name": "n_completions",
+                            "type": "number",
+                            "label": "Number"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "model": {
+                              "mode": "chose",
+                              "label": "gpt-4.1 (system)Smartest non-reasoning model"
+                            },
+                            "images": {
+                              "mode": "chose",
+                              "items": [
+                                {
+                                  "imageUploadType": {
+                                    "mode": "chose",
+                                    "label": "Image File"
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "parameters": {
+                            "__IMTCONN__": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "openai-gpt-3"
+                              },
+                              "label": "AI Content Generator"
+                            }
+                          }
+                        },
+                        "advanced": true,
+                        "designer": {
+                          "x": 1500,
+                          "y": 1200
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:openai-gpt-3",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "__IMTCONN__": 4371900
+                      }
+                    },
+                    {
+                      "id": 63,
+                      "mapper": {
+                        "data": {
+                          "text": "(Image) [{{16.result}}]",
+                          "is_user": true,
+                          "external_ref": "{{1.entry[].messaging[].message.mid}}",
+                          "provider_name": "instagram",
+                          "person_address": "{{1.entry[].messaging[].sender.id}}",
+                          "channel_address": "{{1.entry[].id}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new Interaction"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1800,
+                          "y": 1200,
+                          "name": "Create interaction user"
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for subscenario output",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3240069",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 600,
+                  "name": "¿Mensaje o verificación?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 80,
+              "filter": {
+                "name": "System",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.entry[].messaging[].message.is_echo}}",
+                      "b": "true",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "duration": "2"
+              },
+              "module": "util:FunctionSleep",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "duration",
+                    "type": "uinteger",
+                    "label": "Delay",
+                    "required": true,
+                    "validate": {
+                      "max": 300,
+                      "min": 1
+                    }
+                  }
+                ],
+                "restore": {},
+                "designer": {
+                  "x": 900,
+                  "y": 1500,
+                  "name": "Wait 2 s"
+                }
+              },
+              "parameters": {}
+            },
+            {
+              "id": 37,
+              "mapper": {
+                "data": {
+                  "text": "{{1.entry[].messaging[].message.text}}",
+                  "is_user": false,
+                  "person_name": "iita_salta",
+                  "external_ref": "{{1.entry[].messaging[].message.mid}}",
+                  "provider_name": "{{1.object}}",
+                  "person_address": "{{1.entry[].messaging[].recipient.id}}",
+                  "channel_address": "{{1.entry[].messaging[].sender.id}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": ""
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "IITA - Create new Interaction"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 1500,
+                  "name": "Create interaction system"
+                },
+                "interface": [
+                  {
+                    "name": "executionId",
+                    "type": "text",
+                    "label": "Execution ID"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for subscenario output",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3240069",
+                "shouldWaitForExecutionEnd": false
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 750,
+          "name": "¿User or system?"
+        }
+      }
+    }
+  ],
+  "name": "IITA Salta - Instagram (LEGACY)",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "entry": [
+            {
+              "id": "17841404168256335",
+              "time": 1764554142158,
+              "messaging": [
+                {
+                  "sender": {
+                    "id": "1982911822556637"
+                  },
+                  "message": {
+                    "mid": "aWdfZAG1faXRlbToxOklHTWVzc2FnZAUlEOjE3ODQxNDA0MTY4MjU2MzM1OjM0MDI4MjM2Njg0MTcxMDMwMTI0NDI2MDA4MTk2OT...",
+                    "text": "¡Hola! Quiero más información.",
+                    "referral": {
+                      "type": "OPEN_THREAD",
+                      "ad_id": "120230596812220701",
+                      "source": "ADS",
+                      "ads_context_data": {
+                        "post_id": "1467289477855232",
+                        "ad_title": "Publicación de Instagram: 🚀 Potenciá tu marca con...",
+                        "video_url": "https://scontent.cdninstagram.com/v/t51.71878-15/549258492_940111481670703_2171443643475472257_n.jpg..."
+                      }
+                    }
+                  },
+                  "recipient": {
+                    "id": "17841404168256335"
+                  },
+                  "timestamp": 1764554141207
+                }
+              ]
+            }
+          ],
+          "object": "instagram"
+        },
+        "13": {
+          "data": "IMTBuffer(44010, binary, e52541b7227c9a901104a21ab3a6358b32c69fa9): ffd8ffe000104a464946000101000001...",
+          "headers": [
+            {
+              "name": "content-length",
+              "value": "44010"
+            }
+          ],
+          "fileName": "image-1574678903902272",
+          "fileSize": 44010,
+          "statusCode": 200,
+          "cookieHeaders": []
+        },
+        "75": {
+          "id": 18
+        }
+      }
+    },
+    "scenario": {
+      "dlq": true,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}
