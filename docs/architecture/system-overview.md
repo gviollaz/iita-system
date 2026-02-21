@@ -1,6 +1,14 @@
 # Arquitectura del sistema — IITA CRM
 
-Ultima actualizacion: 2026-02-20 | Autor: gviollaz + Claude Opus 4.6
+Ultima actualizacion: 2026-02-21 | Autor: gviollaz + Claude Opus 4.6
+
+## Historia: migracion desde el sistema legacy
+
+El sistema actual reemplazo al **Chatbot IITA 2.0** en febrero 2026. El sistema anterior era una aplicacion Django + Flask desplegada en una VM propia con PostgreSQL local, que manejaba WhatsApp e Instagram mediante adaptadores Flask propios y generacion de IA con OpenAI en threads in-process.
+
+La migracion conservo todos los datos historicos (~25K personas, ~102K interacciones, ~24K conversaciones) y redistribuyo la arquitectura: Make.com reemplazo a los adaptadores Flask, Supabase reemplazo a la VM con PostgreSQL, y React reemplazo a Django templates.
+
+Para la documentacion tecnica completa del sistema anterior, ver `docs/legacy-system/`.
 
 ## Diagrama general
 
