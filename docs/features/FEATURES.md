@@ -181,18 +181,39 @@
 
 ## Features Deseadas
 
-### FEAT-019 | Canal TikTok
+Las features deseadas estan organizadas en grupos funcionales. Los IDs de FEAT se mantienen para trazabilidad.
+
+### Mapa de dependencias entre grupos
+
+```
+Grupo A (Canales DMs) ←── depende de FEAT-005 (Pipeline)
+Grupo B (Redes Sociales) ←── depende de APIs de cada plataforma
+Grupo C (Canal Voz) ←── depende de proveedor VoIP + FEAT-040
+Grupo D (Control IA) ←── depende de FEAT-005 (Pipeline)
+Grupo E (Timing Mensajes) ←── depende de FEAT-005 + datos historicos
+Grupo F (Marketing) ←── depende de FEAT-005 + APIs externas
+Grupo G (Datos) ←── depende de FEAT-003 (Personas) + FEAT-008 (Enriquecimiento)
+Grupo H (Operaciones) ←── depende de FEAT-002 (Chat) + FEAT-003 (Personas)
+Grupo I (Monitoreo) ←── depende de FEAT-001 (Dashboard) + FEAT-018 (Health)
+```
+
+---
+
+### Grupo A — Expansion de Canales de Mensajeria Directa
+
+> **Objetivo:** Ampliar el pipeline multicanal con nuevos canales de DMs. Cada canal nuevo sigue el mismo patron de integracion: escenario de entrada en Make.com → `process_incoming_message` → generacion IA → aprobacion → envio. Los canales se registran en la tabla `channels` y el frontend los muestra automaticamente en filtros y selectores.
+
+#### FEAT-019 | Canal TikTok — Mensajes Directos
 
 - **Estado:** Deseado
 - **Prioridad:** P3
 - **Componente:** Make.com + Supabase
-- **Descripcion:** Agregar TikTok como canal de comunicacion. Recibir y responder mensajes directos de TikTok a traves del pipeline multicanal existente.
+- **Descripcion:** Integrar TikTok como canal de mensajeria directa. TikTok es relevante para alcanzar audiencia joven interesada en cursos de marketing digital, diseno y tecnologia. La plataforma tiene mas de 1.5 mil millones de usuarios activos y su audiencia tiende a ser sub-30, un segmento clave para formacion profesional.
 - **Dependencias:** FEAT-005 (Pipeline Multicanal)
-- **Notas:** Requiere evaluar disponibilidad de TikTok Messaging API y webhooks.
+- **Viabilidad tecnica:** TikTok Login Kit + Content Posting API estan disponibles. Para mensajeria directa, la API es limitada — actualmente solo disponible para cuentas de empresa verificadas via TikTok for Business. Evaluar si el volumen de DMs justifica la integracion directa o si conviene redirigir a WA/IG desde la bio.
+- **Notas:** Empezar con monitoreo de comentarios (Grupo B, FEAT-042) antes de DMs, ya que los comentarios en TikTok son mas frecuentes y accesibles via API.
 
----
-
-### FEAT-020 | Canal Discord
+#### FEAT-020 | Canal Discord
 
 - **Estado:** Deseado
 - **Prioridad:** P3
@@ -597,3 +618,161 @@
   - Dashboard de metricas por edicion: abiertos, clicks, desuscripciones, bounces
   - En perfil de persona: mostrar a que newsletters esta suscripta, permitir suscribir/desuscribir
 - **Notas:** Evaluar proveedores: (a) Mailchimp — gratis hasta 500 contactos, API madura, editor de email integrado, pero la interfaz es compleja; (b) Resend — moderno, barato ($0.003/email), API simple, sin editor visual; (c) SendGrid — robusto, 100 emails/dia gratis. La recomendacion es empezar con un proveedor simple (Resend o SendGrid) manejando el contenido desde el CRM, y evaluar Mailchimp si se necesita un editor visual avanzado. La frecuencia sugerida de 1/mes evita fatiga del suscriptor. Los newsletters por tematica permiten enviar contenido relevante segmentado (no todo a todos).
+
+---
+
+### FEAT-038 | Tracking Multi-plataforma de Campanas Publicitarias
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Frontend + Supabase + Make.com + APIs externas (Google Ads, Meta Ads, TikTok Ads)
+- **Descripcion:** Vincular campanas publicitarias de multiples plataformas (Google Ads, Meta Ads, TikTok Ads) con el CRM, extrayendo costos reales diarios de cada plataforma y correlacionandolos con mensajes entrantes para medir la efectividad real de cada campana. El sistema debe: (1) conectarse a las APIs de cada plataforma para extraer metricas diarias (gasto, impresiones, clicks, CTR, CPC, conversiones), (2) relacionar leads entrantes con la campana de origen usando UTMs, `ad_id`, y parametros de tracking, (3) construir funnels de conversion completos (impresion → click → landing → contacto → respuesta → inscripcion), (4) trackear metricas de landing pages propias (visitas, bounce rate, tiempo en pagina, conversion a lead), (5) medir campanas de remarketing (audiencias personalizadas, retargeting por lista de leads), (6) generar proyecciones de inscripcion basadas en datos historicos de conversion.
+- **Dependencias:** FEAT-030 (Dashboard de costos — comparten infraestructura de tracking)
+- **Relacionado:** FEAT-033 (Campanas Meta Ads — FEAT-038 agrega tracking a las campanas de FEAT-033), FEAT-023 (Mapa — visualizar leads por campana de origen)
+- **Backend requerido:**
+  - Tabla `ad_platforms`: `(id, name, platform_type, api_credentials_encrypted, status, last_sync_at)` — plataformas conectadas (Google Ads, Meta Ads, TikTok Ads)
+  - Tabla `ad_campaigns`: `(id, platform_id, external_campaign_id, name, objective, status, budget_daily, budget_total, start_date, end_date, targeting_summary, created_at)`
+  - Tabla `ad_campaign_metrics`: `(id, campaign_id, date, spend, impressions, clicks, ctr, cpc, conversions, reach, frequency)` — metricas diarias por campana
+  - Tabla `ad_conversions`: `(id, campaign_id, person_id, conversation_id, conversion_type, conversion_value, attributed_at)` — conversion_type: `landing_visit`, `lead_contact`, `response`, `enrollment`
+  - Tabla `landing_page_stats`: `(id, page_url, campaign_id, date, visits, unique_visitors, bounce_rate, avg_time_on_page, conversions_to_lead)`
+  - Enriquecer `interactions` con campo `utm_source`, `utm_medium`, `utm_campaign` para atribucion
+  - Sincronizacion via Make.com: cron diario que extrae metricas de cada API y las guarda en `ad_campaign_metrics`
+  - RPC `get_campaign_funnel(campaign_id)`: retorna el funnel completo con tasas de conversion en cada etapa
+  - RPC `get_campaign_roi(campaign_id)`: retorna costo total, leads generados, inscripciones, ROI
+  - RPC `project_enrollments(date_range, campaign_ids[])`: proyeccion de inscripciones basada en tasas historicas
+- **Frontend requerido:**
+  - Pagina "Campanas Publicitarias" con:
+    - Dashboard general: gasto total por plataforma, leads totales por plataforma, costo por lead, ROI por campana
+    - Graficos de tendencia: gasto vs leads por dia/semana/mes
+    - Comparacion entre plataformas (Google vs Meta vs TikTok) en metricas clave
+  - Vista de detalle por campana:
+    - Metricas detalladas (impresiones, clicks, CTR, CPC, conversiones)
+    - Funnel de conversion visual (barra o embudo): impresion → click → landing → lead → respuesta → inscripcion
+    - Lista de leads atribuidos a esa campana
+    - Timeline de gasto vs resultados
+  - Seccion "Landing Pages": metricas por pagina, conversion a lead, bounce rate
+  - Seccion "Remarketing": audiencias activas, costo de retargeting, tasa de re-engagement
+  - Proyecciones: calculadora que dado un presupuesto y plataforma, estima leads e inscripciones esperadas
+  - En perfil de persona: mostrar de que campana/plataforma llego originalmente (atribucion)
+- **Notas:** La atribucion lead→campana es el desafio principal. Para leads que llegan por WA, el `ad_id` de Meta ya esta disponible en algunos flujos (BUG-006 en Roadmap). Para leads de landing pages, usar UTMs en la URL. Para TikTok y Google Ads, integrar con sus APIs de conversion. Las APIs de las tres plataformas tienen quotas y rate limits — el cron diario es suficiente (no necesita tiempo real). Las credenciales API deben almacenarse encriptadas (nunca en texto plano). Google Ads API requiere un developer token y cuenta MCC. Meta Marketing API usa tokens de pagina/app. TikTok Ads API requiere app registrada. Las proyecciones usan regresion simple sobre datos historicos — no requiere ML complejo, basta con promedios moviles de tasas de conversion.
+
+---
+
+### FEAT-039 | Inventario de Recursos por Curso para Conversaciones
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Frontend + Supabase + Make.com
+- **Descripcion:** Implementar un inventario de recursos por curso (programas, videos de alumnos, videos explicativos de profesores, testimonios, PDFs, links) que los operadores puedan enviar durante conversaciones con leads. Cada recurso queda vinculado a un curso y tiene un proposito comercial especifico (informar, convencer, demostrar). El sistema trackea que recurso se envio a que lead y cuando, de manera que los operadores (y la IA) puedan: (1) saber que cartas ya se jugaron con cada lead, (2) no repetir el mismo recurso, (3) usar los recursos mas efectivos en el momento adecuado del funnel, (4) medir la efectividad de cada recurso (cuantos leads que recibieron el testimonio X terminaron inscribiendose).
+- **Dependencias:** FEAT-004 (ABM de Cursos), FEAT-002 (Chat de Conversaciones)
+- **Relacionado:** FEAT-029 (Composicion de mensajes — los recursos se pueden adjuntar desde ahi), FEAT-017 (Media Storage — los recursos se almacenan en Supabase Storage)
+- **Backend requerido:**
+  - Tabla `course_resources`: `(id, course_id, name, description, resource_type, media_url, media_type, purpose, effectiveness_score, times_sent, times_converted, sort_order, status, created_at, updated_at)`
+    - `resource_type`: `program`, `student_video`, `professor_video`, `testimonial`, `pdf`, `infographic`, `link`, `other`
+    - `purpose`: `inform`, `convince`, `demonstrate`, `close`, `follow_up`
+    - `effectiveness_score`: calculado automaticamente como `times_converted / times_sent * 100`
+  - Tabla `resource_sends`: `(id, resource_id, person_id, conversation_id, interaction_id, sent_by, sent_at, outcome)`
+    - `sent_by`: `operator`, `ai`
+    - `outcome`: `no_response`, `positive_response`, `negative_response`, `enrolled` — se actualiza con el tiempo
+  - RPC `get_resources_for_conversation(conversation_id)`: retorna recursos del curso asociado a esa conversacion, indicando cuales ya se enviaron a ese lead y cuales no
+  - RPC `get_resource_effectiveness(course_id)`: ranking de recursos por efectividad
+  - Trigger que actualiza `effectiveness_score` al cambiar `outcome` en `resource_sends`
+  - Enriquecer prompt de IA con informacion de recursos disponibles y enviados, para que sugiera el recurso mas relevante
+- **Frontend requerido:**
+  - En la pagina de Cursos (Courses.jsx) — seccion "Recursos":
+    - Lista de recursos por curso con tipo, descripcion, preview de media
+    - Agregar/editar/eliminar recursos: subir archivo o pegar URL, seleccionar tipo y proposito
+    - Indicador de efectividad por recurso (barra de progreso o porcentaje)
+    - Ordenar recursos por efectividad o por orden sugerido de uso
+  - En el chat de conversaciones (Conversations.jsx):
+    - Boton "Enviar recurso" en la barra de herramientas del chat
+    - Panel lateral o modal con recursos disponibles del curso relevante
+    - Indicador visual de cuales ya se enviaron a ese lead (tachados o con badge "ya enviado")
+    - Preview del recurso antes de enviar (thumbnail de video, primera pagina de PDF, etc.)
+    - Al seleccionar: el recurso se adjunta al mensaje y se crea el registro en `resource_sends`
+  - Dashboard de efectividad de recursos:
+    - Ranking por curso: cuales recursos generan mas conversiones
+    - Heatmap: que recursos se envian mas y en que etapa del funnel
+    - Sugerencia de recursos subutilizados pero efectivos
+- **Notas:** Los recursos son herramientas clave de conversion. Los testimonios de alumnos y videos de profesores son los mas efectivos segun experiencia del equipo. Es importante no enviar el mismo testimonio dos veces — el tracking por lead lo previene. La IA debe conocer los recursos disponibles para poder sugerirlos en sus respuestas propuestas (ej: "Basado en que este lead pregunto sobre salida laboral, sugiero enviar el testimonio de [alumno X] que consiguio trabajo"). La tabla `resource_sends` permite analisis de efectividad a largo plazo. Los archivos pesados (videos) se almacenan en Supabase Storage (FEAT-017) y en `course_resources` solo se guarda la URL. Empezar cargando recursos de los cursos mas vendidos y expandir gradualmente.
+
+---
+
+### FEAT-040 | Registro de Atenciones Personales a Leads
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Frontend + Supabase + Make.com
+- **Descripcion:** Registrar cada vez que un operador atiende personalmente a un lead (llamada telefonica, visita presencial, videollamada, mensaje directo desde telefono personal, etc.) capturando informacion minima del contacto para que quede en el sistema y se pueda hacer seguimiento. Actualmente los operadores atienden leads por fuera de los canales del CRM (llamadas personales, WhatsApp desde el telefono, visitas en la sede) y esa informacion se pierde — no queda registro en el sistema, no se sabe que se hablo, ni se puede dar continuidad. El registro debe ser rapido y facil (formulario minimo) para que los operadores lo usen en la practica.
+- **Dependencias:** FEAT-003 (Gestion de Personas), FEAT-002 (Chat de Conversaciones)
+- **Relacionado:** FEAT-028 (Silenciar IA — al registrar atencion personal se podria pausar la IA automaticamente), FEAT-032 (Reactivacion — no reactivar si hubo atencion personal reciente)
+- **Backend requerido:**
+  - Tabla `manual_contacts`: `(id, person_id, conversation_id, contact_type, contact_channel, summary, outcome, next_action, next_action_date, duration_minutes, contacted_by, contacted_at, created_at)`
+    - `contact_type`: `phone_call`, `in_person_visit`, `video_call`, `personal_whatsapp`, `personal_email`, `other`
+    - `contact_channel`: texto libre o referencia a canal (ej: "telefono fijo sede", "WA personal de operador X")
+    - `outcome`: `interested`, `not_interested`, `needs_follow_up`, `enrolled`, `requested_info`, `no_answer`, `rescheduled`
+    - `next_action`: texto libre describiendo que hacer despues (ej: "Enviar programa del curso", "Llamar el jueves")
+    - `next_action_date`: fecha para agendar el seguimiento
+    - `contacted_by`: operador que realizo el contacto
+  - RPC `get_pending_follow_ups(operator_id)`: retorna lista de contactos manuales con `next_action_date` proximo o vencido
+  - RPC `get_contact_history(person_id)`: timeline completo de contactos manuales + conversaciones automaticas
+  - Trigger: al crear un `manual_contact`, opcionalmente pausar la IA para esa persona por X horas (configurable)
+  - Trigger: al crear un `manual_contact`, actualizar `last_contact_at` en la persona
+  - Integracion con sistema de reactivacion (FEAT-032): excluir personas con contacto manual reciente
+- **Frontend requerido:**
+  - Boton "Registrar contacto" accesible desde:
+    - Panel de chat de una conversacion (Conversations.jsx) — boton en la barra superior
+    - Perfil de persona (People.jsx) — seccion de acciones
+    - Acceso rapido desde el dashboard (formulario con buscador de persona)
+  - Formulario de registro rapido (modal):
+    - Buscar/seleccionar persona (autocompletado por nombre, telefono o email)
+    - Tipo de contacto (dropdown: llamada, visita, videollamada, WA personal, otro)
+    - Canal/medio (texto libre: "telefono fijo sede centro", "WA personal de Maria")
+    - Resumen de lo hablado (textarea, minimo 10 caracteres para asegurar contenido util)
+    - Resultado (dropdown: interesado, no interesado, necesita seguimiento, inscripto, pidio info, no contesto, reprogramado)
+    - Proxima accion (texto libre + fecha opcional): "Enviar programa" + "2026-02-25"
+    - Duracion aproximada (opcional, en minutos)
+  - En perfil de persona: timeline unificado que combine contactos manuales + mensajes de canales automaticos, ordenados cronologicamente
+  - Dashboard de seguimientos pendientes:
+    - Lista de proximas acciones con fecha, ordenadas por urgencia
+    - Indicador de seguimientos vencidos (color rojo)
+    - Filtro por operador, sede, estado
+  - Estadisticas de contactos manuales:
+    - Cantidad de contactos por operador, por dia/semana/mes
+    - Distribucion por tipo de contacto y resultado
+    - Tasa de conversion de contactos manuales vs automaticos
+- **Notas:** La clave es que el formulario sea RAPIDO y MINIMO — si es tedioso los operadores no lo van a usar. Los campos obligatorios deben ser solo: persona, tipo de contacto, y resumen. Todo lo demas opcional pero recomendado. El campo "proxima accion" con fecha permite construir un sistema de agenda/seguimiento que hoy no existe y que es critico para no perder leads. El timeline unificado (manual + automatico) da la vision completa de la relacion con el lead. Considerar agregar notificaciones (push/email) al operador cuando un seguimiento esta proximo a vencer. Este feature complementa fuertemente a FEAT-028 (silenciar IA): si registro que atendi personalmente a un lead, el sistema puede pausar la IA automaticamente por 24-48h para evitar interferencia.
+
+---
+
+### FEAT-041 | Llamadas de Audio — Recibir y Generar desde el CRM
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Frontend + Supabase + Integracion VoIP/Telephony (Twilio/Vonage/Telnyx)
+- **Descripcion:** Permitir que los operadores reciban y generen llamadas de audio directamente desde el CRM, como evolucion natural del sistema multicanal. Actualmente toda la comunicacion es por texto (WhatsApp, Instagram, Messenger, Email). Las llamadas de voz son un canal critico para cerrar inscripciones y resolver dudas complejas, pero hoy se hacen desde telefonos personales sin registro en el sistema. Esta feature integra telefonia (VoIP) al CRM para: (1) hacer llamadas salientes a leads desde la interfaz del CRM (click-to-call), (2) recibir llamadas entrantes y rutearlas al operador asignado, (3) grabar llamadas (con consentimiento) y almacenarlas vinculadas al lead, (4) transcribir llamadas automaticamente (speech-to-text) para que queden como texto buscable, (5) que la IA pueda analizar la transcripcion y sugerir proximos pasos post-llamada.
+- **Dependencias:** FEAT-040 (Registro de contactos — las llamadas via CRM se registran automaticamente), FEAT-017 (Storage — grabaciones de audio)
+- **Relacionado:** FEAT-028 (Silenciar IA — durante llamada activa la IA se pausa), FEAT-032 (Reactivacion — llamada cuenta como interaccion), FEAT-029 (Composicion IA — post-llamada la IA sugiere mensaje de seguimiento)
+- **Backend requerido:**
+  - Integracion con proveedor VoIP (Twilio Voice, Vonage Voice, o Telnyx):
+    - Numero(s) de telefono del instituto (uno por sede o uno compartido)
+    - WebRTC para llamadas desde el navegador (sin necesidad de telefono fisico)
+    - Webhooks para eventos de llamada (incoming, answered, ended, recording_ready)
+  - Tabla `voice_calls`: `(id, person_id, conversation_id, direction, status, phone_from, phone_to, duration_seconds, recording_url, transcription_text, transcription_status, operator_id, started_at, ended_at, cost, provider_call_id, created_at)`
+    - `direction`: `inbound`, `outbound`
+    - `status`: `ringing`, `in_progress`, `completed`, `missed`, `busy`, `failed`, `voicemail`
+    - `transcription_status`: `pending`, `processing`, `completed`, `failed`
+  - Edge Function para iniciar llamada saliente: recibe `person_id` + `operator_id`, busca telefono de la persona, inicia llamada via API de Twilio/Vonage
+  - Webhook handler para llamadas entrantes: identifica persona por numero, rutea al operador asignado o al disponible
+  - Transcripcion automatica post-llamada: Twilio tiene transcription integrado; alternativamente usar Whisper de OpenAI o Deepgram
+  - Post-transcripcion: IA analiza contenido y genera resumen + sugiere proxima accion (reutilizar pipeline de `ai_interaction`)
+  - Auto-registro en `manual_contacts` (FEAT-040) con datos de la llamada
+- **Frontend requerido:**
+  - Boton "Llamar" en perfil de persona y en panel de chat (click-to-call)
+  - Widget de llamada en curso: panel flotante con nombre del lead, duracion, boton de colgar, mute, hold
+  - Notificacion de llamada entrante: popup con datos del lead (si se identifica por numero)
+  - En timeline de conversacion: las llamadas aparecen como burbujas especiales con icono de telefono, duracion, y boton para reproducir grabacion
+  - Reproductor de audio inline para grabaciones
+  - Transcripcion expandible debajo de cada llamada
+  - Configuracion de operador: numero de extension, horario de disponibilidad, estado (disponible/ocupado/ausente)
+- **Notas:** Esta es una feature de complejidad alta y costo operativo (cada minuto de llamada tiene costo con el proveedor VoIP). Se recomienda implementar en fases: (1) primero llamadas salientes click-to-call (lo mas util para cerrar ventas), (2) luego llamadas entrantes con ruteo, (3) despues grabacion + transcripcion. Twilio es el proveedor mas maduro ($0.013/min llamada + $0.05/min transcripcion). Telnyx es mas economico ($0.005/min). WebRTC permite llamar desde el navegador sin softphone. La transcripcion con IA es lo que cierra el circuito: convierte la llamada de audio en texto searchable que alimenta el contexto del lead. Requiere consentimiento para grabar — implementar aviso automatico al inicio de la llamada.
