@@ -1,0 +1,148 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0f1117;
+  --s1: #181a20;
+  --s2: #1e2028;
+  --s3: #2c2e38;
+  --bdr: #2a2d38;
+  --t1: #eceef2;
+  --t2: #c2c8d8;
+  --t3: #8d93ab;
+  --ac: #6c5ce7;
+  --acBg: rgba(108, 92, 231, .15);
+  --grn: #00b894;
+  --grnBg: rgba(0, 184, 148, .12);
+  --red: #ff6b6b;
+  --redBg: rgba(255, 107, 107, .12);
+  --ylw: #ffc048;
+  --ylwBg: rgba(255, 192, 72, .12);
+  --blu: #74b9ff;
+  --bluBg: rgba(116, 185, 255, .12);
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  font-weight: 450;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 3px; }
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 13px;
+  background: var(--s2);
+  border: 1px solid var(--bdr);
+  color: var(--t1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  outline: none;
+  transition: border .2s;
+  max-width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--ac); }
+
+button { font-family: inherit; cursor: pointer; transition: all .15s; }
+
+/* ═══ Tables ═══ */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 8px 10px; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .5px; color: var(--t3);
+  border-bottom: 1px solid var(--bdr); position: sticky; top: 0;
+  background: var(--s1); z-index: 1; white-space: nowrap;
+  font-weight: 600;
+}
+td {
+  padding: 7px 10px; font-size: 12px;
+  border-bottom: 1px solid var(--bdr); color: var(--t1);
+}
+tr:hover td { background: var(--s2); }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; z-index: 9999;
+  animation: slideUp .3s;
+  max-width: calc(100vw - 48px);
+}
+.toast-ok { background: var(--grnBg); color: var(--grn); border: 1px solid var(--grn); }
+.toast-err { background: var(--redBg); color: var(--red); border: 1px solid var(--red); }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--s3); border-top-color: var(--ac);
+  border-radius: 50%; animation: spin .6s linear infinite; margin: 0 auto;
+}
+
+.media-thumb {
+  border-radius: 8px; max-width: 240px; max-height: 180px;
+  cursor: pointer; border: 1px solid var(--bdr); transition: transform .2s;
+}
+.media-thumb:hover { transform: scale(1.05); }
+
+.media-file {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: var(--s3); border-radius: 8px;
+  color: var(--blu); font-size: 12px; text-decoration: none; border: 1px solid var(--bdr);
+}
+.media-file:hover { background: var(--bluBg); }
+
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.85);
+  z-index: 9999; display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.lightbox img, .lightbox video { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+.fr { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.fr > * { min-width: 0; }
+
+.num-good { color: var(--grn); }
+.num-bad { color: var(--red); }
+.num-warn { color: var(--ylw); }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+
+/* Mobile: < 768px */
+@media (max-width: 767px) {
+  /* Allow table cells to wrap on mobile */
+  td { white-space: normal; word-break: break-word; }
+
+  /* Toast full width */
+  .toast { left: 12px; right: 12px; bottom: 12px; text-align: center; }
+
+  /* Inputs full width - 16px prevents iOS zoom */
+  input, select, textarea { font-size: 16px; }
+
+  /* Better readability on mobile in bright environments */
+  :root {
+    --t2: #cdd3e2;
+    --t3: #9ba1ba;
+  }
+}
+
+/* Tablet: < 1024px */
+@media (max-width: 1023px) {
+  td { font-size: 11px; }
+  th { font-size: 9px; padding: 6px 8px; }
+  td { padding: 6px 8px; }
+}
