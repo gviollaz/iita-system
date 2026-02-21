@@ -25,6 +25,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-029: Composicion de mensajes con asistente IA on-demand y adjuntos (deseado, P1)
 - FEAT-030: Dashboard de costos operativos — tracking de gastos de IA, Make.com, canales, storage (deseado)
 - FEAT-031: Banco de respuestas pre-generadas para leads nuevos — reduce costos y mejora velocidad (deseado)
+- FEAT-032: Reactivacion automatica de conversaciones sin respuesta — cron + IA + limites anti-spam (deseado, P1)
+- FEAT-033: Campanas de marketing pago en Meta — Ads automatizados por calendario y etiquetas (deseado)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---

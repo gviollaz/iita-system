@@ -406,3 +406,56 @@
   - Sugerencia automatica: cuando la IA genera una respuesta para un lead nuevo que se aprueba, ofrecer "Guardar como template" para alimentar el banco
   - Estadisticas del banco: templates mas usados, tasa de aprobacion, ahorro estimado vs generacion IA
 - **Notas:** El banco se puede alimentar de dos formas: (1) manualmente — un operador crea templates para las consultas mas frecuentes, (2) automaticamente — cuando una respuesta IA para un lead nuevo se aprueba sin editar, se sugiere guardarla como template. Con el tiempo el banco crece organicamente. El matching puede empezar simple (keywords) y evolucionar a semantico (embeddings). Considerar que las respuestas del banco aun pasan por el flujo de aprobacion (no se envian automaticamente sin revision).
+
+---
+
+### FEAT-032 | Reactivacion Automatica de Conversaciones Sin Respuesta
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Make.com + Supabase + Frontend
+- **Descripcion:** Implementar un proceso automatico (cron) que detecte conversaciones donde se envio un mensaje saliente y el lead no respondio dentro de un plazo configurable (ej: 12 horas). Para esas conversaciones, el sistema genera automaticamente un mensaje de seguimiento/reactivacion — contextualizado al tema de la conversacion — y lo pone en cola para revision o envio. El objetivo es recuperar leads que se "enfriaron" antes de que la ventana de 24hs expire, manteniendo la conversacion activa. Este proceso debe respetar: (1) ventanas de tiempo del canal (FEAT-025), (2) si la persona tiene IA silenciada (FEAT-028), (3) horarios razonables de envio (FEAT-027), (4) un limite maximo de intentos de reactivacion por conversacion.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal), FEAT-025 (Ventanas de tiempo)
+- **Relacionado:** RFC-005 (Alertas de ventana 24hs), FEAT-027 (Horarios optimos), FEAT-028 (Silenciar IA)
+- **Backend requerido:**
+  - RPC `get_stale_conversations(hours_threshold, max_reactivations)`: retorna conversaciones donde el ultimo mensaje fue saliente, hace mas de X horas, sin respuesta del lead, con ventana aun abierta, y que no superaron el limite de intentos de reactivacion
+  - Tabla o campo `reactivation_count` en `conversations` para trackear cuantos seguimientos automaticos se hicieron (evitar spam)
+  - Configuracion global: `stale_threshold_hours` (default 12), `max_reactivations` (default 2), `reactivation_cooldown_hours` (minimo entre intentos)
+  - Escenario Make.com programado (cron cada 1-2 horas):
+    1. Llamar a `get_stale_conversations()`
+    2. Para cada conversacion: generar mensaje de seguimiento con IA (usando contexto de la conversacion)
+    3. Crear `ai_interaction` con evaluation `pending` para que el operador apruebe
+    4. Incrementar `reactivation_count`
+  - Alternativa: usar banco de respuestas (FEAT-031) para seguimientos genericos en vez de generar con IA cada vez
+- **Frontend requerido:**
+  - Indicador en la lista de conversaciones: "Sin respuesta hace 14h" (badge o icono)
+  - Filtro en Conversations: "Conversaciones sin respuesta" / "Esperando respuesta del lead"
+  - Configuracion del cron en pagina de admin: threshold de horas, max intentos, horarios permitidos
+  - Estadisticas: tasa de reactivacion exitosa (lead respondio despues del seguimiento), por canal, por periodo
+- **Notas:** El mensaje de reactivacion debe ser contextual y natural, no generico. Ej: si el lead pregunto por un curso de marketing y no respondio, el seguimiento podria ser "Hola [nombre]! Te queria comentar que quedan pocos lugares para el curso de Marketing Digital. Te interesa que te reserve un lugar?". El limite de max_reactivations es critico para no convertir esto en spam. Considerar que este proceso se complementa con FEAT-025 (alertas de ventana): las conversaciones "stale" con ventana por vencer son las de mayor prioridad.
+
+---
+
+### FEAT-033 | Campanas de Marketing Pago en Meta (Ads Automatizados por Calendario)
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase + Frontend + Meta Ads API
+- **Descripcion:** Implementar la gestion de campanas de publicidad paga en Meta (Facebook/Instagram Ads) desde el CRM, con automatizacion basada en etiquetas de cursos y calendario academico. El sistema debe permitir: (1) configurar campanas de Meta Ads vinculadas a cursos/ediciones con fechas de inicio y fin, (2) disparar automaticamente las campanas en fechas programadas del ano (ej: 30 dias antes del inicio de un curso), (3) segmentar la audiencia usando etiquetas del CRM (interes, ubicacion, historial), (4) crear audiencias personalizadas en Meta usando datos del CRM (Custom Audiences), (5) trackear el retorno: cuando un lead llega via ad, vincularlo con la campana paga y medir conversion (consulta → inscripcion). El flujo seria: curso programado → campaña se activa automaticamente → Meta muestra anuncios → leads llegan por WA/IG/Messenger → el CRM los identifica como provenientes del ad → seguimiento normal del pipeline.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal), FEAT-004 (ABM Cursos)
+- **Relacionado:** RFC-004 (Campanas de marketing organico), FEAT-030 (Costos — tracking de gasto en ads)
+- **Backend requerido:**
+  - Tabla `ad_campaigns`: `(id, course_edition_id, platform, status, budget_usd, start_date, end_date, target_tags[], target_locations[], meta_campaign_id, meta_adset_id, impressions, clicks, leads_generated, cost_spent, created_at)`
+  - Tabla `ad_campaign_rules`: reglas automaticas tipo "30 dias antes de inicio de edicion con estado Enrolling, crear campana con budget X y tags Y"
+  - Integracion con Meta Marketing API via Make.com:
+    - Crear/pausar/reanudar campanas
+    - Subir Custom Audiences (lista de emails/telefonos del CRM segmentados por etiquetas)
+    - Leer metricas (impresiones, clicks, costo)
+  - Vinculacion de leads entrantes con campanas: cuando un lead llega via ad (parametro `ad_id` en la interaccion), asociarlo a la `ad_campaign` correspondiente
+  - Cron en Make.com que evalua reglas de `ad_campaign_rules` diariamente y dispara campanas cuando corresponde
+- **Frontend requerido:**
+  - Pagina de administracion de campanas pagas: lista, crear, editar, pausar
+  - Configuracion de reglas automaticas: "Para curso tipo [etiqueta], crear campana [X dias] antes del inicio"
+  - Dashboard de ROI: gasto en ads vs leads generados vs inscriptos, por curso y por campana
+  - Vinculacion visual: en el perfil de una persona, mostrar si llego via ad pago y de que campana
+- **Notas:** Meta Marketing API requiere un App de Facebook verificada y tokens de acceso de larga duracion. Los Custom Audiences permiten subir listas de contactos (hash de email/telefono) para targeting preciso. Las reglas automaticas basadas en calendario academico (`course_editions.start_date`) permiten que las campanas se disparen sin intervencion manual. El tracking de `ad_id` ya existe parcialmente en el pipeline (BUG-006 menciona que falta en algunos flujos). Considerar integracion con Google Ads como fase futura.

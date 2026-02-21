@@ -109,6 +109,7 @@
 | 6.7 | Control de ventanas de tiempo por canal + alertas + estadisticas de vencimiento | Frontend + DB + Make.com | P1 | FEAT-025, RFC-005 |
 | 6.8 | Silenciar IA por persona — modo "canal manual" desde flujo de aprobacion | Frontend + DB + Make.com | P1 | FEAT-028, RFC-003 |
 | 6.9 | Composicion de mensajes con asistente IA on-demand + adjuntos | Frontend + EF + Make.com | P1 | FEAT-029 |
+| 6.10 | Reactivacion automatica de conversaciones sin respuesta (cron + IA) | Make.com + DB + Frontend | P1 | FEAT-032 |
 
 ---
 
@@ -128,6 +129,7 @@
 | 8.8 | Optimizacion inteligente de horarios de envio | Make.com + DB + Frontend | P2 | FEAT-027 |
 | 8.9 | Dashboard de costos operativos (IA, Make.com, canales, storage) | Frontend + DB + Make.com | P2 | FEAT-030 |
 | 8.10 | Banco de respuestas pre-generadas para leads nuevos | Make.com + DB + Frontend | P2 | FEAT-031 |
+| 8.11 | Campanas de marketing pago en Meta (Ads automatizados por calendario) | Make.com + DB + Frontend + Meta API | P2 | FEAT-033 |
 
 **Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La vista de mapa requiere datos de ubicacion enriquecidos en `person_soft_data`. El rate limiting de IA (FEAT-024) y el dashboard de costos (FEAT-030) comparten tabla de tracking y pueden implementarse juntos. La mensajeria alternativa (FEAT-026) tiene riesgos de TOS — empezar con fallbacks oficiales (email/SMS). El banco de respuestas (FEAT-031) reduce costos de IA significativamente para leads nuevos y se complementa con el tracking de costos.
 
