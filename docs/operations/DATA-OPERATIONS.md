@@ -1,6 +1,6 @@
 # Operaciones de Datos
 
-**Fecha:** 2026-02-20
+**Fecha:** 2026-02-21
 **Autor:** Equipo IITA + AI
 
 ---
@@ -166,3 +166,22 @@ GROUP BY pel.person_id, pel.status
 HAVING COUNT(psd.id) = 0;
 -- Esperado: 0 filas (toda persona completada deberia tener al menos un dato)
 ```
+
+---
+
+## OP-004 | Corrección de Tags Online/Presencial y Exportación VCF
+
+- **Fecha:** 2026-02-21
+- **Autor:** Gustavo + Claude
+- **Estado:** Completada
+- **Descripcion:** Corrección masiva de tags `tag_curso_interes` en `person_soft_data` para Marketing Digital, Videojuegos y Robótica con Arduino. La IA asignaba "Online" por defecto a personas sin preferencia explícita, incluyendo contactos de Salta (387) que probablemente prefieren presencial. Se corrigieron los tags, se deduplicaron registros de Arduino y se generó un archivo VCF con 7,695 contactos.
+
+**Documentación completa:** [OP-004-exportacion-contactos-cursos.md](OP-004-exportacion-contactos-cursos.md)
+
+**Registros afectados:**
+- ~690 tags de Marketing Digital reclasificados
+- ~133 tags de Videojuegos reclasificados
+- ~1,101 tags de Arduino reclasificados
+- ~1,011 duplicados de Arduino desactivados
+
+**Propuesta relacionada:** [PROPUESTA-8-exportacion-contactos-vcf.md](../proposals/PROPUESTA-8-exportacion-contactos-vcf.md) — formaliza este proceso como feature del CRM.
