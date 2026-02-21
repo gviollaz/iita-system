@@ -106,6 +106,7 @@
 | 6.4 | Implementar auto-cancel IA por respuesta humana | Make.com + DB | P2 | FEAT-015 |
 | 6.5 | Sesiones virtuales | Make.com + DB | P3 | FEAT-016 |
 | 6.6 | Limpieza de 74 escenarios inactivos en Make.com | Make.com | P3 | - |
+| 6.7 | Control de ventanas de tiempo por canal + alertas + estadisticas de vencimiento | Frontend + DB + Make.com | P1 | FEAT-025, RFC-005 |
 
 ---
 

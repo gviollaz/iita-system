@@ -244,3 +244,25 @@
 - **Descripcion:** Implementar un sistema de control de consumo de llamadas a APIs de IA (OpenAI, Claude, etc.) que administre rate limits por minuto, por hora y por dia. El sistema debe: (1) trackear el consumo en tiempo real, (2) suspender o ralentizar pedidos antes de alcanzar los limites de la API, (3) redirigir pedidos a un proveedor de IA alternativo cuando el principal esta cerca del limite (fallback automatico), (4) alertar cuando se acerque a umbrales criticos de gasto.
 - **Dependencias:** FEAT-005 (Pipeline Multicanal), FEAT-014 (Evaluacion Automatica IA)
 - **Notas:** Considerar tabla de tracking `ai_usage_log` con contadores por proveedor/modelo/periodo. Make.com puede implementar la logica de routing entre proveedores. Evaluar si el throttling se hace en Make.com (antes de llamar a la API) o en una Edge Function dedicada.
+
+---
+
+### FEAT-025 | Control de Ventanas de Tiempo por Canal y Estadisticas de Vencimiento
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Frontend + Supabase + Make.com
+- **Descripcion:** Implementar un sistema integral de control de ventanas de tiempo para mensajes salientes por canal. Cada canal tiene sus propias reglas de tiempo (ej: WhatsApp y Messenger limitan a 24hs desde el ultimo mensaje del usuario para enviar texto libre; Instagram tiene reglas similares). El sistema debe: (1) configurar reglas de tiempo por canal (ventana maxima, restricciones, costo post-vencimiento), (2) monitorear en tiempo real el estado de cada conversacion activa, (3) mostrar alertas en el frontend para mensajes proximos a vencer con posibilidad de responder rapidamente antes del vencimiento, (4) bloquear o advertir envios cuando la ventana ya vencio, (5) generar estadisticas de mensajes vencidos (cuantos vencieron, por canal, por operador, por dia/semana/mes).
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** RFC-005 (Alertas de ventana 24hs — diseno tecnico detallado para WA/Messenger/IG)
+- **Frontend requerido:**
+  - Panel de alertas en Conversations con categorias: critico (< 2h), urgente (2-10h), ok (> 10h), vencida
+  - Accion rapida "Responder ahora" / "Aprobar IA pendiente" desde la alerta
+  - Dashboard de estadisticas de vencimiento: mensajes vencidos por canal, por periodo, tendencia temporal
+  - Indicador visual en cada conversacion mostrando tiempo restante de ventana
+- **Backend requerido:**
+  - Tabla `channel_time_rules` con reglas configurables por canal (ventana_horas, tipo_restriccion, costo_post_vencimiento)
+  - RPC `get_window_status()` que calcule el estado de ventana de todas las conversaciones activas (diseño en RFC-005)
+  - RPC para estadisticas de vencimiento (mensajes vencidos agrupados por canal/periodo)
+  - Monitoreo periodico (Make.com cada hora) con notificaciones externas para conversaciones criticas
+- **Notas:** Ver RFC-005 para el diseno tecnico detallado de la funcion `get_window_status()` y las opciones de implementacion en frontend. Las reglas deben ser extensibles para los canales futuros (FEAT-019 a FEAT-022). Considerar que canales como email no tienen restriccion de ventana.

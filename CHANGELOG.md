@@ -18,6 +18,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-022: Canal YouTube — mensajes directos (deseado)
 - FEAT-023: Vista de mapa para leads y clientes (deseado)
 - FEAT-024: Rate limiting y control de consumo de IA (deseado)
+- FEAT-025: Control de ventanas de tiempo por canal, alertas de vencimiento y estadisticas (deseado, P1)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---
