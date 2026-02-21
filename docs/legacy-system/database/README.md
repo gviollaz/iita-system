@@ -14,11 +14,11 @@ Esta documentación fue generada con **acceso directo a los datos de producción
 
 | Archivo | Descripción |
 |---------|-------------|
-| [schema-reference.md](schema-reference.md) | Referencia completa del esquema: 36 tablas, columnas, tipos, PKs, FKs, índices, constraints, RLS |
+| [schema-reference.md](schema-reference.md) | Referencia completa del esquema: 41 tablas, columnas, tipos, PKs, FKs, índices, constraints, RLS |
 | [data-dictionary.md](data-dictionary.md) | Diccionario de datos campo por campo, con descripción funcional validada contra datos reales |
 | [erd.md](erd.md) | Diagramas Entidad-Relación en Mermaid: dominio original Django + tablas normalizadas agregadas |
 | [data-analysis.md](data-analysis.md) | Análisis estadístico: volumetría, tasas de llenado, distribuciones, hallazgos |
-| [corrections.md](corrections.md) | Correcciones a documentación previa basadas en validación con datos reales |
+| [corrections.md](corrections.md) | 19 correcciones a documentación previa basadas en validación con datos reales |
 
 ## Estructura de tablas por dominio
 
