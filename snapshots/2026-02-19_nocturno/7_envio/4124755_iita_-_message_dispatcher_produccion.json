@@ -1,0 +1,1834 @@
+{
+  "flow": [
+    {
+      "id": 23,
+      "mapper": {},
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 900
+        },
+        "interface": [
+          {
+            "help": "Contiene el identificador del registro creado para enviarse.",
+            "name": "id_interaction",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 22,
+      "mapper": {
+        "command": "SELECT\r\n  sc.*,\r\n  pc.address AS person_address,\r\n  ch.id_channel_provider,\r\n  ch.name AS channel_name,\r\n  ch.address AS channel_address,\ni.id AS id_interaction,\ni.text AS text,\ni.status AS status\r\nFROM public.system_conversation sc\r\nJOIN public.person_conversation pc\r\n  ON pc.id_conversation = sc.id_conversation\r\nJOIN public.channels ch\r\n  ON ch.id = sc.id_channel\n\nJOIN public.interactions i\nON i.id_system_conversation=sc.id\n\r\nWHERE i.status = 'pending_delivery' AND i.id={{23.id_interaction}}\nORDER BY i.time_stamp ASC"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          },
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 900,
+          "name": "Search data"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 8,
+      "mapper": {
+        "@id": "",
+        "@text": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{22.id_interaction}}",
+              "o": "equal"
+            }
+          ]
+        ],
+        "@ad_id": "",
+        "@status": "sending",
+        "@time_stamp": "",
+        "@external_ref": "",
+        "@id_person_conversation": "",
+        "@id_system_conversation": ""
+      },
+      "module": "postgres:UpdateTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@external_ref",
+            "type": "text",
+            "label": "external_ref"
+          },
+          {
+            "name": "@id_person_conversation",
+            "type": "integer",
+            "label": "id_person_conversation"
+          },
+          {
+            "name": "@id_system_conversation",
+            "type": "integer",
+            "label": "id_system_conversation"
+          },
+          {
+            "name": "@text",
+            "type": "text",
+            "label": "text"
+          },
+          {
+            "name": "@time_stamp",
+            "type": "text",
+            "label": "time_stamp"
+          },
+          {
+            "name": "@ad_id",
+            "type": "integer",
+            "label": "ad_id"
+          },
+          {
+            "name": "@status",
+            "type": "text",
+            "label": "status"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "external_ref",
+                  "value": "external_ref"
+                },
+                {
+                  "label": "id_person_conversation",
+                  "value": "id_person_conversation"
+                },
+                {
+                  "label": "id_system_conversation",
+                  "value": "id_system_conversation"
+                },
+                {
+                  "label": "text",
+                  "value": "text"
+                },
+                {
+                  "label": "time_stamp",
+                  "value": "time_stamp"
+                },
+                {
+                  "label": "ad_id",
+                  "value": "ad_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.interactions"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 900,
+          "name": "Update status"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"interactions\"",
+        "account": 6184753,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 5,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 15,
+              "filter": {
+                "name": "Whatsapp",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{22.id_channel_provider}}",
+                      "b": "1",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 18,
+                      "filter": {
+                        "name": "IITA 3D",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "5493875809318",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Whatsapp ~ IITA 3D (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 0,
+                          "name": "IITA 3D"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124805",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 9,
+                      "filter": {
+                        "name": "San Lorenzo Chico",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "5493876844174",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Whatsapp ~ San Lorenzo Chico (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 300,
+                          "name": "San Lorenzo Chico"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124821",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": 150,
+                  "name": "¿Channel?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 16,
+              "filter": {
+                "name": "Instagram",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{22.id_channel_provider}}",
+                      "b": "2",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 10,
+                      "filter": {
+                        "name": "Salta",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "17841404168256335",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Instagram ~ Salta (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 600,
+                          "name": "Salta"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124832",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 19,
+                      "filter": {
+                        "name": "San Lorenzo Chico",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "17841455198100771",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Instagram ~ San Lorenzo Chico (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 900,
+                          "name": "San Lorenzo Chico"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124842",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": 750,
+                  "name": "¿Channel?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 17,
+              "filter": {
+                "name": "Messenger",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{22.id_channel_provider}}",
+                      "b": "3",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 11,
+                      "filter": {
+                        "name": "Salta",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "296373163870909",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Messenger ~ Salta (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 1200,
+                          "name": "Salta"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124865",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 20,
+                      "filter": {
+                        "name": "San Lorenzo Chico",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "106307535517599",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Messenger ~ San Lorenzo Chico (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 1500,
+                          "name": "San Lorenzo Chico"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124870",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": 1350,
+                  "name": "¿Channel?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 26,
+              "filter": {
+                "name": "Whatsapp Cloud API",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{22.id_channel_provider}}",
+                      "b": "4",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 21,
+                      "filter": {
+                        "name": "Chatbot",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{22.channel_address}}",
+                              "b": "111869345312688",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{22.text}}",
+                          "id_interaction": "{{22.id_interaction}}",
+                          "person_address": "{{22.person_address}}",
+                          "channel_address": "{{22.channel_address}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "id_interaction",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "scenario": {
+                              "label": "[OUT] Whatsapp ~ Chatbot (Producción)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 1800,
+                          "name": "Chatbot"
+                        },
+                        "interface": [
+                          {
+                            "name": "executionId",
+                            "type": "text",
+                            "label": "Execution ID"
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_4124875",
+                        "shouldWaitForExecutionEnd": false
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": 1800,
+                  "name": "¿Channel?"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 900,
+          "name": "¿Channel provider?"
+        }
+      }
+    }
+  ],
+  "name": "IITA - Message dispatcher (Producción)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [
+        [
+          {
+            "id": 1,
+            "mapper": {
+              "sort": [
+                {
+                  "order": "asc",
+                  "column": "time_stamp"
+                }
+              ],
+              "limit": "",
+              "where": [
+                [
+                  {
+                    "a": "status",
+                    "b": "pending_delivery",
+                    "o": "equal"
+                  }
+                ]
+              ]
+            },
+            "module": "postgres:SelectFromTable",
+            "version": 2,
+            "metadata": {
+              "expect": [
+                {
+                  "name": "where",
+                  "type": "filter",
+                  "label": "Filter",
+                  "options": {
+                    "store": [
+                      {
+                        "label": "id",
+                        "value": "id"
+                      },
+                      {
+                        "label": "external_ref",
+                        "value": "external_ref"
+                      },
+                      {
+                        "label": "id_person_conversation",
+                        "value": "id_person_conversation"
+                      },
+                      {
+                        "label": "id_system_conversation",
+                        "value": "id_system_conversation"
+                      },
+                      {
+                        "label": "text",
+                        "value": "text"
+                      },
+                      {
+                        "label": "time_stamp",
+                        "value": "time_stamp"
+                      },
+                      {
+                        "label": "ad_id",
+                        "value": "ad_id"
+                      },
+                      {
+                        "label": "status",
+                        "value": "status"
+                      }
+                    ],
+                    "operators": [
+                      {
+                        "label": "Basic",
+                        "options": [
+                          {
+                            "label": "Is not null",
+                            "value": "exist"
+                          },
+                          {
+                            "label": "Is null",
+                            "value": "notexist"
+                          },
+                          {
+                            "label": "Equal to",
+                            "value": "equal"
+                          },
+                          {
+                            "label": "Not equal to",
+                            "value": "notequal"
+                          },
+                          {
+                            "label": "Greater than",
+                            "value": "greater"
+                          },
+                          {
+                            "label": "Greater than or equal to",
+                            "value": "greaterorequal"
+                          },
+                          {
+                            "label": "Less than",
+                            "value": "less"
+                          },
+                          {
+                            "label": "Less than or equal to",
+                            "value": "lessorequal"
+                          },
+                          {
+                            "label": "Contains",
+                            "value": "contain"
+                          },
+                          {
+                            "label": "Does not contain",
+                            "value": "notcontain"
+                          },
+                          {
+                            "label": "Starts with",
+                            "value": "startwith"
+                          },
+                          {
+                            "label": "Does not start with",
+                            "value": "notstartwith"
+                          },
+                          {
+                            "label": "Ends with",
+                            "value": "endwith"
+                          },
+                          {
+                            "label": "Does not end with",
+                            "value": "notendwith"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "sort",
+                  "spec": [
+                    {
+                      "name": "column",
+                      "type": "select",
+                      "label": "Column",
+                      "dynamic": true,
+                      "options": [],
+                      "required": true
+                    },
+                    {
+                      "name": "order",
+                      "type": "select",
+                      "label": "Order",
+                      "options": [
+                        {
+                          "label": "Ascending",
+                          "value": "asc"
+                        },
+                        {
+                          "label": "Descending",
+                          "value": "desc"
+                        }
+                      ],
+                      "required": true
+                    }
+                  ],
+                  "type": "array",
+                  "label": "Sort"
+                },
+                {
+                  "name": "limit",
+                  "type": "uinteger",
+                  "label": "Limit"
+                }
+              ],
+              "restore": {
+                "expect": {
+                  "sort": {
+                    "items": [
+                      {
+                        "order": {
+                          "mode": "chose",
+                          "label": "Ascending"
+                        },
+                        "column": {
+                          "mode": "chose",
+                          "label": "time_stamp"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "parameters": {
+                  "table": {
+                    "label": "public.interactions"
+                  },
+                  "account": {
+                    "data": {
+                      "scoped": "true",
+                      "connection": "postgres"
+                    },
+                    "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                  }
+                }
+              },
+              "designer": {
+                "x": 0,
+                "y": 2100,
+                "name": "Search pending delivery",
+                "messages": [
+                  {
+                    "message": "The module is not connected to the data flow.",
+                    "category": "link",
+                    "severity": "warning"
+                  }
+                ]
+              },
+              "interface": [
+                {
+                  "name": "__IMTLENGTH__",
+                  "type": "uinteger",
+                  "label": "Total number of bundles"
+                },
+                {
+                  "name": "__IMTINDEX__",
+                  "type": "uinteger",
+                  "label": "Bundle order position"
+                },
+                {
+                  "name": "id",
+                  "type": "integer",
+                  "label": "id",
+                  "required": false
+                },
+                {
+                  "name": "external_ref",
+                  "type": "text",
+                  "label": "external_ref",
+                  "required": false
+                },
+                {
+                  "name": "id_person_conversation",
+                  "type": "integer",
+                  "label": "id_person_conversation",
+                  "required": false
+                },
+                {
+                  "name": "id_system_conversation",
+                  "type": "integer",
+                  "label": "id_system_conversation",
+                  "required": false
+                },
+                {
+                  "name": "text",
+                  "type": "text",
+                  "label": "text",
+                  "required": false
+                },
+                {
+                  "name": "time_stamp",
+                  "type": "text",
+                  "label": "time_stamp",
+                  "required": false
+                },
+                {
+                  "name": "ad_id",
+                  "type": "integer",
+                  "label": "ad_id",
+                  "required": false
+                },
+                {
+                  "name": "status",
+                  "type": "text",
+                  "label": "status",
+                  "required": false
+                }
+              ],
+              "parameters": [
+                {
+                  "name": "account",
+                  "type": "account:postgres",
+                  "label": "Connection",
+                  "required": true
+                },
+                {
+                  "name": "continueWhenNoRes",
+                  "type": "boolean",
+                  "label": "Continue the execution of the route even if the module returns no rows",
+                  "required": true
+                },
+                {
+                  "name": "isToManageDataInSharedTransaction",
+                  "type": "boolean",
+                  "label": "Manage data within the shared transaction",
+                  "required": true
+                },
+                {
+                  "name": "table",
+                  "type": "select",
+                  "label": "Table",
+                  "required": true
+                }
+              ]
+            },
+            "parameters": {
+              "table": "\"public\".\"interactions\"",
+              "account": 6184753,
+              "continueWhenNoRes": false,
+              "isToManageDataInSharedTransaction": true
+            }
+          },
+          {
+            "id": 2,
+            "mapper": {
+              "command": "SELECT * FROM public.system_conversation\nWHERE system_conversation.id={{1.id_system_conversation}}"
+            },
+            "module": "postgres:Query",
+            "version": 2,
+            "metadata": {
+              "expect": [
+                {
+                  "name": "command",
+                  "type": "text",
+                  "label": "Command",
+                  "required": true
+                }
+              ],
+              "restore": {
+                "parameters": {
+                  "account": {
+                    "data": {
+                      "scoped": "true",
+                      "connection": "postgres"
+                    },
+                    "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                  }
+                }
+              },
+              "designer": {
+                "x": 300,
+                "y": 2100,
+                "name": "Search system conversation"
+              },
+              "parameters": [
+                {
+                  "name": "account",
+                  "type": "account:postgres",
+                  "label": "Connection",
+                  "required": true
+                },
+                {
+                  "name": "continueWhenNoRes",
+                  "type": "boolean",
+                  "label": "Continue the execution of the route even if the module returns no rows",
+                  "required": true
+                },
+                {
+                  "name": "isToManageDataInSharedTransaction",
+                  "type": "boolean",
+                  "label": "Manage data within the shared transaction",
+                  "required": true
+                }
+              ]
+            },
+            "parameters": {
+              "account": 6184753,
+              "continueWhenNoRes": false,
+              "isToManageDataInSharedTransaction": true
+            }
+          },
+          {
+            "id": 3,
+            "mapper": {
+              "command": "SELECT address FROM public.person_conversation\nWHERE person_conversation.id_conversation={{2.id_conversation}}"
+            },
+            "module": "postgres:Query",
+            "version": 2,
+            "metadata": {
+              "expect": [
+                {
+                  "name": "command",
+                  "type": "text",
+                  "label": "Command",
+                  "required": true
+                }
+              ],
+              "restore": {
+                "parameters": {
+                  "account": {
+                    "data": {
+                      "scoped": "true",
+                      "connection": "postgres"
+                    },
+                    "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                  }
+                }
+              },
+              "designer": {
+                "x": 600,
+                "y": 2100,
+                "name": "Get person address"
+              },
+              "parameters": [
+                {
+                  "name": "account",
+                  "type": "account:postgres",
+                  "label": "Connection",
+                  "required": true
+                },
+                {
+                  "name": "continueWhenNoRes",
+                  "type": "boolean",
+                  "label": "Continue the execution of the route even if the module returns no rows",
+                  "required": true
+                },
+                {
+                  "name": "isToManageDataInSharedTransaction",
+                  "type": "boolean",
+                  "label": "Manage data within the shared transaction",
+                  "required": true
+                }
+              ]
+            },
+            "parameters": {
+              "account": 6184753,
+              "continueWhenNoRes": false,
+              "isToManageDataInSharedTransaction": true
+            }
+          },
+          {
+            "id": 4,
+            "mapper": {
+              "command": "SELECT id_channel_provider, name, address FROM public.channels\nWHERE channels.id={{2.id_channel}}"
+            },
+            "module": "postgres:Query",
+            "version": 2,
+            "metadata": {
+              "expect": [
+                {
+                  "name": "command",
+                  "type": "text",
+                  "label": "Command",
+                  "required": true
+                }
+              ],
+              "restore": {
+                "parameters": {
+                  "account": {
+                    "data": {
+                      "scoped": "true",
+                      "connection": "postgres"
+                    },
+                    "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                  }
+                }
+              },
+              "designer": {
+                "x": 900,
+                "y": 2100,
+                "name": "Get channel"
+              },
+              "parameters": [
+                {
+                  "name": "account",
+                  "type": "account:postgres",
+                  "label": "Connection",
+                  "required": true
+                },
+                {
+                  "name": "continueWhenNoRes",
+                  "type": "boolean",
+                  "label": "Continue the execution of the route even if the module returns no rows",
+                  "required": true
+                },
+                {
+                  "name": "isToManageDataInSharedTransaction",
+                  "type": "boolean",
+                  "label": "Manage data within the shared transaction",
+                  "required": true
+                }
+              ]
+            },
+            "parameters": {
+              "account": 6184753,
+              "continueWhenNoRes": false,
+              "isToManageDataInSharedTransaction": true
+            }
+          }
+        ]
+      ],
+      "samples": {
+        "2": {
+          "id": 3,
+          "id_channel": 1,
+          "id_conversation": 3
+        },
+        "3": {
+          "address": "5493875317913"
+        },
+        "4": {
+          "name": "IITA Administracion",
+          "address": "5493872550001",
+          "id_channel_provider": 1
+        },
+        "8": {
+          "rowsAffected": 1
+        },
+        "18": {
+          "executionId": "cfd613a0a27746caa3f172a864ff6e82"
+        },
+        "22": {
+          "id": 5,
+          "text": "¡Hola! Soy Ana, asesora de IITA 😊  \n¿Este mensaje era solo para probar que te llegue bien, o quería...",
+          "status": "pending_delivery",
+          "id_channel": 1,
+          "channel_name": "IITA 3D",
+          "id_interaction": 19,
+          "person_address": "5493874545078",
+          "channel_address": "5493875809318",
+          "id_conversation": 5,
+          "id_channel_provider": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

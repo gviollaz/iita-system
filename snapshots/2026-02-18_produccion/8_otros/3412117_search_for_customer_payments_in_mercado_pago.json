@@ -1,0 +1,1024 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "table": "Clientes",
+        "search": [
+          [
+            {
+              "a": "dni",
+              "b": "{{var.input.DNI_cliente}}",
+              "o": "text:eq."
+            }
+          ]
+        ]
+      },
+      "module": "supabase:searchRows",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "search",
+            "type": "filter",
+            "label": "Search criteria",
+            "options": {
+              "logic": "and",
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "fecha_creación",
+                  "value": "fecha_creación"
+                },
+                {
+                  "label": "nombre",
+                  "value": "nombre"
+                },
+                {
+                  "label": "apellido",
+                  "value": "apellido"
+                },
+                {
+                  "label": "dni",
+                  "value": "dni"
+                },
+                {
+                  "label": "id_pago",
+                  "value": "id_pago"
+                },
+                {
+                  "label": "link_generado",
+                  "value": "link_generado"
+                },
+                {
+                  "label": "monto",
+                  "value": "monto"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Text",
+                  "options": [
+                    {
+                      "label": "Equals",
+                      "value": "text:eq."
+                    },
+                    {
+                      "label": "Does not equal",
+                      "value": "text:neq."
+                    },
+                    {
+                      "label": "Contains (case sensitive)",
+                      "value": "text:like."
+                    },
+                    {
+                      "label": "Contains (case insensitive)",
+                      "value": "text:ilike."
+                    }
+                  ]
+                },
+                {
+                  "label": "Numbers",
+                  "options": [
+                    {
+                      "label": "Equals",
+                      "value": "number:eq."
+                    },
+                    {
+                      "label": "Does not equal",
+                      "value": "number:neq."
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "number:gt."
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "number:lt."
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "number:gte."
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "number:lte."
+                    }
+                  ]
+                },
+                {
+                  "label": "Date",
+                  "options": [
+                    {
+                      "label": "Equals",
+                      "value": "date:eq."
+                    },
+                    {
+                      "label": "Does not equal",
+                      "value": "date:neq."
+                    },
+                    {
+                      "label": "Later than",
+                      "value": "date:gt."
+                    },
+                    {
+                      "label": "Earlier than",
+                      "value": "date:lt."
+                    },
+                    {
+                      "label": "Later than or equal to",
+                      "value": "date:gte."
+                    },
+                    {
+                      "label": "Earlier than or equal to",
+                      "value": "date:lte."
+                    }
+                  ]
+                },
+                {
+                  "label": "Boolean",
+                  "options": [
+                    {
+                      "label": "Equals",
+                      "value": "boolean:eq."
+                    },
+                    {
+                      "label": "Does not equal",
+                      "value": "boolean:neq."
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "limit": {
+              "empty": true
+            },
+            "table": {
+              "mode": "chose",
+              "label": "Clientes",
+              "nested": [
+                {
+                  "name": "search",
+                  "type": "filter",
+                  "label": "Search criteria",
+                  "options": {
+                    "logic": "and",
+                    "store": [
+                      {
+                        "label": "id",
+                        "value": "id"
+                      },
+                      {
+                        "label": "fecha_creación",
+                        "value": "fecha_creación"
+                      },
+                      {
+                        "label": "nombre",
+                        "value": "nombre"
+                      },
+                      {
+                        "label": "apellido",
+                        "value": "apellido"
+                      },
+                      {
+                        "label": "dni",
+                        "value": "dni"
+                      },
+                      {
+                        "label": "id_pago",
+                        "value": "id_pago"
+                      },
+                      {
+                        "label": "link_generado",
+                        "value": "link_generado"
+                      },
+                      {
+                        "label": "monto",
+                        "value": "monto"
+                      }
+                    ],
+                    "operators": [
+                      {
+                        "label": "Text",
+                        "options": [
+                          {
+                            "label": "Equals",
+                            "value": "text:eq."
+                          },
+                          {
+                            "label": "Does not equal",
+                            "value": "text:neq."
+                          },
+                          {
+                            "label": "Contains (case sensitive)",
+                            "value": "text:like."
+                          },
+                          {
+                            "label": "Contains (case insensitive)",
+                            "value": "text:ilike."
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Numbers",
+                        "options": [
+                          {
+                            "label": "Equals",
+                            "value": "number:eq."
+                          },
+                          {
+                            "label": "Does not equal",
+                            "value": "number:neq."
+                          },
+                          {
+                            "label": "Greater than",
+                            "value": "number:gt."
+                          },
+                          {
+                            "label": "Less than",
+                            "value": "number:lt."
+                          },
+                          {
+                            "label": "Greater than or equal to",
+                            "value": "number:gte."
+                          },
+                          {
+                            "label": "Less than or equal to",
+                            "value": "number:lte."
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Date",
+                        "options": [
+                          {
+                            "label": "Equals",
+                            "value": "date:eq."
+                          },
+                          {
+                            "label": "Does not equal",
+                            "value": "date:neq."
+                          },
+                          {
+                            "label": "Later than",
+                            "value": "date:gt."
+                          },
+                          {
+                            "label": "Earlier than",
+                            "value": "date:lt."
+                          },
+                          {
+                            "label": "Later than or equal to",
+                            "value": "date:gte."
+                          },
+                          {
+                            "label": "Earlier than or equal to",
+                            "value": "date:lte."
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Boolean",
+                        "options": [
+                          {
+                            "label": "Equals",
+                            "value": "boolean:eq."
+                          },
+                          {
+                            "label": "Does not equal",
+                            "value": "boolean:neq."
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "supabase"
+              },
+              "label": "Gonzalo Supabase"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 600,
+          "name": "Obtener cliente"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "number",
+            "label": "id"
+          },
+          {
+            "name": "fecha_creación",
+            "type": "text",
+            "label": "fecha_creación"
+          },
+          {
+            "name": "nombre",
+            "type": "text",
+            "label": "nombre"
+          },
+          {
+            "name": "apellido",
+            "type": "text",
+            "label": "apellido"
+          },
+          {
+            "name": "dni",
+            "type": "number",
+            "label": "dni"
+          },
+          {
+            "name": "id_pago",
+            "type": "number",
+            "label": "id_pago"
+          },
+          {
+            "name": "link_generado",
+            "type": "boolean",
+            "label": "link_generado"
+          },
+          {
+            "name": "monto",
+            "type": "number",
+            "label": "monto"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:supabase",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 6101923
+      }
+    },
+    {
+      "id": 3,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 7,
+              "filter": {
+                "name": "No",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.`__IMTLENGTH__`}}",
+                      "b": "0",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "Estado_pago": "No se encontró un cliente con el DNI."
+              },
+              "module": "scenario-service:ReturnData",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "Estado_pago",
+                    "type": "text",
+                    "label": "",
+                    "required": true
+                  }
+                ],
+                "restore": {},
+                "designer": {
+                  "x": 600,
+                  "y": 0,
+                  "name": "Mensaje de error"
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 2,
+              "filter": {
+                "name": "Si",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.id_pago}}",
+                      "b": "{{null}}",
+                      "o": "text:notequal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "table": "Pagos",
+                "search": [
+                  [
+                    {
+                      "a": "id",
+                      "b": "{{1.id_pago}}",
+                      "o": "text:eq."
+                    }
+                  ]
+                ]
+              },
+              "module": "supabase:searchRows",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  },
+                  {
+                    "name": "limit",
+                    "type": "uinteger",
+                    "label": "Limit"
+                  },
+                  {
+                    "name": "search",
+                    "type": "filter",
+                    "label": "Search criteria",
+                    "options": {
+                      "logic": "and",
+                      "store": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        },
+                        {
+                          "label": "fecha_creación",
+                          "value": "fecha_creación"
+                        },
+                        {
+                          "label": "código_pago",
+                          "value": "código_pago"
+                        },
+                        {
+                          "label": "pagado",
+                          "value": "pagado"
+                        },
+                        {
+                          "label": "id_mercado_pago",
+                          "value": "id_mercado_pago"
+                        }
+                      ],
+                      "operators": [
+                        {
+                          "label": "Text",
+                          "options": [
+                            {
+                              "label": "Equals",
+                              "value": "text:eq."
+                            },
+                            {
+                              "label": "Does not equal",
+                              "value": "text:neq."
+                            },
+                            {
+                              "label": "Contains (case sensitive)",
+                              "value": "text:like."
+                            },
+                            {
+                              "label": "Contains (case insensitive)",
+                              "value": "text:ilike."
+                            }
+                          ]
+                        },
+                        {
+                          "label": "Numbers",
+                          "options": [
+                            {
+                              "label": "Equals",
+                              "value": "number:eq."
+                            },
+                            {
+                              "label": "Does not equal",
+                              "value": "number:neq."
+                            },
+                            {
+                              "label": "Greater than",
+                              "value": "number:gt."
+                            },
+                            {
+                              "label": "Less than",
+                              "value": "number:lt."
+                            },
+                            {
+                              "label": "Greater than or equal to",
+                              "value": "number:gte."
+                            },
+                            {
+                              "label": "Less than or equal to",
+                              "value": "number:lte."
+                            }
+                          ]
+                        },
+                        {
+                          "label": "Date",
+                          "options": [
+                            {
+                              "label": "Equals",
+                              "value": "date:eq."
+                            },
+                            {
+                              "label": "Does not equal",
+                              "value": "date:neq."
+                            },
+                            {
+                              "label": "Later than",
+                              "value": "date:gt."
+                            },
+                            {
+                              "label": "Earlier than",
+                              "value": "date:lt."
+                            },
+                            {
+                              "label": "Later than or equal to",
+                              "value": "date:gte."
+                            },
+                            {
+                              "label": "Earlier than or equal to",
+                              "value": "date:lte."
+                            }
+                          ]
+                        },
+                        {
+                          "label": "Boolean",
+                          "options": [
+                            {
+                              "label": "Equals",
+                              "value": "boolean:eq."
+                            },
+                            {
+                              "label": "Does not equal",
+                              "value": "boolean:neq."
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "limit": {
+                      "empty": true
+                    },
+                    "table": {
+                      "mode": "chose",
+                      "label": "Pagos",
+                      "nested": [
+                        {
+                          "name": "search",
+                          "type": "filter",
+                          "label": "Search criteria",
+                          "options": {
+                            "logic": "and",
+                            "store": [
+                              {
+                                "label": "id",
+                                "value": "id"
+                              },
+                              {
+                                "label": "fecha_creación",
+                                "value": "fecha_creación"
+                              },
+                              {
+                                "label": "código_pago",
+                                "value": "código_pago"
+                              },
+                              {
+                                "label": "pagado",
+                                "value": "pagado"
+                              },
+                              {
+                                "label": "id_mercado_pago",
+                                "value": "id_mercado_pago"
+                              }
+                            ],
+                            "operators": [
+                              {
+                                "label": "Text",
+                                "options": [
+                                  {
+                                    "label": "Equals",
+                                    "value": "text:eq."
+                                  },
+                                  {
+                                    "label": "Does not equal",
+                                    "value": "text:neq."
+                                  },
+                                  {
+                                    "label": "Contains (case sensitive)",
+                                    "value": "text:like."
+                                  },
+                                  {
+                                    "label": "Contains (case insensitive)",
+                                    "value": "text:ilike."
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "Numbers",
+                                "options": [
+                                  {
+                                    "label": "Equals",
+                                    "value": "number:eq."
+                                  },
+                                  {
+                                    "label": "Does not equal",
+                                    "value": "number:neq."
+                                  },
+                                  {
+                                    "label": "Greater than",
+                                    "value": "number:gt."
+                                  },
+                                  {
+                                    "label": "Less than",
+                                    "value": "number:lt."
+                                  },
+                                  {
+                                    "label": "Greater than or equal to",
+                                    "value": "number:gte."
+                                  },
+                                  {
+                                    "label": "Less than or equal to",
+                                    "value": "number:lte."
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "Date",
+                                "options": [
+                                  {
+                                    "label": "Equals",
+                                    "value": "date:eq."
+                                  },
+                                  {
+                                    "label": "Does not equal",
+                                    "value": "date:neq."
+                                  },
+                                  {
+                                    "label": "Later than",
+                                    "value": "date:gt."
+                                  },
+                                  {
+                                    "label": "Earlier than",
+                                    "value": "date:lt."
+                                  },
+                                  {
+                                    "label": "Later than or equal to",
+                                    "value": "date:gte."
+                                  },
+                                  {
+                                    "label": "Earlier than or equal to",
+                                    "value": "date:lte."
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "Boolean",
+                                "options": [
+                                  {
+                                    "label": "Equals",
+                                    "value": "boolean:eq."
+                                  },
+                                  {
+                                    "label": "Does not equal",
+                                    "value": "boolean:neq."
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "supabase"
+                      },
+                      "label": "Gonzalo Supabase"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 600,
+                  "name": "Obtener pago de cliente"
+                },
+                "interface": [
+                  {
+                    "name": "__IMTLENGTH__",
+                    "type": "uinteger",
+                    "label": "Total number of bundles"
+                  },
+                  {
+                    "name": "__IMTINDEX__",
+                    "type": "uinteger",
+                    "label": "Bundle order position"
+                  },
+                  {
+                    "name": "id",
+                    "type": "number",
+                    "label": "id"
+                  },
+                  {
+                    "name": "fecha_creación",
+                    "type": "text",
+                    "label": "fecha_creación"
+                  },
+                  {
+                    "name": "nro_orden",
+                    "type": "text",
+                    "label": "nro_orden"
+                  },
+                  {
+                    "name": "pagado",
+                    "type": "boolean",
+                    "label": "pagado"
+                  },
+                  {
+                    "name": "id_mercado_pago",
+                    "type": "text",
+                    "label": "id_mercado_pago"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:supabase",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 6101923
+              }
+            },
+            {
+              "id": 4,
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 5,
+                      "filter": {
+                        "name": "Aprobado y acreditado",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{2.pagado}}",
+                              "b": "{{true}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "Estado_pago": "El pago del cliente fue aprobado y acreditado, se realizó con éxito."
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "Estado_pago",
+                            "type": "text",
+                            "label": "",
+                            "required": true
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 1200,
+                          "y": 300,
+                          "name": "Pago exitoso"
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 6,
+                      "filter": {
+                        "name": "Pendiente o rechazado",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{2.pagado}}",
+                              "b": "{{false}}",
+                              "o": "boolean:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "Estado_pago": "El pago del cliente no fue acreditado. Posiblemente esté pendiente o rechazado."
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "Estado_pago",
+                            "type": "text",
+                            "label": "",
+                            "required": true
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 1200,
+                          "y": 600,
+                          "name": "Pago defectuoso"
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 8,
+                      "filter": {
+                        "name": "No existe",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{2.`__IMTLENGTH__`}}",
+                              "b": "0",
+                              "o": "text:equal"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "Estado_pago": "No existe registro del pago."
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "Estado_pago",
+                            "type": "text",
+                            "label": "",
+                            "required": true
+                          }
+                        ],
+                        "restore": {},
+                        "designer": {
+                          "x": 1200,
+                          "y": 900,
+                          "name": "Mensaje de error"
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 900,
+                  "y": 600,
+                  "name": "¿Estado del pago?"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 9,
+              "filter": {
+                "name": "Pago no realizado",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.id_pago}}",
+                      "b": "{{null}}",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "Estado_pago": "Aún no se realizó el pago del cliente."
+              },
+              "module": "scenario-service:ReturnData",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "Estado_pago",
+                    "type": "text",
+                    "label": "",
+                    "required": true
+                  }
+                ],
+                "restore": {},
+                "designer": {
+                  "x": 600,
+                  "y": 1200,
+                  "name": "Pago no realizado"
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 600,
+          "name": "¿Existe cliente?"
+        }
+      }
+    }
+  ],
+  "name": "Search for customer payments in Mercado Pago",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

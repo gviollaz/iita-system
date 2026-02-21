@@ -1,0 +1,280 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "to": "5493875218635",
+        "body": {
+          "body_0": "visualizar la grabación",
+          "body_1": "https://youtube.com",
+          "parameter_names": [
+            "accion",
+            "link"
+          ],
+          "inputtext-1765541858598": "Compartimos el enlace para {{{{accion}}}}. Podrán ingresar a través del siguiente enlace:\n\n{{{{link}}}}\n\n¡Saludos cordiales!"
+        },
+        "footer": {
+          "inputtext-1765541858598": "Instituto de Innovación y Tecnología Aplicada"
+        },
+        "fromId": "326139457242025",
+        "header": {
+          "header_0": "grabación de clase",
+          "parameter_names": [
+            "tipo_de_enlace"
+          ],
+          "inputtext-1765541858598": "Enlace de {{{{tipo_de_enlace}}}}"
+        },
+        "messageTemplate": "compartir_enlaces_y_grabaciones::es_AR"
+      },
+      "module": "whatsapp-business-cloud:sendTemplateMessage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "fromId",
+            "type": "select",
+            "label": "Sender ID",
+            "required": true
+          },
+          {
+            "name": "to",
+            "type": "text",
+            "label": "Receiver",
+            "required": true
+          },
+          {
+            "name": "messageTemplate",
+            "type": "select",
+            "label": "Message Template",
+            "required": true
+          },
+          {
+            "name": "fromId",
+            "type": "select",
+            "label": "Sender ID",
+            "required": true
+          },
+          {
+            "name": "to",
+            "type": "text",
+            "label": "Receiver",
+            "required": true
+          },
+          {
+            "name": "messageTemplate",
+            "type": "select",
+            "label": "Message Template",
+            "required": true
+          },
+          {
+            "name": "header",
+            "spec": [
+              {
+                "name": "inputtext-1765541858598",
+                "type": "hidden",
+                "label": "Text Template"
+              },
+              {
+                "name": "header_0",
+                "type": "text",
+                "label": "{{tipo_de_enlace}}",
+                "required": true
+              },
+              {
+                "name": "parameter_names",
+                "type": "hidden",
+                "label": "Parameter Names"
+              }
+            ],
+            "type": "collection",
+            "label": "Header"
+          },
+          {
+            "name": "body",
+            "spec": [
+              {
+                "name": "inputtext-1765541858598",
+                "type": "hidden",
+                "label": "Text Template"
+              },
+              {
+                "name": "body_0",
+                "type": "text",
+                "label": "{{accion}}",
+                "required": true
+              },
+              {
+                "name": "body_1",
+                "type": "text",
+                "label": "{{link}}",
+                "required": true
+              },
+              {
+                "name": "parameter_names",
+                "type": "hidden",
+                "label": "Parameter Names"
+              }
+            ],
+            "type": "collection",
+            "label": "Body"
+          },
+          {
+            "name": "footer",
+            "spec": [
+              {
+                "name": "inputtext-1765541858598",
+                "type": "hidden",
+                "label": "Text Template"
+              }
+            ],
+            "type": "collection",
+            "label": "Footer"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "fromId": {
+              "mode": "chose",
+              "label": "Chat Bot Test (+54 9 387 255-0002)"
+            },
+            "messageTemplate": {
+              "label": "compartir_enlaces_y_grabaciones (es_AR)",
+              "nested": [
+                {
+                  "name": "header",
+                  "spec": [
+                    {
+                      "type": "html",
+                      "label": "<pre>Enlace de {{tipo_de_enlace}}</pre>"
+                    },
+                    {
+                      "name": "inputtext-1765541858598",
+                      "type": "hidden",
+                      "label": "Text Template",
+                      "default": "Enlace de {{{{tipo_de_enlace}}}}"
+                    },
+                    {
+                      "name": "header_0",
+                      "type": "text",
+                      "label": "{{tipo_de_enlace}}",
+                      "required": true
+                    },
+                    {
+                      "name": "parameter_names",
+                      "type": "hidden",
+                      "label": "Parameter Names",
+                      "default": [
+                        "tipo_de_enlace"
+                      ]
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Header"
+                },
+                {
+                  "name": "body",
+                  "spec": [
+                    {
+                      "type": "html",
+                      "label": "<pre>Compartimos el enlace para {{accion}}. Podrán ingresar a través del siguiente enlace:\n\n{{link}}\n\n¡Saludos cordiales!</pre>"
+                    },
+                    {
+                      "name": "inputtext-1765541858598",
+                      "type": "hidden",
+                      "label": "Text Template",
+                      "default": "Compartimos el enlace para {{{{accion}}}}. Podrán ingresar a través del siguiente enlace:\n\n{{{{link}}}}\n\n¡Saludos cordiales!"
+                    },
+                    {
+                      "name": "body_0",
+                      "type": "text",
+                      "label": "{{accion}}",
+                      "required": true
+                    },
+                    {
+                      "name": "body_1",
+                      "type": "text",
+                      "label": "{{link}}",
+                      "required": true
+                    },
+                    {
+                      "name": "parameter_names",
+                      "type": "hidden",
+                      "label": "Parameter Names",
+                      "default": [
+                        "accion",
+                        "link"
+                      ]
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Body"
+                },
+                {
+                  "name": "footer",
+                  "spec": [
+                    {
+                      "type": "html",
+                      "label": "<pre>Instituto de Innovación y Tecnología Aplicada</pre>"
+                    },
+                    {
+                      "name": "inputtext-1765541858598",
+                      "type": "hidden",
+                      "label": "Text Template",
+                      "default": "Instituto de Innovación y Tecnología Aplicada"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Footer"
+                }
+              ]
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "whatsapp-business-cloud"
+              },
+              "label": "WhatsApp Chatbot Test - n8n"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:whatsapp-business-cloud,whatsapp-business-cloud2",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 6619089
+      }
+    }
+  ],
+  "name": "WhatsApp Templates",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

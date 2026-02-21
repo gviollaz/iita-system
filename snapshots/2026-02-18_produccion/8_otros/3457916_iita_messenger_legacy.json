@@ -1,0 +1,583 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "facebook-messenger:watchMessages",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "IITA San Lorenzo - Messenger"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 450,
+          "name": "Mensajes entrantes"
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:facebook-messenger3",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1550775
+      }
+    },
+    {
+      "id": 7,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 32,
+              "filter": {
+                "name": "Texto",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.text}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "data": {
+                  "text": "{{1.message.text}}",
+                  "is_user": true,
+                  "external_ref": "{{1.message.mid}}",
+                  "provider_name": "messenger",
+                  "person_address": "{{1.sender.id}}",
+                  "channel_address": "{{1.recipient.id}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": ""
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "IITA - Create new Interaction"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 150,
+                  "name": "Crear interacción"
+                },
+                "interface": [
+                  {
+                    "help": "",
+                    "name": "id_interaction",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  },
+                  {
+                    "help": "",
+                    "name": "id_person_conversation",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for subscenario output",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3240069",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 9,
+              "filter": {
+                "name": "Imagen",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{1.message.attachments[].payload.url}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{1.message.attachments[].type}}",
+                      "b": "image",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "url": "{{1.message.attachments[].payload.url}}",
+                "method": "get",
+                "serializeUrl": false,
+                "shareCookies": false
+              },
+              "module": "http:ActionGetFile",
+              "version": 3,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "url",
+                    "type": "url",
+                    "label": "URL",
+                    "required": true
+                  },
+                  {
+                    "name": "serializeUrl",
+                    "type": "boolean",
+                    "label": "Serialize URL",
+                    "required": true
+                  },
+                  {
+                    "name": "method",
+                    "type": "hidden",
+                    "label": "Method"
+                  },
+                  {
+                    "name": "shareCookies",
+                    "type": "boolean",
+                    "label": "Share cookies with other HTTP modules",
+                    "required": true
+                  }
+                ],
+                "restore": {},
+                "designer": {
+                  "x": 600,
+                  "y": 750,
+                  "name": "Obtener imagen"
+                },
+                "parameters": [
+                  {
+                    "name": "handleErrors",
+                    "type": "boolean",
+                    "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "handleErrors": false
+              }
+            },
+            {
+              "id": 8,
+              "mapper": {
+                "model": "gpt-4.1",
+                "top_p": "1",
+                "images": [
+                  {
+                    "imageFileData": "{{9.data}}",
+                    "imageUploadType": "imageFile"
+                  }
+                ],
+                "prompt": "Extrae datos bancarios de la imagen de manera enlistada y sin más agregados. Debes obtener: \n- ID de pago \nmonto\n- fecha y hora del pago\n- banco emisor\n- cbu, cuil y nombre completo del emisor\n- cbu y banco receptor.\nSi incluye detalle deberás incluirlo.",
+                "max_tokens": "2048",
+                "temperature": "0.3",
+                "n_completions": "1"
+              },
+              "module": "openai-gpt-3:analyzeImages",
+              "version": 1,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "prompt",
+                    "type": "text",
+                    "label": "Prompt",
+                    "required": true
+                  },
+                  {
+                    "name": "images",
+                    "spec": {
+                      "name": "value",
+                      "spec": [
+                        {
+                          "name": "imageUploadType",
+                          "type": "select",
+                          "label": "How would you like to specify an image?",
+                          "options": [
+                            {
+                              "label": "Image URL",
+                              "value": "url",
+                              "nested": [
+                                {
+                                  "help": "Public URL of the image. For example, `https://getmyimage.com/myimage.png`.",
+                                  "mode": "edit",
+                                  "name": "imageUrl",
+                                  "type": "url",
+                                  "label": "Image URL",
+                                  "mappable": {
+                                    "help": "Public URL of the image. For example, `https://getmyimage.com/myimage.png`."
+                                  },
+                                  "required": true
+                                }
+                              ],
+                              "default": true
+                            },
+                            {
+                              "label": "Image File",
+                              "value": "imageFile",
+                              "nested": [
+                                {
+                                  "help": "Binary data of the image. For example, you can retrieve the binary data of your image using the __HTTP: Get a file__ module.",
+                                  "name": "imageFileData",
+                                  "type": "buffer",
+                                  "label": "Image File",
+                                  "required": true,
+                                  "semantic": "file:data"
+                                }
+                              ]
+                            }
+                          ],
+                          "required": true
+                        }
+                      ],
+                      "type": "collection",
+                      "label": "Image"
+                    },
+                    "type": "array",
+                    "label": "Images",
+                    "required": true
+                  },
+                  {
+                    "name": "model",
+                    "type": "select",
+                    "label": "Model",
+                    "required": true
+                  },
+                  {
+                    "name": "max_tokens",
+                    "type": "uinteger",
+                    "label": "Max Completion Tokens"
+                  },
+                  {
+                    "name": "temperature",
+                    "type": "number",
+                    "label": "Temperature",
+                    "validate": {
+                      "max": 2,
+                      "min": 0
+                    }
+                  },
+                  {
+                    "name": "top_p",
+                    "type": "number",
+                    "label": "Top P",
+                    "validate": {
+                      "max": 1,
+                      "min": 0
+                    }
+                  },
+                  {
+                    "name": "n_completions",
+                    "type": "number",
+                    "label": "Number"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "model": {
+                      "mode": "chose",
+                      "label": "gpt-4.1 (system)Smartest non-reasoning model"
+                    },
+                    "images": {
+                      "mode": "chose",
+                      "items": [
+                        {
+                          "imageUploadType": {
+                            "mode": "chose",
+                            "label": "Image File"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "openai-gpt-3"
+                      },
+                      "label": "AI Content Generator"
+                    }
+                  }
+                },
+                "advanced": true,
+                "designer": {
+                  "x": 900,
+                  "y": 750,
+                  "name": "Analizar imagen"
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:openai-gpt-3",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 4371900
+              }
+            },
+            {
+              "id": 33,
+              "mapper": {
+                "data": {
+                  "text": "(Image) [{{8.result}}]",
+                  "is_user": true,
+                  "external_ref": "{{1.message.mid}}",
+                  "provider_name": "messenger",
+                  "person_address": "{{1.sender.id}}",
+                  "channel_address": "{{1.recipient.id}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": ""
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "IITA - Create new Interaction"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 750,
+                  "name": "Crear interacción"
+                },
+                "interface": [
+                  {
+                    "help": "",
+                    "name": "id_interaction",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  },
+                  {
+                    "help": "",
+                    "name": "id_person_conversation",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for subscenario output",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3240069",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 450,
+          "name": "¿Tipo de mensaje?"
+        }
+      }
+    }
+  ],
+  "name": "IITA Messenger (LEGACY)",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "sender": {
+            "id": "24236858519270658"
+          },
+          "message": {
+            "mid": "m_uy5X02r5nWhpuOIX740iec0Jv1tTGg21odlUz-70rZkPW8zNqplYPrEblVX0bDuK8UdJHie7cE_rmUgVQ309cg",
+            "text": "Mensaje de prueba *No responder*"
+          },
+          "recipient": {
+            "id": "296373163870909"
+          },
+          "timestamp": "2025-11-20T14:11:10.472Z"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": true,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

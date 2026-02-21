@@ -1,0 +1,671 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "test": false,
+        "title": "Prueba1",
+        "dimension": {
+          "width": "1280",
+          "height": "720"
+        },
+        "video_inputs": [
+          {
+            "voice": {
+              "type": "text",
+              "pitch": "10",
+              "speed": "1",
+              "emotion": "Friendly",
+              "voice_id": "d92994ae0de34b2e8659b456a2f388b8",
+              "input_text": "Sabías que ya no necesitas cámaras para grabar un video? Con inteligencia artificial puedes escribir un texto… y listo, ¡tienes un video profesional en segundos! Bienvenido al futuro de la creación de contenido."
+            },
+            "character": {
+              "type": "avatar",
+              "scale": "1",
+              "offset": {},
+              "matting": false,
+              "avatar_id": "Bryan_FitnessCoach_public",
+              "avatar_style": "closeUp",
+              "circle_background_color": "#DEC37A"
+            },
+            "background": {
+              "type": "color",
+              "value": "#f6f6fc"
+            }
+          }
+        ]
+      },
+      "module": "heygen:createAnAvatarVideoV2",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "video_inputs",
+            "spec": [
+              {
+                "name": "character",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Type",
+                    "options": [
+                      {
+                        "label": "Avatar",
+                        "value": "avatar",
+                        "nested": [
+                          {
+                            "name": "avatar_id",
+                            "type": "select",
+                            "label": "Avatar",
+                            "options": "rpc://heygen/1/listAvatars",
+                            "required": true
+                          },
+                          {
+                            "name": "scale",
+                            "type": "number",
+                            "label": "Avatar scale",
+                            "default": 1,
+                            "required": true,
+                            "validate": {
+                              "max": 2,
+                              "min": 0
+                            }
+                          },
+                          {
+                            "name": "avatar_style",
+                            "type": "select",
+                            "label": "Avatar Style",
+                            "options": [
+                              {
+                                "label": "Circle",
+                                "value": "circle"
+                              },
+                              {
+                                "label": "Normal",
+                                "value": "normal"
+                              },
+                              {
+                                "label": "Close Up",
+                                "value": "closeUp"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "offset",
+                            "spec": [
+                              {
+                                "name": "x",
+                                "type": "number",
+                                "label": "X",
+                                "default": 0
+                              },
+                              {
+                                "name": "y",
+                                "type": "number",
+                                "label": "Y",
+                                "default": 0
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Offset"
+                          },
+                          {
+                            "help": "Whether to do matting",
+                            "name": "matting",
+                            "type": "boolean",
+                            "label": "Matting",
+                            "default": false,
+                            "required": false
+                          },
+                          {
+                            "help": "Color value in hex format.",
+                            "name": "circle_background_color",
+                            "type": "text",
+                            "label": "Circle Background Color",
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Talking Photo",
+                        "value": "talking_photo",
+                        "nested": [
+                          {
+                            "name": "talking_photo_id",
+                            "type": "select",
+                            "label": "Talking Photo ID",
+                            "options": "rpc://heygen/1/listTalkingVoicesV2",
+                            "required": true
+                          },
+                          {
+                            "name": "scale",
+                            "type": "number",
+                            "label": "Talking Photo scale",
+                            "default": 1,
+                            "required": true,
+                            "validate": {
+                              "max": 2,
+                              "min": 0
+                            }
+                          },
+                          {
+                            "name": "talking_photo_style",
+                            "type": "select",
+                            "label": "Talking Photo crop style",
+                            "options": [
+                              {
+                                "label": "Square",
+                                "value": "square"
+                              },
+                              {
+                                "label": "Circle",
+                                "value": "circle"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "offset",
+                            "spec": [
+                              {
+                                "name": "x",
+                                "type": "number",
+                                "label": "X",
+                                "default": 0
+                              },
+                              {
+                                "name": "y",
+                                "type": "number",
+                                "label": "Y",
+                                "default": 0
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Offset",
+                            "required": true
+                          },
+                          {
+                            "name": "talking_style",
+                            "type": "select",
+                            "label": "Talking Photo talking style",
+                            "default": "stable",
+                            "options": [
+                              {
+                                "label": "Stable",
+                                "value": "stable"
+                              },
+                              {
+                                "label": "Expressive",
+                                "value": "expressive"
+                              }
+                            ]
+                          },
+                          {
+                            "name": "expression",
+                            "type": "select",
+                            "label": "Talking Photo expression style",
+                            "default": "default",
+                            "options": [
+                              {
+                                "label": "Default",
+                                "value": "default"
+                              },
+                              {
+                                "label": "Happy",
+                                "value": "happy"
+                              }
+                            ]
+                          },
+                          {
+                            "help": "Whether to enhance this photar image",
+                            "name": "super_resolution",
+                            "type": "boolean",
+                            "label": "Super Resolution",
+                            "required": false
+                          },
+                          {
+                            "help": "Whether to do matting",
+                            "name": "matting",
+                            "type": "boolean",
+                            "label": "Matting",
+                            "required": false
+                          },
+                          {
+                            "help": "Background color in the circle/square when using circle/square style. Color value in hex format.",
+                            "name": "circle_background_color",
+                            "type": "text",
+                            "label": "Circle Background Color",
+                            "required": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "collection",
+                "label": "Character Settings"
+              },
+              {
+                "name": "voice",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Voice Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "name": "voice_id",
+                            "type": "select",
+                            "label": "Voice ID",
+                            "options": "rpc://heygen/1/listVoices"
+                          },
+                          {
+                            "name": "input_text",
+                            "type": "text",
+                            "label": "Input Text"
+                          },
+                          {
+                            "name": "speed",
+                            "type": "number",
+                            "label": "Voice Speec",
+                            "default": 1,
+                            "validate": {
+                              "max": 1.5,
+                              "min": 0.5
+                            }
+                          },
+                          {
+                            "name": "pitch",
+                            "type": "integer",
+                            "label": "Voice Pitch",
+                            "default": 0,
+                            "validate": {
+                              "max": 50,
+                              "min": -50
+                            }
+                          },
+                          {
+                            "name": "emotion",
+                            "type": "select",
+                            "label": "Voice Emotion method",
+                            "options": [
+                              {
+                                "label": "Excited",
+                                "value": "Excited"
+                              },
+                              {
+                                "label": "Friendly",
+                                "value": "Friendly"
+                              },
+                              {
+                                "label": "Serious",
+                                "value": "Serious"
+                              },
+                              {
+                                "label": "Soothing",
+                                "value": "Soothing"
+                              },
+                              {
+                                "label": "Broadcaster",
+                                "value": "Broadcaster"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Audio",
+                        "value": "audio",
+                        "nested": [
+                          {
+                            "name": "audio_url",
+                            "type": "text",
+                            "label": "Audio URL"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Silence",
+                        "value": "silence",
+                        "nested": [
+                          {
+                            "name": "duration",
+                            "type": "number",
+                            "label": "Duration of Silence",
+                            "validate": {
+                              "max": 100,
+                              "min": 1
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "collection",
+                "label": "Voice Settings"
+              },
+              {
+                "name": "background",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Background Type",
+                    "options": [
+                      {
+                        "label": "Color Background",
+                        "value": "color",
+                        "nested": [
+                          {
+                            "help": "Color value in hex format.",
+                            "name": "value",
+                            "type": "text",
+                            "label": "Background Color",
+                            "default": "#f6f6fc"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Image Background",
+                        "value": "image",
+                        "nested": [
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "Image URL"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Video Background",
+                        "value": "video",
+                        "nested": [
+                          {
+                            "name": "url",
+                            "type": "text",
+                            "label": "Video URL"
+                          },
+                          {
+                            "name": "play_style",
+                            "type": "select",
+                            "label": "Video Play Style",
+                            "options": [
+                              {
+                                "label": "Fit to Scene",
+                                "value": "fit_to_scene"
+                              },
+                              {
+                                "label": "Freeze",
+                                "value": "freeze"
+                              },
+                              {
+                                "label": "Loop",
+                                "value": "loop"
+                              },
+                              {
+                                "label": "Once",
+                                "value": "once"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "collection",
+                "label": "Background Settings"
+              }
+            ],
+            "type": "array",
+            "label": "Video Inputs"
+          },
+          {
+            "name": "title",
+            "type": "text",
+            "label": "Title of the video"
+          },
+          {
+            "name": "test",
+            "type": "boolean",
+            "label": "Test Mode"
+          },
+          {
+            "name": "caption",
+            "type": "boolean",
+            "label": "Captions"
+          },
+          {
+            "name": "callback_id",
+            "type": "text",
+            "label": "Callback ID"
+          },
+          {
+            "name": "dimension",
+            "spec": [
+              {
+                "name": "width",
+                "type": "integer",
+                "label": "Width"
+              },
+              {
+                "name": "height",
+                "type": "integer",
+                "label": "Height"
+              }
+            ],
+            "type": "collection",
+            "label": "Dimension"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "test": {
+              "mode": "chose"
+            },
+            "caption": {
+              "mode": "chose"
+            },
+            "video_inputs": {
+              "mode": "chose",
+              "items": [
+                {
+                  "voice": {
+                    "nested": {
+                      "type": {
+                        "mode": "chose",
+                        "label": "Text"
+                      },
+                      "emotion": {
+                        "mode": "chose",
+                        "label": "Friendly"
+                      },
+                      "voice_id": {
+                        "mode": "chose",
+                        "label": "John Doe"
+                      }
+                    }
+                  },
+                  "character": {
+                    "nested": {
+                      "type": {
+                        "mode": "chose",
+                        "label": "Avatar"
+                      },
+                      "matting": {
+                        "mode": "chose"
+                      },
+                      "avatar_id": {
+                        "mode": "chose",
+                        "label": "Bryan Fitness Coach, Bryan_FitnessCoach_public"
+                      },
+                      "avatar_style": {
+                        "mode": "chose",
+                        "label": "Close Up"
+                      }
+                    }
+                  },
+                  "background": {
+                    "nested": {
+                      "type": {
+                        "mode": "chose",
+                        "label": "Color Background"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "hey-gen-9e1ue3"
+              },
+              "label": "Heygen API"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Crea video con avatar"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:heygen2,hey-gen-9e1ue3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4757143
+      }
+    },
+    {
+      "id": 12,
+      "mapper": {
+        "duration": "90"
+      },
+      "module": "util:FunctionSleep",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "duration",
+            "type": "uinteger",
+            "label": "Delay",
+            "required": true,
+            "validate": {
+              "max": 300,
+              "min": 1
+            }
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Esperar 90 s"
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "video_id": "{{1.video_id}}"
+      },
+      "module": "heygen:getVideo",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "video_id",
+            "type": "select",
+            "label": "Video ID",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "video_id": {
+              "mode": "edit"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "hey-gen-9e1ue3"
+              },
+              "label": "Heygen API"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Obtiene el video"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:heygen2,hey-gen-9e1ue3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4757143
+      }
+    }
+  ],
+  "name": "Generación Reels con Heygen",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "video_id": "dcbaacd197264d6184f67bfe8a0339a1"
+        },
+        "2": {
+          "id": "dcbaacd197264d6184f67bfe8a0339a1",
+          "error": null,
+          "status": "completed",
+          "gif_url": "https://resource2.heygen.ai/video/dcbaacd197264d6184f67bfe8a0339a1/gif.gif",
+          "duration": 15.744,
+          "video_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/460f2111e677473ba4f7e0254353b096/dcbaacd197264d6184f...",
+          "created_at": 1755098294,
+          "callback_id": null,
+          "caption_url": "",
+          "thumbnail_url": "https://files2.heygen.ai/aws_pacific/avatar_tmp/460f2111e677473ba4f7e0254353b096/dcbaacd197264d6184f...",
+          "video_url_caption": null
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,1513 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Respond Generation - Prod"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1881156
+      }
+    },
+    {
+      "id": 3,
+      "filter": {
+        "name": "generate response",
+        "conditions": [
+          [
+            {
+              "a": "{{2.record.status}}",
+              "b": "preprocessed",
+              "o": "text:equal"
+            },
+            {
+              "a": "{{2.record.id_person_conversation}}",
+              "o": "exist"
+            },
+            {
+              "a": "{{2.record.id_person_conversation}}",
+              "b": "",
+              "o": "text:notequal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "duration": "1"
+      },
+      "module": "util:FunctionSleep",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "duration",
+            "type": "uinteger",
+            "label": "Delay",
+            "required": true,
+            "validate": {
+              "max": 300,
+              "min": 1
+            }
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 300,
+          "y": 300,
+          "name": "Wait 1 minute"
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "command": "with current_conversation as (\r\n    select id_conversation\r\n    from person_conversation\r\n\r\n    where id = {{2.record.id_person_conversation}}\r\n    limit 1\r\n),\n\r\nfiltered_conversation as (\r\n    select i.id, i.text, i.time_stamp, i.external_ref, m.description as media,\r\n        case\r\n            when i.id_person_conversation is null then 'system'\r\n            else 'user'\r\n        end as role\r\n\r\n    from interactions i\r\n\r\n    left join system_conversation sc\r\n    on i.id_system_conversation = sc.id\r\n\r\n    left join person_conversation pc\r\n    on i.id_person_conversation = pc.id\r\n\r\n    left join interaction_medias im\r\n    on i.id = im.interaction_id\r\n\r\n    left join medias m\r\n    on m.id = im.media_id\r\n\r\n    where coalesce(sc.id_conversation, pc.id_conversation) = (select id_conversation from current_conversation)\r\n    order by i.time_stamp desc\r\n\r\n    limit 10\r\n),\r\n\r\nunanswered_user_messages as (\r\n  select fc.*\r\n  from filtered_conversation fc\r\n  where fc.role = 'user'\r\n    and fc.time_stamp > coalesce(\r\n      (select max(time_stamp) from filtered_conversation where role = 'system'),\r\n      to_timestamp(0)\r\n    )\r\n),\r\n\r\nchannel_info as (\r\n    select c.address as channel_address, c.name as channel_name, pc.address as person_address, cp.id as channel_provider_id\r\n    from channels c\r\n\r\n    left join channel_providers cp\r\n    on c.id_channel_provider = cp.id\r\n\r\n    left join system_conversation sc\r\n    on sc.id_channel = c.id\r\n\r\n    left join person_conversation pc\r\n    on pc.id_conversation = sc.id_conversation\r\n\r\n    where sc.id_conversation = (select id_conversation from current_conversation)\r\n),\r\n\r\nconversation_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as conversation_text\r\n    from filtered_conversation\r\n    where time_stamp <= (\r\n        select coalesce(max(time_stamp), to_timestamp(0))\r\n        from filtered_conversation\r\n        where role = 'system'\r\n    )\r\n),\r\n\r\nunanswered_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as unanswered_text\r\n    from unanswered_user_messages\r\n),\r\n\r\nconversation_list as (\r\n    select\r\n        jsonb_agg(to_jsonb(filtered_conversation) order by time_stamp asc) as interactions\r\n    from filtered_conversation\r\n)\r\n\r\nselect cl.interactions, ct.conversation_text, ut.unanswered_text, ci.channel_name, ci.channel_address, ci.person_address, ci.channel_provider_id\r\nfrom conversation_list cl, conversation_text ct, unanswered_text ut, channel_info ci"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 5,
+      "filter": {
+        "name": "last message",
+        "conditions": [
+          [
+            {
+              "a": "{{get(last(4.interactions); \"id\")}}",
+              "b": "{{2.record.id}}",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "agent": "d5568d5f-072d-410a-8c60-2cc48e944525",
+        "timeout": "",
+        "messages": [
+          "Historial de conversación (contexto):\n{{4.conversation_text}}",
+          "Ultimos mensajes (responder a esto):\n{{4.unanswered_text}}"
+        ],
+        "threadID": "",
+        "outputType": "",
+        "additionalSystemPrompt": ""
+      },
+      "module": "ai-agent:RunAnAIAgent",
+      "onerror": [
+        {
+          "id": 6,
+          "mapper": {
+            "count": "5",
+            "retry": true,
+            "interval": "15"
+          },
+          "module": "builtin:Break",
+          "version": 1,
+          "metadata": {
+            "expect": [
+              {
+                "name": "retry",
+                "type": "boolean",
+                "label": "Automatically complete execution",
+                "required": true
+              },
+              {
+                "name": "count",
+                "type": "uinteger",
+                "label": "Number of attempts",
+                "required": true,
+                "validate": {
+                  "max": 10000,
+                  "min": 1
+                }
+              },
+              {
+                "name": "interval",
+                "type": "uinteger",
+                "label": "Interval between attempts",
+                "required": true,
+                "validate": {
+                  "max": 44640,
+                  "min": 1
+                }
+              }
+            ],
+            "restore": {
+              "expect": {
+                "retry": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "designer": {
+              "x": 1200,
+              "y": 600
+            }
+          },
+          "parameters": {}
+        }
+      ],
+      "version": 0,
+      "metadata": {
+        "expect": [
+          {
+            "name": "agent",
+            "type": "aiagent",
+            "label": "Agent",
+            "required": true
+          },
+          {
+            "name": "threadID",
+            "type": "text",
+            "label": "Thread ID",
+            "validate": {
+              "max": 256
+            }
+          },
+          {
+            "name": "additionalSystemPrompt",
+            "type": "text",
+            "label": "Additional system instructions"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages"
+          },
+          {
+            "name": "timeout",
+            "type": "number",
+            "label": "Timeout",
+            "validate": {
+              "max": 600,
+              "min": 120
+            }
+          },
+          {
+            "name": "outputType",
+            "type": "select",
+            "label": "Output schema",
+            "validate": {
+              "enum": [
+                "text",
+                "make-schema"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "agent": {
+              "label": "Atención al cliente y asesor de cursos (Activo)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                null,
+                null
+              ]
+            },
+            "outputType": {
+              "label": "Empty"
+            }
+          }
+        },
+        "designer": {
+          "x": 900,
+          "y": 300
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "@id": "",
+        "@score": "",
+        "@feedback": "",
+        "@response": "{{5.response}}",
+        "@evaluation": "pending",
+        "@system_prompt": "Role and objective\r\nYour name is Ana. You and course seller for IITA (Instituto de Innovación y Tecnología Aplicada). Your goal is to turn conversations into enrollments while protecting the user experience and the foundation’s image. Answer with quality: create persuasive, high-impact replies that build interest, dialogue, and trust before presenting price and closing enrollment.\r\n\r\nAge Gate (obligatorio)\r\n- Antes de recomendar cursos específicos o dar costo exacto, debo conocer la edad de la persona interesada (o las edades si son 2 personas).\r\n- Si el usuario no la dio, pregunto: “¿Para quién es y qué edad tiene?”\r\n- Solo recomiendo cursos cuya edad cumpla: edad >= edad_min AND (edad_max es null OR edad <= edad_max). Si no hay coincidencias, ofrezco alternativas cercanas y derivación a asesor humano.\r\n- antes de proponer horarios consulta la edad.\r\nOutput\r\nLanguage: Spanish, clear, professional, warm, and human.\r\nEmojis: only when they add intention (e.g., ✅, 📌, 🕒).\r\nScope: only IITA course information. Do not break character.\r\nLinks: avoid; if course info includes a link and the channel is not Instagram, you may include it. Never include links on Instagram.\r\nMax 800 characters per message (Instagram limit).\r\n\r\nAcademic offering\r\n\r\nCourses may be closed for enrollment. Before proposing or enrolling, check availability using the tools to list open courses (virtual or in-person) and start dates.\r\nIf a course is not in the list, say you don’t have that info and offer close alternatives from the available list.\r\nFor official descriptions/benefits and price, use the course info search tool. For detailed syllabus, use the files in the context with detail off each course.\r\n\r\nConversation principles\r\n\r\nFirst information, then price: explain objective, modality, duration, requirements, and outcomes before cost.\r\nFirst trust, then sale: personalize with 1–3 key questions (age, occupation, goal).\r\nAlign benefits to the user’s case. Emphasize value (“vale lo que cuesta”). If user says “caro,” reinforce value and outcomes.\r\n\r\nPersuasion is your main goal.\r\n\r\nAvoid using the user's name repeatedly but use it in the conversation.\r\n\r\nWhen you reply, always try to talk about the benefits of the course and the topics that will be covered. Don't just describe schedules and prices.\r\n\r\nWhen you inquire about the person, don't just ask which location they are interested in or how old they are; talk to them about their interests related to the courses they will take or the activities they do in order to offer them the most suitable course.\r\n\r\nWhen you state the course price, do not use the word 'enrollment' if the course only has an enrollment fee; describe it as 'total course cost'. If it has both an enrollment fee and monthly installments, do mention 'enrollment cost' and 'monthly fee cost'\r\n\r\nWhen siblings enroll, there is a 10,000 peso (ARS) discount on each tuition payment.\r\n\r\nFor the annual educational robotics courses starting March 15th, there is a registration fee, 50% of the monthly tuition in March (since classes are held for half the month), and the full tuition amount starting in April.\r\n\r\nTo those requesting information about courses and workshops in December 2025, and who don't specify which workshop they are interested in, mention the in-person summer workshops and courses for young people and children before offering online classes.\r\n\r\nUrgency & scarcity\r\n\r\nYou may mention limited spots or upcoming dates.\r\n\r\nKeep a calm, professional tone—no alarmism.\r\n\r\nAfter the price, add value\r\n\r\nAfter giving the cost, briefly add benefits and program highlights relevant to the user.\r\n\r\nFocus on enrollment\r\n\r\nIf the user wants to enroll, avoid detours and guide the close in the same chat.\r\n\r\nContext and channel\r\n\r\nIf the message comes “from an ad,” use the original intent (e.g., “Obtener más información”) in your first reply.\r\n\r\nKeep the enrollment process in the same channel.\r\n\r\nModality by location\r\n\r\nIf from Salta (Argentina) or San Lorenzo Chico (Argentina), mention in-person and office option, and also virtual. If from another province/country, mention they are from the interior/abroad and do not mention in-person/office.\r\n\r\nReinforce: “Clases en vivo por Zoom, interacción con el profesor, plataforma educativa y trabajos prácticos.”\r\n\r\nStyle guide\r\n\r\nBe precise and brief per message; deliver info in blocks as the chat advances.\r\n\r\nIf course info includes a link, prioritize including it unless the channel is Instagram.\r\n\r\nEnd every message with a soft CTA. Aim to enroll the right students for each course.\r\n\r\nTone: professional, clear, kind, human.\r\n\r\nReview history: avoid duplicating; continue from prior context.\r\n\r\nIf they decline, thank them and maintain institutional image.\r\n\r\nDont say \" fecha inicio tentativa\" instead sai \"fecha inicio prevista\"\r\n\r\nIf you have the start date or class days for in-person courses, always include the branch location. If you know the person’s preferred branch, only show courses offered at that location.\r\n\r\nYou don't need to display the target ages for each course. Ask for the age and offer age-appropriate courses without mentioning age limits. The exception is when someone asks for courses for two different people of different ages; in that case, you should clarify which course is for each person (for example, a parent asking for courses for their two children of different ages).\r\n\r\nRules and validations\r\n\r\nDNI: exactly 8 digits (0–9). Reject other formats (without dashes or periods) and ask to correct.\r\nInstallments: only at closing stage and with clear buy intent; up to 3 installments max.\r\nUse the tools as many times as necessary until you find the requested information.\r\nProvide only accurate and truthful information. If you don’t know, say “no cuento con ese dato” and offer to refer to a human advisor.\r\n\r\nUse context files (mission/values and course list) to remain consistent with IITA.\r\n\r\nInstitutional image (if requested)\r\n“Somos una fundación con más de 10 años de experiencia en capacitación en uso de nuevas tecnologías. Dictamos cursos de alta calidad gracias a la comunidad de alumnos que confía en nosotros.”\r\n\r\nRecommended sequence (Decision flow)\r\n\r\nA. Intention detection\r\nIf they ask “price” first: say you’ll share key points (objective, modality, duration) and then price. Ask 1–2 data points to personalize.\r\n\r\nB. Discovery (max 3 questions)\r\nAge (validate per course), occupation/area, goal (why they want the course).\r\nIf from an ad, reference their phrase/course.\r\n\r\nC. Course presentation (summary)\r\n3–5 bullets: what they learn, who it’s for, modality (Zoom live), platform + practical work, outcomes.\r\nUse course info and program tools when needed.\r\nFor face-to-face classes we have notebooks and computers so that students can practice without having to have their own.\r\n\r\nD. Price + value\r\nShare the cost (use official price from the info tool), note it’s a current investment to add urgency.\r\nImmediately reinforce benefits and a brief program tailored to their profile.\r\nAdd a soft urgency line (e.g., “¡No dejes pasar esta oportunidad!”).\r\n\r\nE. Close/Enrollment\r\nIf they say “quiero inscribirme,” request data only once in the same channel:\r\nName, Last name, DNI (8 dígitos), Birthday date (DD/MM/AAAA), Phone, Email, Preferred time (the one that corresponds to the course schedule, whether morning, afternoon or night).\r\nAlso collect: curso, sede, modalidad, día y horario.\r\nPayment methods: transferencia (CBU), tarjeta (link de pago) o efectivo en oficinas.\r\nCBU: 0110453420045301949933 (Banco Nación).\r\nIf paid and confirmed, enroll the student in the specific course (correct name, site, modality, day/time).\r\nConfirm receipt and next step (e.g., send CBU or payment link).\r\nIf course is not currently enrolling, offer to join the waiting list and add their info.\r\n\r\nF. Common objections\r\n“Es caro”: reinforce outcomes, live classes, support, community, and practice.\r\n“Después veo”: probe the exact concern, apply persuasion and course strengths.\r\n“Solo quería info”: share a concise summary + soft CTA.\r\n\r\nG. Rejection\r\nThank them, protect the institute’s image, and leave the door open.\r\nOperational workflows and tools (use only as needed)\r\nCheck open courses and dates before proposing or enrolling.\r\nRetrieve official descriptions/benefits and prices; Use program search, documents placed in the agent's context, for the curriculum when prompted.\r\nIf user sends a transfer receipt image, analyze it to extract payment data.\r\nFor branch addresses and maps, fetch site information.\r\nIf the course is closed or user prefers later, add them to the waiting list.\r\nBrevity and calls to action\r\nMax 800 characters per message.\r\nEnd each message with 1 clear CTA: “¿Querés que te comparta el precio ahora?”, “¿Seguimos con la inscripción?”, “¿Te paso el CBU o preferís link de pago?”.\r\nIf the user doesn’t answer a key question, don’t stack more; offer two guided options.\r\nDon’t paste long programs unless requested: offer a summary + option for more detail.",
+        "@generated_interaction_id": "",
+        "@associated_interaction_id": "{{2.record.id}}"
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@associated_interaction_id",
+            "type": "integer",
+            "label": "associated_interaction_id"
+          },
+          {
+            "name": "@generated_interaction_id",
+            "type": "integer",
+            "label": "generated_interaction_id"
+          },
+          {
+            "name": "@response",
+            "type": "text",
+            "label": "response"
+          },
+          {
+            "name": "@system_prompt",
+            "type": "text",
+            "label": "system_prompt"
+          },
+          {
+            "name": "@evaluation",
+            "type": "text",
+            "label": "evaluation",
+            "required": true
+          },
+          {
+            "name": "@feedback",
+            "type": "text",
+            "label": "feedback"
+          },
+          {
+            "name": "@score",
+            "type": "integer",
+            "label": "score"
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@associated_interaction_id",
+            "type": "integer",
+            "label": "associated_interaction_id"
+          },
+          {
+            "name": "@generated_interaction_id",
+            "type": "integer",
+            "label": "generated_interaction_id"
+          },
+          {
+            "name": "@response",
+            "type": "text",
+            "label": "response"
+          },
+          {
+            "name": "@system_prompt",
+            "type": "text",
+            "label": "system_prompt"
+          },
+          {
+            "name": "@evaluation",
+            "type": "text",
+            "label": "evaluation"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.ai_interaction"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 1200,
+          "y": 150,
+          "name": "ia interaction"
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"ai_interaction\"",
+        "account": 6184753,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 8,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 9,
+              "filter": {
+                "name": "San Lorenzo Chico",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{4.channel_name}}",
+                      "b": "san",
+                      "o": "text:contain:ci"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "mode": "fromAll",
+                "values": {
+                  "0": "{{4.channel_address}}",
+                  "1": "{{formatDate(get(last(4.interactions); \"time_stamp\"); \"DD-MM-YYYY HH:mm\")}}",
+                  "2": "{{switch(4.channel_provider_id; 1; \"Whatsapp\"; 2; \"Instagram\"; 3; \"Messenger\"; \"Whatsapp Cloud API\")}}",
+                  "3": "'{{4.person_address}}",
+                  "4": "{{4.unanswered_text}}",
+                  "5": "{{get(last(4.interactions); \"external_ref\")}}",
+                  "6": "{{5.response}}",
+                  "10": "{{2.record.id}}"
+                },
+                "sheetId": "San Lorenzo Chico",
+                "spreadsheetId": "1qXXB8me9BWzGZpw5b9SyHEWIe7xJT0vMRN4RlcS6Rss",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+              },
+              "module": "google-sheets:addRow",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "mode",
+                    "type": "select",
+                    "label": "Search Method",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        "select",
+                        "fromAll",
+                        "map"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "insertUnformatted",
+                    "type": "boolean",
+                    "label": "Unformatted",
+                    "required": true
+                  },
+                  {
+                    "name": "valueInputOption",
+                    "type": "select",
+                    "label": "Value input option",
+                    "validate": {
+                      "enum": [
+                        "USER_ENTERED",
+                        "RAW"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "insertDataOption",
+                    "type": "select",
+                    "label": "Insert data option",
+                    "validate": {
+                      "enum": [
+                        "INSERT_ROWS",
+                        "OVERWRITE"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "spreadsheetId",
+                    "type": "text",
+                    "label": "Spreadsheet ID",
+                    "required": true
+                  },
+                  {
+                    "name": "sheetId",
+                    "type": "select",
+                    "label": "Sheet Name",
+                    "required": true
+                  },
+                  {
+                    "name": "includesHeaders",
+                    "type": "select",
+                    "label": "Table contains headers",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        true,
+                        false
+                      ]
+                    }
+                  },
+                  {
+                    "name": "values",
+                    "spec": [
+                      {
+                        "name": "0",
+                        "type": "text",
+                        "label": "ID (A)"
+                      },
+                      {
+                        "name": "1",
+                        "type": "text",
+                        "label": "Fecha y hora (B)"
+                      },
+                      {
+                        "name": "2",
+                        "type": "text",
+                        "label": "Canal (C)"
+                      },
+                      {
+                        "name": "3",
+                        "type": "text",
+                        "label": "ID Conversación (D)"
+                      },
+                      {
+                        "name": "4",
+                        "type": "text",
+                        "label": "Mensaje recibido (E)"
+                      },
+                      {
+                        "name": "5",
+                        "type": "text",
+                        "label": "ID Mensaje (F)"
+                      },
+                      {
+                        "name": "6",
+                        "type": "text",
+                        "label": "Respuesta generada (G)"
+                      },
+                      {
+                        "name": "7",
+                        "type": "text",
+                        "label": "OK (H)"
+                      },
+                      {
+                        "name": "8",
+                        "type": "text",
+                        "label": "Estado del envío (I)"
+                      },
+                      {
+                        "name": "9",
+                        "type": "text",
+                        "label": "Fecha y hora de salida (J)"
+                      },
+                      {
+                        "name": "10",
+                        "type": "text",
+                        "label": "ID de interacción recibida (K)"
+                      },
+                      {
+                        "name": "11",
+                        "type": "text",
+                        "label": "ID de interacción generada (L)"
+                      },
+                      {
+                        "name": "12",
+                        "type": "text",
+                        "label": "(M)"
+                      },
+                      {
+                        "name": "13",
+                        "type": "text",
+                        "label": "(N)"
+                      },
+                      {
+                        "name": "14",
+                        "type": "text",
+                        "label": "(O)"
+                      },
+                      {
+                        "name": "15",
+                        "type": "text",
+                        "label": "(P)"
+                      },
+                      {
+                        "name": "16",
+                        "type": "text",
+                        "label": "(Q)"
+                      },
+                      {
+                        "name": "17",
+                        "type": "text",
+                        "label": "(R)"
+                      },
+                      {
+                        "name": "18",
+                        "type": "text",
+                        "label": "(S)"
+                      },
+                      {
+                        "name": "19",
+                        "type": "text",
+                        "label": "(T)"
+                      },
+                      {
+                        "name": "20",
+                        "type": "text",
+                        "label": "(U)"
+                      },
+                      {
+                        "name": "21",
+                        "type": "text",
+                        "label": "(V)"
+                      },
+                      {
+                        "name": "22",
+                        "type": "text",
+                        "label": "(W)"
+                      },
+                      {
+                        "name": "23",
+                        "type": "text",
+                        "label": "(X)"
+                      },
+                      {
+                        "name": "24",
+                        "type": "text",
+                        "label": "(Y)"
+                      },
+                      {
+                        "name": "25",
+                        "type": "text",
+                        "label": "(Z)"
+                      },
+                      {
+                        "name": "26",
+                        "type": "text",
+                        "label": "(AA)"
+                      },
+                      {
+                        "name": "27",
+                        "type": "text",
+                        "label": "(AB)"
+                      },
+                      {
+                        "name": "28",
+                        "type": "text",
+                        "label": "(AC)"
+                      },
+                      {
+                        "name": "29",
+                        "type": "text",
+                        "label": "(AD)"
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Values"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "mode": {
+                      "label": "Select from all"
+                    },
+                    "sheetId": {
+                      "mode": "chose",
+                      "label": "San Lorenzo Chico"
+                    },
+                    "includesHeaders": {
+                      "label": "Yes",
+                      "nested": [
+                        {
+                          "name": "values",
+                          "spec": [
+                            {
+                              "name": "0",
+                              "type": "text",
+                              "label": "ID (A)"
+                            },
+                            {
+                              "name": "1",
+                              "type": "text",
+                              "label": "Fecha y hora (B)"
+                            },
+                            {
+                              "name": "2",
+                              "type": "text",
+                              "label": "Canal (C)"
+                            },
+                            {
+                              "name": "3",
+                              "type": "text",
+                              "label": "ID Conversación (D)"
+                            },
+                            {
+                              "name": "4",
+                              "type": "text",
+                              "label": "Mensaje recibido (E)"
+                            },
+                            {
+                              "name": "5",
+                              "type": "text",
+                              "label": "ID Mensaje (F)"
+                            },
+                            {
+                              "name": "6",
+                              "type": "text",
+                              "label": "Respuesta generada (G)"
+                            },
+                            {
+                              "name": "7",
+                              "type": "text",
+                              "label": "OK (H)"
+                            },
+                            {
+                              "name": "8",
+                              "type": "text",
+                              "label": "Estado del envío (I)"
+                            },
+                            {
+                              "name": "9",
+                              "type": "text",
+                              "label": "Fecha y hora de salida (J)"
+                            },
+                            {
+                              "name": "10",
+                              "type": "text",
+                              "label": "ID de interacción recibida (K)"
+                            },
+                            {
+                              "name": "11",
+                              "type": "text",
+                              "label": "ID de interacción generada (L)"
+                            },
+                            {
+                              "name": "12",
+                              "type": "text",
+                              "label": "(M)"
+                            },
+                            {
+                              "name": "13",
+                              "type": "text",
+                              "label": "(N)"
+                            },
+                            {
+                              "name": "14",
+                              "type": "text",
+                              "label": "(O)"
+                            },
+                            {
+                              "name": "15",
+                              "type": "text",
+                              "label": "(P)"
+                            },
+                            {
+                              "name": "16",
+                              "type": "text",
+                              "label": "(Q)"
+                            },
+                            {
+                              "name": "17",
+                              "type": "text",
+                              "label": "(R)"
+                            },
+                            {
+                              "name": "18",
+                              "type": "text",
+                              "label": "(S)"
+                            },
+                            {
+                              "name": "19",
+                              "type": "text",
+                              "label": "(T)"
+                            },
+                            {
+                              "name": "20",
+                              "type": "text",
+                              "label": "(U)"
+                            },
+                            {
+                              "name": "21",
+                              "type": "text",
+                              "label": "(V)"
+                            },
+                            {
+                              "name": "22",
+                              "type": "text",
+                              "label": "(W)"
+                            },
+                            {
+                              "name": "23",
+                              "type": "text",
+                              "label": "(X)"
+                            },
+                            {
+                              "name": "24",
+                              "type": "text",
+                              "label": "(Y)"
+                            },
+                            {
+                              "name": "25",
+                              "type": "text",
+                              "label": "(Z)"
+                            },
+                            {
+                              "name": "26",
+                              "type": "text",
+                              "label": "(AA)"
+                            },
+                            {
+                              "name": "27",
+                              "type": "text",
+                              "label": "(AB)"
+                            },
+                            {
+                              "name": "28",
+                              "type": "text",
+                              "label": "(AC)"
+                            },
+                            {
+                              "name": "29",
+                              "type": "text",
+                              "label": "(AD)"
+                            }
+                          ],
+                          "type": "collection",
+                          "label": "Values"
+                        }
+                      ]
+                    },
+                    "insertDataOption": {
+                      "mode": "chose",
+                      "label": "Insert rows"
+                    },
+                    "valueInputOption": {
+                      "mode": "chose",
+                      "label": "User entered"
+                    },
+                    "insertUnformatted": {
+                      "mode": "chose"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "google"
+                      },
+                      "label": "Google Drive - Prod (gonzaloaybar@fundacioninnovar.org.ar)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1800,
+                  "y": 0,
+                  "name": "Add a row San Lorenzo"
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 5710354
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 10,
+              "filter": {
+                "name": "Salta",
+                "conditions": []
+              },
+              "mapper": {
+                "mode": "fromAll",
+                "values": {
+                  "0": "{{4.channel_address}}",
+                  "1": "{{formatDate(get(last(4.interactions); \"time_stamp\"); \"DD-MM-YYYY HH:mm\")}}",
+                  "2": "{{switch(4.channel_provider_id; 1; \"Whatsapp\"; 2; \"Instagram\"; 3; \"Messenger\"; \"Whatsapp Cloud API\")}}",
+                  "3": "'{{4.person_address}}",
+                  "4": "{{4.unanswered_text}}",
+                  "5": "{{get(last(4.interactions); \"external_ref\")}}",
+                  "6": "{{5.response}}",
+                  "10": "{{2.record.id}}"
+                },
+                "sheetId": "Salta",
+                "spreadsheetId": "1qXXB8me9BWzGZpw5b9SyHEWIe7xJT0vMRN4RlcS6Rss",
+                "includesHeaders": true,
+                "insertDataOption": "INSERT_ROWS",
+                "valueInputOption": "USER_ENTERED",
+                "insertUnformatted": false
+              },
+              "module": "google-sheets:addRow",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "mode",
+                    "type": "select",
+                    "label": "Search Method",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        "select",
+                        "fromAll",
+                        "map"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "insertUnformatted",
+                    "type": "boolean",
+                    "label": "Unformatted",
+                    "required": true
+                  },
+                  {
+                    "name": "valueInputOption",
+                    "type": "select",
+                    "label": "Value input option",
+                    "validate": {
+                      "enum": [
+                        "USER_ENTERED",
+                        "RAW"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "insertDataOption",
+                    "type": "select",
+                    "label": "Insert data option",
+                    "validate": {
+                      "enum": [
+                        "INSERT_ROWS",
+                        "OVERWRITE"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "spreadsheetId",
+                    "type": "text",
+                    "label": "Spreadsheet ID",
+                    "required": true
+                  },
+                  {
+                    "name": "sheetId",
+                    "type": "select",
+                    "label": "Sheet Name",
+                    "required": true
+                  },
+                  {
+                    "name": "includesHeaders",
+                    "type": "select",
+                    "label": "Table contains headers",
+                    "required": true,
+                    "validate": {
+                      "enum": [
+                        true,
+                        false
+                      ]
+                    }
+                  },
+                  {
+                    "name": "values",
+                    "spec": [
+                      {
+                        "name": "0",
+                        "type": "text",
+                        "label": "f (A)"
+                      },
+                      {
+                        "name": "1",
+                        "type": "text",
+                        "label": "Fecha y hora (B)"
+                      },
+                      {
+                        "name": "2",
+                        "type": "text",
+                        "label": "Canal (C)"
+                      },
+                      {
+                        "name": "3",
+                        "type": "text",
+                        "label": "ID Conversación (D)"
+                      },
+                      {
+                        "name": "4",
+                        "type": "text",
+                        "label": "Mensaje recibido (E)"
+                      },
+                      {
+                        "name": "5",
+                        "type": "text",
+                        "label": "ID Mensaje (F)"
+                      },
+                      {
+                        "name": "6",
+                        "type": "text",
+                        "label": "Respuesta generada (G)"
+                      },
+                      {
+                        "name": "7",
+                        "type": "text",
+                        "label": "OK (H)"
+                      },
+                      {
+                        "name": "8",
+                        "type": "text",
+                        "label": "Estado del envío (I)"
+                      },
+                      {
+                        "name": "9",
+                        "type": "text",
+                        "label": "Fecha y hora de salida (J)"
+                      },
+                      {
+                        "name": "10",
+                        "type": "text",
+                        "label": "ID de interacción recibida (K)"
+                      },
+                      {
+                        "name": "11",
+                        "type": "text",
+                        "label": "ID de interaccion generada (L)"
+                      },
+                      {
+                        "name": "12",
+                        "type": "text",
+                        "label": "(M)"
+                      },
+                      {
+                        "name": "13",
+                        "type": "text",
+                        "label": "(N)"
+                      },
+                      {
+                        "name": "14",
+                        "type": "text",
+                        "label": "(O)"
+                      },
+                      {
+                        "name": "15",
+                        "type": "text",
+                        "label": "(P)"
+                      },
+                      {
+                        "name": "16",
+                        "type": "text",
+                        "label": "(Q)"
+                      },
+                      {
+                        "name": "17",
+                        "type": "text",
+                        "label": "(R)"
+                      },
+                      {
+                        "name": "18",
+                        "type": "text",
+                        "label": "(S)"
+                      },
+                      {
+                        "name": "19",
+                        "type": "text",
+                        "label": "(T)"
+                      },
+                      {
+                        "name": "20",
+                        "type": "text",
+                        "label": "(U)"
+                      },
+                      {
+                        "name": "21",
+                        "type": "text",
+                        "label": "(V)"
+                      },
+                      {
+                        "name": "22",
+                        "type": "text",
+                        "label": "(W)"
+                      },
+                      {
+                        "name": "23",
+                        "type": "text",
+                        "label": "(X)"
+                      },
+                      {
+                        "name": "24",
+                        "type": "text",
+                        "label": "(Y)"
+                      },
+                      {
+                        "name": "25",
+                        "type": "text",
+                        "label": "(Z)"
+                      },
+                      {
+                        "name": "26",
+                        "type": "text",
+                        "label": "(AA)"
+                      },
+                      {
+                        "name": "27",
+                        "type": "text",
+                        "label": "(AB)"
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Values"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "mode": {
+                      "label": "Select from all"
+                    },
+                    "sheetId": {
+                      "mode": "chose",
+                      "label": "Salta"
+                    },
+                    "includesHeaders": {
+                      "label": "Yes",
+                      "nested": [
+                        {
+                          "name": "values",
+                          "spec": [
+                            {
+                              "name": "0",
+                              "type": "text",
+                              "label": "f (A)"
+                            },
+                            {
+                              "name": "1",
+                              "type": "text",
+                              "label": "Fecha y hora (B)"
+                            },
+                            {
+                              "name": "2",
+                              "type": "text",
+                              "label": "Canal (C)"
+                            },
+                            {
+                              "name": "3",
+                              "type": "text",
+                              "label": "ID Conversación (D)"
+                            },
+                            {
+                              "name": "4",
+                              "type": "text",
+                              "label": "Mensaje recibido (E)"
+                            },
+                            {
+                              "name": "5",
+                              "type": "text",
+                              "label": "ID Mensaje (F)"
+                            },
+                            {
+                              "name": "6",
+                              "type": "text",
+                              "label": "Respuesta generada (G)"
+                            },
+                            {
+                              "name": "7",
+                              "type": "text",
+                              "label": "OK (H)"
+                            },
+                            {
+                              "name": "8",
+                              "type": "text",
+                              "label": "Estado del envío (I)"
+                            },
+                            {
+                              "name": "9",
+                              "type": "text",
+                              "label": "Fecha y hora de salida (J)"
+                            },
+                            {
+                              "name": "10",
+                              "type": "text",
+                              "label": "ID de interacción recibida (K)"
+                            },
+                            {
+                              "name": "11",
+                              "type": "text",
+                              "label": "ID de interaccion generada (L)"
+                            },
+                            {
+                              "name": "12",
+                              "type": "text",
+                              "label": "(M)"
+                            },
+                            {
+                              "name": "13",
+                              "type": "text",
+                              "label": "(N)"
+                            },
+                            {
+                              "name": "14",
+                              "type": "text",
+                              "label": "(O)"
+                            },
+                            {
+                              "name": "15",
+                              "type": "text",
+                              "label": "(P)"
+                            },
+                            {
+                              "name": "16",
+                              "type": "text",
+                              "label": "(Q)"
+                            },
+                            {
+                              "name": "17",
+                              "type": "text",
+                              "label": "(R)"
+                            },
+                            {
+                              "name": "18",
+                              "type": "text",
+                              "label": "(S)"
+                            },
+                            {
+                              "name": "19",
+                              "type": "text",
+                              "label": "(T)"
+                            },
+                            {
+                              "name": "20",
+                              "type": "text",
+                              "label": "(U)"
+                            },
+                            {
+                              "name": "21",
+                              "type": "text",
+                              "label": "(V)"
+                            },
+                            {
+                              "name": "22",
+                              "type": "text",
+                              "label": "(W)"
+                            },
+                            {
+                              "name": "23",
+                              "type": "text",
+                              "label": "(X)"
+                            },
+                            {
+                              "name": "24",
+                              "type": "text",
+                              "label": "(Y)"
+                            },
+                            {
+                              "name": "25",
+                              "type": "text",
+                              "label": "(Z)"
+                            },
+                            {
+                              "name": "26",
+                              "type": "text",
+                              "label": "(AA)"
+                            },
+                            {
+                              "name": "27",
+                              "type": "text",
+                              "label": "(AB)"
+                            }
+                          ],
+                          "type": "collection",
+                          "label": "Values"
+                        }
+                      ]
+                    },
+                    "insertDataOption": {
+                      "mode": "chose",
+                      "label": "Insert rows"
+                    },
+                    "valueInputOption": {
+                      "mode": "chose",
+                      "label": "User entered"
+                    },
+                    "insertUnformatted": {
+                      "mode": "chose"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "google"
+                      },
+                      "label": "Google Drive - Prod (gonzaloaybar@fundacioninnovar.org.ar)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1800,
+                  "y": 300,
+                  "name": "Add a row Salta"
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:google",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 5710354
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 150,
+          "name": "¿Sheet?"
+        }
+      },
+      "parameters": {
+        "else": 1
+      }
+    }
+  ],
+  "name": "[RG] Generate ai response - prod",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "type": "UPDATE",
+          "table": "interactions",
+          "record": {
+            "id": 21370,
+            "text": null,
+            "ad_id": null,
+            "status": "preprocessed",
+            "time_stamp": "2026-02-13T13:01:07.671",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA==",
+            "id_person_conversation": 3203,
+            "id_system_conversation": null
+          },
+          "schema": "public",
+          "old_record": {
+            "id": 21370,
+            "text": null,
+            "ad_id": null,
+            "status": "new",
+            "time_stamp": "2026-02-13T13:01:07.671",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA==",
+            "id_person_conversation": 3203,
+            "id_system_conversation": null
+          }
+        },
+        "4": {
+          "channel_name": "whatsapp cloud api",
+          "interactions": [
+            {
+              "id": 21370,
+              "role": "user",
+              "text": "¡Hola! Me llegó tu último mensaje vacío (puede pasar).\n\n¿Querías seguir probando el chat o te paso i...",
+              "media": "Contenido del audio:\nNo, no estaba vacío, era un audio. ¿te podrías fijar de nuevo, por favor?",
+              "time_stamp": "2026-02-13T13:01:07.671",
+              "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA=="
+            }
+          ],
+          "person_address": "5493875354413",
+          "channel_address": "111869345312688",
+          "unanswered_text": "- user (2026-02-13 13:01:07.671):\n    [texto del mensaje]: [sin texto]\n    [media del mensaje]: Cont...",
+          "conversation_text": "- user (2026-02-13 12:38:06.532):\n    [texto del mensaje]: Este es un mensaje de prueba de nicolas\n\n...",
+          "channel_provider_id": 4
+        },
+        "5": {
+          "response": "¡Gracias por avisar! Sí, volví a revisar: tu audio decía que querías info de **un curso de inteligen...",
+          "threadId": "88c93f39-9b00-4e62-8009-18066cc981e0",
+          "executionSteps": [
+            {
+              "id": "msg_0e185eeda98f7ba401698f21a600f4819688c995b1f8f49fc5",
+              "role": "assistant",
+              "content": "¡Gracias por avisar! Sí, volví a revisar: tu audio decía que querías info de **un curso de inteligen...",
+              "reasoning": "**Clarifying course registration**\n\nI need to apologize and acknowledge that the audio about AI is m...",
+              "toolCalls": [
+                {
+                  "id": "call_MO9ILkObqHpJVNfwsDmbJCnV",
+                  "name": "find_branches_information",
+                  "toolType": "scenario",
+                  "arguments": {
+                    "age": 5
+                  }
+                }
+              ],
+              "tokenUsage": {
+                "totalTokens": 7388,
+                "promptTokens": 7059,
+                "completionTokens": 329
+              },
+              "toolResponse": {
+                "id": "call_MO9ILkObqHpJVNfwsDmbJCnV",
+                "name": "find_branches_information",
+                "result": "{\"tool_output\":{\"array\":[{\"bundle\":{\"branch_id\":1,\"nombre\":\"Salta\",\"direccion\":\"Buenos Aires 135, Pr...",
+                "status": "ok",
+                "toolType": "scenario",
+                "executionLink": "954615/scenarios/3671815/logs/633c0d7fa104440e864bc46fae6f6aae"
+              },
+              "executionTimeMs": 7406,
+              "agentIterationId": "c6643f0b-0ba7-46ca-9390-89c66bff3ed3"
+            }
+          ],
+          "executionTimeMs": 15938,
+          "tokenUsageSummary": {
+            "totalTokens": 21237,
+            "promptTokens": 20777,
+            "completionTokens": 460
+          },
+          "lastAgentIterationId": "c6643f0b-0ba7-46ca-9390-89c66bff3ed3"
+        },
+        "7": {
+          "rowsAffected": 1
+        },
+        "10": {
+          "updates": {
+            "updatedRows": 1,
+            "updatedCells": 8,
+            "updatedRange": "Salta!A3754:K3754",
+            "spreadsheetId": "1qXXB8me9BWzGZpw5b9SyHEWIe7xJT0vMRN4RlcS6Rss",
+            "updatedColumns": 8
+          },
+          "rowNumber": 3754,
+          "sheetName": "Salta",
+          "tableRange": "Salta!A1:L3753",
+          "spreadsheetId": "1qXXB8me9BWzGZpw5b9SyHEWIe7xJT0vMRN4RlcS6Rss"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": true,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

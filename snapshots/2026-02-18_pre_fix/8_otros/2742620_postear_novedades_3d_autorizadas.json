@@ -1,0 +1,474 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {
+        "array": "{{split(var.input.URL_Image; \",\")}}"
+      },
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "mode": "edit",
+            "name": "array",
+            "spec": [],
+            "type": "array",
+            "label": "Array"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "array": {
+              "mode": "edit"
+            }
+          }
+        },
+        "designer": {
+          "x": 514,
+          "y": 3
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 3,
+      "filter": {
+        "name": "Sacar el primero",
+        "conditions": [
+          [
+            {
+              "a": "{{2.`__IMTINDEX__`}}",
+              "b": "1",
+              "o": "text:notequal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "ca": "",
+        "qs": [],
+        "url": "{{2.value}}",
+        "gzip": true,
+        "method": "get",
+        "headers": [],
+        "timeout": "",
+        "useMtls": false,
+        "authPass": "",
+        "authUser": "",
+        "bodyType": "",
+        "serializeUrl": false,
+        "shareCookies": false,
+        "parseResponse": false,
+        "followRedirect": true,
+        "useQuerystring": false,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true
+      },
+      "module": "http:ActionSendData",
+      "version": 3,
+      "metadata": {
+        "expect": [
+          {
+            "name": "url",
+            "type": "url",
+            "label": "URL",
+            "required": true
+          },
+          {
+            "name": "serializeUrl",
+            "type": "boolean",
+            "label": "Serialize URL",
+            "required": true
+          },
+          {
+            "name": "method",
+            "type": "select",
+            "label": "Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "get",
+                "head",
+                "post",
+                "put",
+                "patch",
+                "delete",
+                "options"
+              ]
+            }
+          },
+          {
+            "name": "headers",
+            "spec": [
+              {
+                "name": "name",
+                "type": "text",
+                "label": "Name",
+                "required": true
+              },
+              {
+                "name": "value",
+                "type": "text",
+                "label": "Value"
+              }
+            ],
+            "type": "array",
+            "label": "Headers"
+          },
+          {
+            "name": "qs",
+            "spec": [
+              {
+                "name": "name",
+                "type": "text",
+                "label": "Name",
+                "required": true
+              },
+              {
+                "name": "value",
+                "type": "text",
+                "label": "Value"
+              }
+            ],
+            "type": "array",
+            "label": "Query String"
+          },
+          {
+            "name": "bodyType",
+            "type": "select",
+            "label": "Body type",
+            "validate": {
+              "enum": [
+                "raw",
+                "x_www_form_urlencoded",
+                "multipart_form_data"
+              ]
+            }
+          },
+          {
+            "name": "parseResponse",
+            "type": "boolean",
+            "label": "Parse response",
+            "required": true
+          },
+          {
+            "name": "authUser",
+            "type": "text",
+            "label": "User name"
+          },
+          {
+            "name": "authPass",
+            "type": "password",
+            "label": "Password"
+          },
+          {
+            "name": "timeout",
+            "type": "uinteger",
+            "label": "Timeout",
+            "validate": {
+              "max": 300,
+              "min": 1
+            }
+          },
+          {
+            "name": "shareCookies",
+            "type": "boolean",
+            "label": "Share cookies with other HTTP modules",
+            "required": true
+          },
+          {
+            "name": "ca",
+            "type": "cert",
+            "label": "Self-signed certificate"
+          },
+          {
+            "name": "rejectUnauthorized",
+            "type": "boolean",
+            "label": "Reject connections that are using unverified (self-signed) certificates",
+            "required": true
+          },
+          {
+            "name": "followRedirect",
+            "type": "boolean",
+            "label": "Follow redirect",
+            "required": true
+          },
+          {
+            "name": "useQuerystring",
+            "type": "boolean",
+            "label": "Disable serialization of multiple same query string keys as arrays",
+            "required": true
+          },
+          {
+            "name": "gzip",
+            "type": "boolean",
+            "label": "Request compressed content",
+            "required": true
+          },
+          {
+            "name": "useMtls",
+            "type": "boolean",
+            "label": "Use Mutual TLS",
+            "required": true
+          },
+          {
+            "name": "followAllRedirects",
+            "type": "boolean",
+            "label": "Follow all redirect",
+            "required": true
+          }
+        ],
+        "restore": {
+          "expect": {
+            "qs": {
+              "mode": "chose"
+            },
+            "method": {
+              "mode": "chose",
+              "label": "GET"
+            },
+            "headers": {
+              "mode": "chose"
+            },
+            "bodyType": {
+              "label": "Empty"
+            }
+          }
+        },
+        "designer": {
+          "x": 887,
+          "y": -1
+        },
+        "parameters": [
+          {
+            "name": "handleErrors",
+            "type": "boolean",
+            "label": "Evaluate all states as errors (except for 2xx and 3xx )",
+            "required": true
+          },
+          {
+            "name": "useNewZLibDeCompress",
+            "type": "hidden"
+          }
+        ]
+      },
+      "parameters": {
+        "handleErrors": true,
+        "useNewZLibDeCompress": true
+      }
+    },
+    {
+      "id": 4,
+      "module": "google-drive:getAFile",
+      "version": 4,
+      "metadata": {
+        "designer": {
+          "x": 1187,
+          "y": -1,
+          "name": "Descarga IA img"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "photos": [
+          {
+            "data": "{{4.data}}",
+            "type": "data",
+            "fileName": "{{4.name}}"
+          },
+          {
+            "url": "{{2.value}}",
+            "type": "url"
+          }
+        ],
+        "message": "{{1.`2`}}",
+        "page_id": "691168054088643"
+      },
+      "module": "facebook-pages:CreatePostWithPhotos",
+      "version": 6,
+      "metadata": {
+        "expect": [
+          {
+            "name": "page_id",
+            "type": "select",
+            "label": "Page",
+            "required": true
+          },
+          {
+            "name": "photos",
+            "spec": [
+              {
+                "name": "type",
+                "type": "select",
+                "label": "I want to",
+                "options": [
+                  {
+                    "label": "upload a photo",
+                    "value": "data",
+                    "nested": [
+                      {
+                        "name": "fileName",
+                        "type": "filename",
+                        "label": "File name",
+                        "required": true,
+                        "semantic": "file:name"
+                      },
+                      {
+                        "name": "data",
+                        "type": "buffer",
+                        "label": "Data",
+                        "required": true,
+                        "semantic": "file:data"
+                      }
+                    ],
+                    "default": true
+                  },
+                  {
+                    "label": "download photo from URL",
+                    "value": "url",
+                    "nested": [
+                      {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                      }
+                    ]
+                  }
+                ],
+                "required": true
+              },
+              {
+                "name": "caption",
+                "type": "text",
+                "label": "Caption"
+              }
+            ],
+            "type": "array",
+            "label": "Photos",
+            "required": true,
+            "validate": {
+              "maxItems": 30,
+              "minItems": 1
+            }
+          },
+          {
+            "name": "message",
+            "type": "text",
+            "label": "Message"
+          },
+          {
+            "name": "date",
+            "type": "date",
+            "label": "Date"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "photos": {
+              "mode": "chose",
+              "items": [
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "upload a photo"
+                  }
+                },
+                {
+                  "type": {
+                    "mode": "chose",
+                    "label": "download photo from URL"
+                  }
+                }
+              ]
+            },
+            "page_id": {
+              "mode": "chose",
+              "label": "Test Bot Gonzalo"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "facebook"
+              },
+              "label": "IITA 3D (Gonzalo Aybar) (Gonzalo Aybar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 1487,
+          "y": -1,
+          "name": "Post con fotos",
+          "messages": [
+            {
+              "message": "Module references non-existing module '1'.",
+              "category": "reference",
+              "severity": "error"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:facebook",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4891739
+      }
+    },
+    {
+      "id": 8,
+      "mapper": {
+        "Post_ID": "{{5.id}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "Post_ID",
+            "type": "number",
+            "label": "",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 1787,
+          "y": -1,
+          "name": "Retorna Post ID"
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Postear novedades 3D autorizadas",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

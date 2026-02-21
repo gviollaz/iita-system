@@ -1,0 +1,1280 @@
+{
+  "flow": [
+    {
+      "id": 4,
+      "mapper": {},
+      "module": "google-email:TriggerNewEmail",
+      "version": 2,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "folder": {
+              "path": [
+                "INBOX"
+              ]
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-restricted"
+              },
+              "label": "IITA - Gmail Messages Logs (Test) (automatizaciones_iita@iita.com.ar)"
+            },
+            "criteria": {
+              "label": "All emails"
+            },
+            "searchType": {
+              "label": "Simple filter"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 150
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:google-restricted",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "searchType",
+            "type": "select",
+            "label": "Filter type",
+            "required": true,
+            "validate": {
+              "enum": [
+                "simple",
+                "gmail"
+              ]
+            }
+          },
+          {
+            "name": "markSeen",
+            "type": "boolean",
+            "label": "Mark email message(s) as read when fetched"
+          },
+          {
+            "name": "maxResults",
+            "type": "uinteger",
+            "label": "Maximum number of results",
+            "required": true
+          },
+          {
+            "name": "folder",
+            "type": "folder",
+            "label": "Folder",
+            "required": true
+          },
+          {
+            "name": "criteria",
+            "type": "select",
+            "label": "Criteria",
+            "required": true,
+            "validate": {
+              "enum": [
+                "ALL",
+                "SEEN",
+                "UNSEEN"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "type": "email",
+            "label": "Sender email address"
+          },
+          {
+            "name": "subject",
+            "type": "text",
+            "label": "Subject"
+          },
+          {
+            "name": "text",
+            "type": "text",
+            "label": "Search phrase"
+          }
+        ]
+      },
+      "parameters": {
+        "from": "",
+        "text": "",
+        "folder": "INBOX",
+        "account": 5582851,
+        "subject": "",
+        "criteria": "ALL",
+        "maxResults": 10000,
+        "searchType": "simple"
+      }
+    },
+    {
+      "id": 6,
+      "filter": {
+        "name": "Is user",
+        "conditions": []
+      },
+      "mapper": {
+        "sort": [],
+        "limit": "1",
+        "where": [
+          [
+            {
+              "a": "self_ref",
+              "b": "{{4.to[].address}}",
+              "o": "equal"
+            },
+            {
+              "a": "user_ref",
+              "b": "{{4.from.address}}",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "user_ref",
+                  "value": "user_ref"
+                },
+                {
+                  "label": "self_ref",
+                  "value": "self_ref"
+                },
+                {
+                  "label": "type",
+                  "value": "type"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "user_ref",
+                  "value": "user_ref"
+                },
+                {
+                  "label": "self_ref",
+                  "value": "self_ref"
+                },
+                {
+                  "label": "type",
+                  "value": "type"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.gmail_conversations"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 150,
+          "name": "Search id conv"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "user_ref",
+            "type": "text",
+            "label": "user_ref",
+            "required": false
+          },
+          {
+            "name": "self_ref",
+            "type": "text",
+            "label": "self_ref",
+            "required": false
+          },
+          {
+            "name": "type",
+            "type": "text",
+            "label": "type",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"gmail_conversations\"",
+        "account": 5484562,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 7,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 8,
+              "filter": {
+                "name": "Exist conv",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{6.id}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "@id": "",
+                "@content": "{{4.text}}",
+                "@id_conv": "{{6.id}}",
+                "@is_user": "{{true}}",
+                "@date_time": "{{now}}",
+                "@media_url": "{{4.attachments[].contentId}}"
+              },
+              "module": "postgres:InsertIntoTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@id_conv",
+                    "type": "integer",
+                    "label": "id_conv"
+                  },
+                  {
+                    "name": "@date_time",
+                    "type": "text",
+                    "label": "date_time",
+                    "required": true
+                  },
+                  {
+                    "name": "@is_user",
+                    "type": "text",
+                    "label": "is_user"
+                  },
+                  {
+                    "name": "@content",
+                    "type": "text",
+                    "label": "content"
+                  },
+                  {
+                    "name": "@media_url",
+                    "type": "text",
+                    "label": "media_url"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.gmail_messages"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 900,
+                  "y": 0,
+                  "name": "Insert row (msg)"
+                },
+                "interface": [
+                  {
+                    "name": "rowsAffected",
+                    "type": "number",
+                    "label": "Affected rows"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "returnRows",
+                    "type": "boolean",
+                    "label": "Return Rows"
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"gmail_messages\"",
+                "account": 5484562,
+                "isToManageDataInSharedTransaction": true
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 9,
+              "filter": {
+                "name": "Not exist conv",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{6.id}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "@id": "",
+                "@type": "chat",
+                "@self_ref": "{{4.to[].address}}",
+                "@user_ref": "{{4.from.address}}"
+              },
+              "module": "postgres:InsertIntoTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@user_ref",
+                    "type": "text",
+                    "label": "user_ref"
+                  },
+                  {
+                    "name": "@self_ref",
+                    "type": "text",
+                    "label": "self_ref"
+                  },
+                  {
+                    "name": "@type",
+                    "type": "text",
+                    "label": "type"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.gmail_conversations"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 900,
+                  "y": 300,
+                  "name": "Insert row (conv)"
+                },
+                "interface": [
+                  {
+                    "name": "rowsAffected",
+                    "type": "number",
+                    "label": "Affected rows"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "returnRows",
+                    "type": "boolean",
+                    "label": "Return Rows"
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"gmail_conversations\"",
+                "account": 5484562,
+                "isToManageDataInSharedTransaction": true
+              }
+            },
+            {
+              "id": 10,
+              "mapper": {
+                "sort": [],
+                "limit": "1",
+                "where": [
+                  [
+                    {
+                      "a": "self_ref",
+                      "b": "{{4.to[].address}}",
+                      "o": "equal"
+                    },
+                    {
+                      "a": "user_ref",
+                      "b": "{{4.from.address}}",
+                      "o": "equal"
+                    }
+                  ]
+                ]
+              },
+              "module": "postgres:SelectFromTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "where",
+                    "type": "filter",
+                    "label": "Filter",
+                    "options": {
+                      "store": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        },
+                        {
+                          "label": "user_ref",
+                          "value": "user_ref"
+                        },
+                        {
+                          "label": "self_ref",
+                          "value": "self_ref"
+                        },
+                        {
+                          "label": "type",
+                          "value": "type"
+                        }
+                      ],
+                      "operators": [
+                        {
+                          "label": "Basic",
+                          "options": [
+                            {
+                              "label": "Is not null",
+                              "value": "exist"
+                            },
+                            {
+                              "label": "Is null",
+                              "value": "notexist"
+                            },
+                            {
+                              "label": "Equal to",
+                              "value": "equal"
+                            },
+                            {
+                              "label": "Not equal to",
+                              "value": "notequal"
+                            },
+                            {
+                              "label": "Greater than",
+                              "value": "greater"
+                            },
+                            {
+                              "label": "Greater than or equal to",
+                              "value": "greaterorequal"
+                            },
+                            {
+                              "label": "Less than",
+                              "value": "less"
+                            },
+                            {
+                              "label": "Less than or equal to",
+                              "value": "lessorequal"
+                            },
+                            {
+                              "label": "Contains",
+                              "value": "contain"
+                            },
+                            {
+                              "label": "Does not contain",
+                              "value": "notcontain"
+                            },
+                            {
+                              "label": "Starts with",
+                              "value": "startwith"
+                            },
+                            {
+                              "label": "Does not start with",
+                              "value": "notstartwith"
+                            },
+                            {
+                              "label": "Ends with",
+                              "value": "endwith"
+                            },
+                            {
+                              "label": "Does not end with",
+                              "value": "notendwith"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "sort",
+                    "spec": [
+                      {
+                        "name": "column",
+                        "type": "select",
+                        "label": "Column",
+                        "dynamic": true,
+                        "options": [],
+                        "required": true
+                      },
+                      {
+                        "name": "order",
+                        "type": "select",
+                        "label": "Order",
+                        "options": [
+                          {
+                            "label": "Ascending",
+                            "value": "asc"
+                          },
+                          {
+                            "label": "Descending",
+                            "value": "desc"
+                          }
+                        ],
+                        "required": true
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Sort"
+                  },
+                  {
+                    "name": "limit",
+                    "type": "uinteger",
+                    "label": "Limit"
+                  },
+                  {
+                    "name": "where",
+                    "type": "filter",
+                    "label": "Filter",
+                    "options": {
+                      "store": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        },
+                        {
+                          "label": "user_ref",
+                          "value": "user_ref"
+                        },
+                        {
+                          "label": "self_ref",
+                          "value": "self_ref"
+                        },
+                        {
+                          "label": "type",
+                          "value": "type"
+                        }
+                      ],
+                      "operators": [
+                        {
+                          "label": "Basic",
+                          "options": [
+                            {
+                              "label": "Is not null",
+                              "value": "exist"
+                            },
+                            {
+                              "label": "Is null",
+                              "value": "notexist"
+                            },
+                            {
+                              "label": "Equal to",
+                              "value": "equal"
+                            },
+                            {
+                              "label": "Not equal to",
+                              "value": "notequal"
+                            },
+                            {
+                              "label": "Greater than",
+                              "value": "greater"
+                            },
+                            {
+                              "label": "Greater than or equal to",
+                              "value": "greaterorequal"
+                            },
+                            {
+                              "label": "Less than",
+                              "value": "less"
+                            },
+                            {
+                              "label": "Less than or equal to",
+                              "value": "lessorequal"
+                            },
+                            {
+                              "label": "Contains",
+                              "value": "contain"
+                            },
+                            {
+                              "label": "Does not contain",
+                              "value": "notcontain"
+                            },
+                            {
+                              "label": "Starts with",
+                              "value": "startwith"
+                            },
+                            {
+                              "label": "Does not start with",
+                              "value": "notstartwith"
+                            },
+                            {
+                              "label": "Ends with",
+                              "value": "endwith"
+                            },
+                            {
+                              "label": "Does not end with",
+                              "value": "notendwith"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "name": "sort",
+                    "spec": [
+                      {
+                        "name": "column",
+                        "type": "select",
+                        "label": "Column",
+                        "dynamic": true,
+                        "options": [],
+                        "required": true
+                      },
+                      {
+                        "name": "order",
+                        "type": "select",
+                        "label": "Order",
+                        "options": [
+                          {
+                            "label": "Ascending",
+                            "value": "asc"
+                          },
+                          {
+                            "label": "Descending",
+                            "value": "desc"
+                          }
+                        ],
+                        "required": true
+                      }
+                    ],
+                    "type": "array",
+                    "label": "Sort"
+                  },
+                  {
+                    "name": "limit",
+                    "type": "uinteger",
+                    "label": "Limit"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.gmail_conversations"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 300,
+                  "name": "Search the id"
+                },
+                "interface": [
+                  {
+                    "name": "__IMTLENGTH__",
+                    "type": "uinteger",
+                    "label": "Total number of bundles"
+                  },
+                  {
+                    "name": "__IMTINDEX__",
+                    "type": "uinteger",
+                    "label": "Bundle order position"
+                  },
+                  {
+                    "name": "id",
+                    "type": "integer",
+                    "label": "id",
+                    "required": false
+                  },
+                  {
+                    "name": "user_ref",
+                    "type": "text",
+                    "label": "user_ref",
+                    "required": false
+                  },
+                  {
+                    "name": "self_ref",
+                    "type": "text",
+                    "label": "self_ref",
+                    "required": false
+                  },
+                  {
+                    "name": "type",
+                    "type": "text",
+                    "label": "type",
+                    "required": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "continueWhenNoRes",
+                    "type": "boolean",
+                    "label": "Continue the execution of the route even if the module returns no rows",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"gmail_conversations\"",
+                "account": 5484562,
+                "continueWhenNoRes": true,
+                "isToManageDataInSharedTransaction": true
+              }
+            },
+            {
+              "id": 11,
+              "mapper": {
+                "@id": "",
+                "@content": "{{4.text}}",
+                "@id_conv": "{{10.id}}",
+                "@is_user": "{{true}}",
+                "@date_time": "{{now}}",
+                "@media_url": "{{4.attachments[].contentId}}"
+              },
+              "module": "postgres:InsertIntoTable",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "@id",
+                    "type": "integer",
+                    "label": "id"
+                  },
+                  {
+                    "name": "@id_conv",
+                    "type": "integer",
+                    "label": "id_conv"
+                  },
+                  {
+                    "name": "@date_time",
+                    "type": "text",
+                    "label": "date_time",
+                    "required": true
+                  },
+                  {
+                    "name": "@is_user",
+                    "type": "text",
+                    "label": "is_user"
+                  },
+                  {
+                    "name": "@content",
+                    "type": "text",
+                    "label": "content"
+                  },
+                  {
+                    "name": "@media_url",
+                    "type": "text",
+                    "label": "media_url"
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "table": {
+                      "label": "public.gmail_messages"
+                    },
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "Flujo de reportes (Supabase) (postgres.zhyldluhekvaxyovdkve@aws-1-sa-east-1.pooler.supabase.com:6543/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1500,
+                  "y": 300,
+                  "name": "Insert row (msg)"
+                },
+                "interface": [
+                  {
+                    "name": "rowsAffected",
+                    "type": "number",
+                    "label": "Affected rows"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  },
+                  {
+                    "name": "returnRows",
+                    "type": "boolean",
+                    "label": "Return Rows"
+                  },
+                  {
+                    "name": "table",
+                    "type": "select",
+                    "label": "Table",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "table": "\"public\".\"gmail_messages\"",
+                "account": 5484562,
+                "isToManageDataInSharedTransaction": true
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 150,
+          "name": "¿Exist conv?"
+        }
+      }
+    }
+  ],
+  "name": "IITA - Gmail Messages Logs (from User)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "4": {
+          "cc": null,
+          "id": 19,
+          "to": [
+            {
+              "name": "",
+              "address": "automatizaciones_iita@iita.com.ar"
+            }
+          ],
+          "bcc": null,
+          "date": "2025-10-02T13:09:41.000Z",
+          "from": {
+            "name": "Nicolas Martinelli",
+            "address": "nicobmart@gmail.com"
+          },
+          "html": "<div dir=\"ltr\">que cursos?<div><br></div></div>\n",
+          "size": 5683,
+          "text": "que cursos?\n",
+          "labels": [
+            "\\Important"
+          ],
+          "headers": {
+            "replyTo": null,
+            "received": [
+              "by 2002:a05:7010:8e8a:b0:4b3:8a98:892f with SMTP id go10csp4621047mdb; Thu, 2 Oct 2025 06:09:42 -070..."
+            ],
+            "messageId": "<CAFjnt_-G3yu5F-r=u2f+pT=5o-063XwxOqP-JownnZcE8BcWVQ@mail.gmail.com>",
+            "deliveredTo": "automatizaciones_iita@iita.com.ar",
+            "xOriginalFrom": null
+          },
+          "subject": "Testeo 2",
+          "priority": "normal",
+          "threadId": "199a50af0909b211",
+          "xGmMsgid": "1844875710062768657",
+          "inReplyTo": null,
+          "messageId": "199a50af0909b211",
+          "references": null,
+          "attachments": [],
+          "headersList": [
+            {
+              "key": "content-type",
+              "value": [
+                "by 2002:a17:906:7314:b0:b3f:b7ca:26c5 with SMTP id a640c23a62f3a-b46e68103bbmr914842766b.59.17594105..."
+              ]
+            }
+          ],
+          "messageLink": "https://mail.google.com/mail/u/0/#inbox/199a50af0909b211"
+        },
+        "6": {
+          "id": "18",
+          "type": "chat",
+          "self_ref": "automatizaciones_iita@iita.com.ar",
+          "user_ref": "nicobmart@gmail.com",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "8": {
+          "rowsAffected": 1
+        },
+        "9": {
+          "rowsAffected": 1
+        },
+        "10": {
+          "id": "18",
+          "type": "chat",
+          "self_ref": "automatizaciones_iita@iita.com.ar",
+          "user_ref": "nicobmart@gmail.com",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "11": {
+          "rowsAffected": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

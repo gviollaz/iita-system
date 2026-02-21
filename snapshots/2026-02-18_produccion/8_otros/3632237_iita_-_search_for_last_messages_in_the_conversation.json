@@ -1,0 +1,620 @@
+{
+  "flow": [
+    {
+      "id": 3,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 450,
+          "name": "Inputs"
+        },
+        "interface": [
+          {
+            "help": "Contains the channel or account identifier.",
+            "name": "address_channels",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Contains the address or account identifier.",
+            "name": "address_person",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "command": "SELECT id FROM channels\nWHERE channels.address='{{3.address_channels}}'"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          },
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 450,
+          "name": "Search channel"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 5,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 15,
+              "filter": {
+                "name": "No",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{4.id}}",
+                      "o": "notexist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "status": "Error: channel not found"
+              },
+              "module": "scenario-service:ReturnData",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "status",
+                    "type": "select",
+                    "label": "",
+                    "validate": {
+                      "enum": [
+                        "success",
+                        "Error: channel not found",
+                        "Error: conversation not found",
+                        "Error: interaction not found"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "interaction_history",
+                    "type": "text",
+                    "label": ""
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "status": {
+                      "mode": "chose",
+                      "label": "Error: channel not found"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 904,
+                  "y": 282,
+                  "name": "Error"
+                }
+              },
+              "parameters": {}
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 6,
+              "filter": {
+                "name": "Yes",
+                "conditions": []
+              },
+              "mapper": {
+                "command": "SELECT\r\n  c.*, sc.id AS system_conv_id, pc.id AS person_conv_id\r\nFROM conversations c\r\nLEFT JOIN system_conversation sc ON c.id = sc.id_conversation\r\nLEFT JOIN person_conversation pc ON c.id = pc.id_conversation\r\nWHERE sc.id_channel={{4.id}} AND pc.address='{{3.address_person}}'"
+              },
+              "module": "postgres:Query",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "command",
+                    "type": "text",
+                    "label": "Command",
+                    "required": true
+                  }
+                ],
+                "restore": {
+                  "parameters": {
+                    "account": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "postgres"
+                      },
+                      "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 900,
+                  "y": 600,
+                  "name": "Search conversation"
+                },
+                "parameters": [
+                  {
+                    "name": "account",
+                    "type": "account:postgres",
+                    "label": "Connection",
+                    "required": true
+                  },
+                  {
+                    "name": "continueWhenNoRes",
+                    "type": "boolean",
+                    "label": "Continue the execution of the route even if the module returns no rows",
+                    "required": true
+                  },
+                  {
+                    "name": "isToManageDataInSharedTransaction",
+                    "type": "boolean",
+                    "label": "Manage data within the shared transaction",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "account": 6184753,
+                "continueWhenNoRes": true,
+                "isToManageDataInSharedTransaction": true
+              }
+            },
+            {
+              "id": 7,
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 14,
+                      "filter": {
+                        "name": "No",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{6.id}}",
+                              "o": "notexist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "status": "Error: conversation not found"
+                      },
+                      "module": "scenario-service:ReturnData",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "status",
+                            "type": "select",
+                            "label": "",
+                            "validate": {
+                              "enum": [
+                                "success",
+                                "Error: channel not found",
+                                "Error: conversation not found",
+                                "Error: interaction not found"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "interaction_history",
+                            "type": "text",
+                            "label": ""
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "status": {
+                              "mode": "chose",
+                              "label": "Error: conversation not found"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 300,
+                          "name": "Error"
+                        }
+                      },
+                      "parameters": {}
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 16,
+                      "filter": {
+                        "name": "Yes",
+                        "conditions": []
+                      },
+                      "mapper": {
+                        "command": "SELECT *\r\nFROM (\r\n    SELECT\r\n        i.text,\r\n        i.time_stamp,\r\n        i.ad_id,\r\n        c.name AS course_name,\r\n        CASE\r\n            WHEN i.id_system_conversation IS NOT NULL THEN 'SYSTEM'\r\n            WHEN i.id_person_conversation IS NOT NULL THEN 'PERSON'\r\n        END AS sender_type\r\n    FROM interactions i\r\n    LEFT JOIN ads a\r\n        ON i.ad_id = a.id\r\n    LEFT JOIN courses c\r\n        ON a.course_id = c.id\r\n    WHERE\r\n        i.id_system_conversation = {{6.system_conv_id}}\r\n        OR i.id_person_conversation = {{6.person_conv_id}}    ORDER BY i.time_stamp DESC\r\n    LIMIT 15\r\n) AS subquery\r\nORDER BY time_stamp ASC;"
+                      },
+                      "module": "postgres:Query",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "command",
+                            "type": "text",
+                            "label": "Command",
+                            "required": true
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "account": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "postgres"
+                              },
+                              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 750,
+                          "name": "Search last 15 interactions"
+                        },
+                        "parameters": [
+                          {
+                            "name": "account",
+                            "type": "account:postgres",
+                            "label": "Connection",
+                            "required": true
+                          },
+                          {
+                            "name": "continueWhenNoRes",
+                            "type": "boolean",
+                            "label": "Continue the execution of the route even if the module returns no rows",
+                            "required": true
+                          },
+                          {
+                            "name": "isToManageDataInSharedTransaction",
+                            "type": "boolean",
+                            "label": "Manage data within the shared transaction",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "account": 6184753,
+                        "continueWhenNoRes": true,
+                        "isToManageDataInSharedTransaction": true
+                      }
+                    },
+                    {
+                      "id": 10,
+                      "mapper": null,
+                      "module": "builtin:BasicRouter",
+                      "routes": [
+                        {
+                          "flow": [
+                            {
+                              "id": 13,
+                              "filter": {
+                                "name": "No",
+                                "conditions": [
+                                  [
+                                    {
+                                      "a": "{{16.time_stamp}}",
+                                      "o": "notexist"
+                                    }
+                                  ]
+                                ]
+                              },
+                              "mapper": {
+                                "status": "Error: interaction not found"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "status",
+                                    "type": "select",
+                                    "label": "",
+                                    "validate": {
+                                      "enum": [
+                                        "success",
+                                        "Error: channel not found",
+                                        "Error: conversation not found",
+                                        "Error: interaction not found"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "interaction_history",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {
+                                  "expect": {
+                                    "status": {
+                                      "mode": "chose",
+                                      "label": "Error: interaction not found"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 2100,
+                                  "y": 600,
+                                  "name": "Error"
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        },
+                        {
+                          "flow": [
+                            {
+                              "id": 17,
+                              "filter": {
+                                "name": "Yes",
+                                "conditions": []
+                              },
+                              "mapper": {
+                                "value": "[¿Viene con anuncio? {{if(16.course_name = null; \"No\"; \"Si: \" + 16.course_name)}}]\n{{switch(16.sender_type; \"PERSON\"; \"- [\" + 16.time_stamp + \"] Usuario: \"; \"- [\" + 16.time_stamp + \"] Agente:\")}}{{16.text}}"
+                              },
+                              "module": "util:TextAggregator",
+                              "version": 1,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Text"
+                                  }
+                                ],
+                                "restore": {
+                                  "extra": {
+                                    "feeder": {
+                                      "label": "Search last 15 interactions - Execute a query (advanced) [16]"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "rowSeparator": {
+                                      "label": "New row"
+                                    }
+                                  }
+                                },
+                                "advanced": true,
+                                "designer": {
+                                  "x": 2100,
+                                  "y": 900
+                                },
+                                "parameters": [
+                                  {
+                                    "name": "rowSeparator",
+                                    "type": "select",
+                                    "label": "Row separator",
+                                    "validate": {
+                                      "enum": [
+                                        "\n",
+                                        "\t",
+                                        "other"
+                                      ]
+                                    }
+                                  }
+                                ]
+                              },
+                              "parameters": {
+                                "feeder": 16,
+                                "rowSeparator": "\n"
+                              }
+                            },
+                            {
+                              "id": 11,
+                              "mapper": {
+                                "status": "success",
+                                "interaction_history": "{{17.text}}"
+                              },
+                              "module": "scenario-service:ReturnData",
+                              "version": 2,
+                              "metadata": {
+                                "expect": [
+                                  {
+                                    "name": "status",
+                                    "type": "select",
+                                    "label": "",
+                                    "validate": {
+                                      "enum": [
+                                        "success",
+                                        "Error: channel not found",
+                                        "Error: conversation not found",
+                                        "Error: interaction not found"
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "name": "interaction_history",
+                                    "type": "text",
+                                    "label": ""
+                                  }
+                                ],
+                                "restore": {
+                                  "expect": {
+                                    "status": {
+                                      "mode": "chose",
+                                      "label": "success"
+                                    }
+                                  }
+                                },
+                                "designer": {
+                                  "x": 2400,
+                                  "y": 900,
+                                  "name": "Outputs"
+                                }
+                              },
+                              "parameters": {}
+                            }
+                          ]
+                        }
+                      ],
+                      "version": 1,
+                      "metadata": {
+                        "designer": {
+                          "x": 1800,
+                          "y": 750,
+                          "name": "¿Exists interaction?"
+                        }
+                      },
+                      "parameters": {
+                        "else": 1
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 1200,
+                  "y": 600,
+                  "name": "¿Exists conversation?"
+                }
+              },
+              "parameters": {
+                "else": 1
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 450,
+          "name": "¿Exists channel?"
+        }
+      },
+      "parameters": {
+        "else": 1
+      }
+    }
+  ],
+  "name": "IITA - Search for last messages in the conversation",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "3": {
+          "address_person": "711736047908547",
+          "address_channels": "17841455198100771"
+        },
+        "4": {
+          "id": 3
+        },
+        "11": {
+          "status": "success",
+          "interaction_history": "- [2025-12-03T15:21:07.352Z] Usuario: Buenos días cuáles son los horarios de la tarde disponibles pa..."
+        },
+        "13": {
+          "status": "Error: interaction not found"
+        },
+        "14": {
+          "status": "Error: conversation not found"
+        },
+        "16": {
+          "text": "Holaaaa",
+          "ad_id": null,
+          "time_stamp": "2025-10-20T13:41:49.736Z",
+          "course_name": null,
+          "sender_type": "PERSON"
+        },
+        "17": {
+          "text": "- [2025-12-03T15:21:07.352Z] Usuario: Buenos días cuáles son los horarios de la tarde disponibles pa..."
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

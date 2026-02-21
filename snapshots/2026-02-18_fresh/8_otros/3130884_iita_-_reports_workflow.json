@@ -1,0 +1,364 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "message list to calculate:\n- input messages\n- output messages\n- average response time",
+            "name": "message_list",
+            "spec": {
+              "spec": [
+                {
+                  "help": "conversation id. This is used to determinate if a conversation has been responded.",
+                  "name": "id_conv",
+                  "type": "integer",
+                  "label": "",
+                  "default": null,
+                  "required": true
+                },
+                {
+                  "help": "determinate if the message is from a user or is from us",
+                  "name": "is_user",
+                  "type": "boolean",
+                  "label": "",
+                  "default": true,
+                  "required": true
+                },
+                {
+                  "help": "determinates the date from the message.\nis used to calculate de average response time and if a message has been answered",
+                  "name": "date_time",
+                  "type": "date",
+                  "label": "",
+                  "required": true
+                }
+              ],
+              "type": "collection",
+              "required": true
+            },
+            "type": "array",
+            "label": "",
+            "required": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "array": "{{1.message_list}}"
+      },
+      "module": "builtin:BasicFeeder",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "mode": "edit",
+            "name": "array",
+            "spec": [],
+            "type": "array",
+            "label": "Array"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "array": {
+              "mode": "edit"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 4,
+      "flags": {
+        "groupBy": "{{3.id_conv}}"
+      },
+      "mapper": {
+        "id_conv": "{{3.id_conv}}",
+        "is_user": "{{3.is_user}}",
+        "date_time": "{{3.date_time}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "Iterator [3]"
+            },
+            "target": {
+              "label": "Custom"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "agroup conversation messages"
+        }
+      },
+      "parameters": {
+        "feeder": 3
+      }
+    },
+    {
+      "id": 18,
+      "mapper": {
+        "scope": "roundtrip",
+        "variables": [
+          {
+            "name": "conv",
+            "value": "{{4.array}}"
+          }
+        ]
+      },
+      "module": "util:SetVariables",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "variables",
+            "spec": [
+              {
+                "name": "name",
+                "type": "text",
+                "label": "Variable name",
+                "required": true
+              },
+              {
+                "name": "value",
+                "type": "any",
+                "label": "Variable value"
+              }
+            ],
+            "type": "array",
+            "label": "Variables"
+          },
+          {
+            "name": "scope",
+            "type": "select",
+            "label": "Variable lifetime",
+            "required": true,
+            "validate": {
+              "enum": [
+                "roundtrip",
+                "execution"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "scope": {
+              "label": "One cycle"
+            },
+            "variables": {
+              "items": [
+                null
+              ]
+            }
+          }
+        },
+        "designer": {
+          "x": 911,
+          "y": 0,
+          "name": "Order messages"
+        },
+        "interface": [
+          {
+            "name": "conv",
+            "type": "any",
+            "label": "conv"
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 6,
+      "mapper": {
+        "array": "{{4.array}}"
+      },
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "agroup conversation messages [4]"
+            },
+            "target": {
+              "label": "Custom"
+            }
+          }
+        },
+        "designer": {
+          "x": 1200,
+          "y": 0,
+          "name": "Agroup conversations"
+        }
+      },
+      "parameters": {
+        "feeder": 4
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "name": "Entrantes",
+        "scope": "roundtrip",
+        "value": "{{length(map(1.message_list; \"\"\"is_user\"\";\"\"is_user\"\";\" + true))}}"
+      },
+      "module": "util:SetVariable2",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "name",
+            "type": "text",
+            "label": "Variable name",
+            "required": true
+          },
+          {
+            "name": "scope",
+            "type": "select",
+            "label": "Variable lifetime",
+            "required": true,
+            "validate": {
+              "enum": [
+                "roundtrip",
+                "execution"
+              ]
+            }
+          },
+          {
+            "name": "value",
+            "type": "any",
+            "label": "Variable value"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "scope": {
+              "label": "One cycle"
+            }
+          }
+        },
+        "designer": {
+          "x": 1500,
+          "y": 0
+        },
+        "interface": [
+          {
+            "name": "Entrantes",
+            "type": "any",
+            "label": "Entrantes"
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "output": [
+          "{{6.array}}"
+        ]
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "output",
+            "spec": {
+              "name": "value",
+              "type": "text"
+            },
+            "type": "array",
+            "label": ""
+          }
+        ],
+        "restore": {
+          "expect": {
+            "output": {
+              "mode": "chose",
+              "items": [
+                null
+              ]
+            }
+          }
+        },
+        "designer": {
+          "x": 1800,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "IITA - Reports Workflow",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "output": [
+            ""
+          ]
+        },
+        "3": {
+          "id_conv": 7,
+          "is_user": false,
+          "date_time": "2025-09-23T15:01:18.413Z",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 6
+        },
+        "4": {
+          "array": [
+            {
+              "id_conv": 7,
+              "is_user": true,
+              "date_time": "2025-09-30T16:16:16.993Z"
+            }
+          ],
+          "__IMTKEY__": 7
+        },
+        "6": {
+          "array": [],
+          "__IMTAGGLENGTH__": 0
+        },
+        "7": {
+          "Entrantes": 0
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

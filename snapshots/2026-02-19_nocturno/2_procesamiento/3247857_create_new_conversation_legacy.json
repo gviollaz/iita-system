@@ -1,0 +1,1644 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {
+        "sort": [],
+        "limit": "",
+        "where": [
+          [
+            {
+              "a": "name",
+              "b": "{{var.input.provider_name}}",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "name",
+                  "value": "name"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "name",
+                  "value": "name"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.channel_providers"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Get Cahnnel Provider"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "name",
+            "type": "text",
+            "label": "name",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"channel_providers\"",
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "sort": [],
+        "limit": "",
+        "where": [
+          [
+            {
+              "a": "id_channel_provider",
+              "b": "{{1.id}}",
+              "o": "equal"
+            },
+            {
+              "a": "address",
+              "b": "{{var.input.channel_address}}",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "id_channel_provider",
+                  "value": "id_channel_provider"
+                },
+                {
+                  "label": "branch_id",
+                  "value": "branch_id"
+                },
+                {
+                  "label": "name",
+                  "value": "name"
+                },
+                {
+                  "label": "address",
+                  "value": "address"
+                },
+                {
+                  "label": "descrption",
+                  "value": "descrption"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "id_channel_provider",
+                  "value": "id_channel_provider"
+                },
+                {
+                  "label": "name",
+                  "value": "name"
+                },
+                {
+                  "label": "address",
+                  "value": "address"
+                },
+                {
+                  "label": "branch_id",
+                  "value": "branch_id"
+                },
+                {
+                  "label": "descrption",
+                  "value": "descrption"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.channels"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "get Channel"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "id_channel_provider",
+            "type": "integer",
+            "label": "id_channel_provider",
+            "required": false
+          },
+          {
+            "name": "name",
+            "type": "text",
+            "label": "name",
+            "required": false
+          },
+          {
+            "name": "address",
+            "type": "text",
+            "label": "address",
+            "required": false
+          },
+          {
+            "name": "branch_id",
+            "type": "integer",
+            "label": "branch_id",
+            "required": false
+          },
+          {
+            "name": "descrption",
+            "type": "text",
+            "label": "descrption",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"channels\"",
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "sort": [],
+        "limit": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{var.input.person_id}}",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "first_name",
+                  "value": "first_name"
+                },
+                {
+                  "label": "last_name",
+                  "value": "last_name"
+                },
+                {
+                  "label": "national_id",
+                  "value": "national_id"
+                },
+                {
+                  "label": "email",
+                  "value": "email"
+                },
+                {
+                  "label": "birth_date",
+                  "value": "birth_date"
+                },
+                {
+                  "label": "location_address",
+                  "value": "location_address"
+                },
+                {
+                  "label": "country",
+                  "value": "country"
+                },
+                {
+                  "label": "state_province",
+                  "value": "state_province"
+                },
+                {
+                  "label": "legal_guardian_id",
+                  "value": "legal_guardian_id"
+                },
+                {
+                  "label": "creation_datetime",
+                  "value": "creation_datetime"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "first_name",
+                  "value": "first_name"
+                },
+                {
+                  "label": "creation_datetime",
+                  "value": "creation_datetime"
+                },
+                {
+                  "label": "location_address",
+                  "value": "location_address"
+                },
+                {
+                  "label": "birth_date",
+                  "value": "birth_date"
+                },
+                {
+                  "label": "country",
+                  "value": "country"
+                },
+                {
+                  "label": "email",
+                  "value": "email"
+                },
+                {
+                  "label": "legal_guardian_id",
+                  "value": "legal_guardian_id"
+                },
+                {
+                  "label": "national_id",
+                  "value": "national_id"
+                },
+                {
+                  "label": "state_province",
+                  "value": "state_province"
+                },
+                {
+                  "label": "last_name",
+                  "value": "last_name"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.persons"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "get person by id"
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "first_name",
+            "type": "text",
+            "label": "first_name",
+            "required": false
+          },
+          {
+            "name": "creation_datetime",
+            "type": "text",
+            "label": "creation_datetime",
+            "required": false
+          },
+          {
+            "name": "location_address",
+            "type": "text",
+            "label": "location_address",
+            "required": false
+          },
+          {
+            "name": "birth_date",
+            "type": "date",
+            "label": "birth_date",
+            "required": false
+          },
+          {
+            "name": "country",
+            "type": "text",
+            "label": "country",
+            "required": false
+          },
+          {
+            "name": "email",
+            "type": "text",
+            "label": "email",
+            "required": false
+          },
+          {
+            "name": "legal_guardian_id",
+            "type": "integer",
+            "label": "legal_guardian_id",
+            "required": false
+          },
+          {
+            "name": "national_id",
+            "type": "text",
+            "label": "national_id",
+            "required": false
+          },
+          {
+            "name": "state_province",
+            "type": "text",
+            "label": "state_province",
+            "required": false
+          },
+          {
+            "name": "last_name",
+            "type": "text",
+            "label": "last_name",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"persons\"",
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "@id": "",
+        "@start_date": "{{now}}"
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@start_date",
+            "type": "text",
+            "label": "start_date"
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@start_date",
+            "type": "text",
+            "label": "start_date"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.conversations"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 900,
+          "y": 0,
+          "name": "Create Convesation"
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          },
+          {
+            "name": "rows",
+            "spec": [
+              {
+                "name": "id",
+                "type": "integer"
+              },
+              {
+                "name": "start_date",
+                "type": "text"
+              }
+            ],
+            "type": "array",
+            "label": "Rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"conversations\"",
+        "account": 6184753,
+        "returnRows": true,
+        "isToManageDataInSharedTransaction": false
+      }
+    },
+    {
+      "id": 9,
+      "mapper": {
+        "@id": "",
+        "@id_channel": "{{2.id}}",
+        "@id_conversation": "{{7.rows[].id}}"
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@id_channel",
+            "type": "integer",
+            "label": "id_channel"
+          },
+          {
+            "name": "@id_conversation",
+            "type": "integer",
+            "label": "id_conversation"
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@id_channel",
+            "type": "integer",
+            "label": "id_channel"
+          },
+          {
+            "name": "@id_conversation",
+            "type": "integer",
+            "label": "id_conversation"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.system_conversation"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 1200,
+          "y": 0,
+          "name": "create System Conversation"
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          },
+          {
+            "name": "rows",
+            "spec": [
+              {
+                "name": "id",
+                "type": "integer"
+              },
+              {
+                "name": "id_channel",
+                "type": "integer"
+              },
+              {
+                "name": "id_conversation",
+                "type": "integer"
+              }
+            ],
+            "type": "array",
+            "label": "Rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"system_conversation\"",
+        "account": 6184753,
+        "returnRows": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 6,
+      "mapper": {
+        "@id": "",
+        "@address": "{{var.input.person_address}}",
+        "@id_person": "{{4.id}}",
+        "@id_conversation": "{{7.rows[].id}}"
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@id_person",
+            "type": "integer",
+            "label": "id_person"
+          },
+          {
+            "name": "@id_conversation",
+            "type": "integer",
+            "label": "id_conversation"
+          },
+          {
+            "name": "@address",
+            "type": "text",
+            "label": "address"
+          },
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@id_person",
+            "type": "integer",
+            "label": "id_person"
+          },
+          {
+            "name": "@id_conversation",
+            "type": "integer",
+            "label": "id_conversation"
+          },
+          {
+            "name": "@address",
+            "type": "text",
+            "label": "address"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.person_conversation"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 1500,
+          "y": 0,
+          "name": "Create Person Conversation"
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          },
+          {
+            "name": "rows",
+            "spec": [
+              {
+                "name": "id",
+                "type": "integer"
+              },
+              {
+                "name": "id_person",
+                "type": "integer"
+              },
+              {
+                "name": "id_conversation",
+                "type": "integer"
+              },
+              {
+                "name": "address",
+                "type": "text"
+              }
+            ],
+            "type": "array",
+            "label": "Rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"person_conversation\"",
+        "account": 6184753,
+        "returnRows": true,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 14,
+      "mapper": {
+        "id_person_conversation": "{{6.rows[].id}}",
+        "id_system_conversation": "{{9.rows[].id}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "id_system_conversation",
+            "type": "text",
+            "label": "",
+            "required": true
+          },
+          {
+            "name": "id_person_conversation",
+            "type": "text",
+            "label": "",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 1800,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Create new conversation (LEGACY)",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "id": 1,
+          "name": "WhatsApp",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "2": {
+          "id": 1,
+          "name": "IITA 3d",
+          "address": "5493875809318",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1,
+          "id_channel_provider": 1
+        },
+        "4": {
+          "id": 1,
+          "name": "Testeo",
+          "__IMTINDEX__": 1,
+          "__IMTLENGTH__": 1
+        },
+        "6": {
+          "rows": [
+            {
+              "id": 7,
+              "address": "5493875354413",
+              "id_person": 1,
+              "id_conversation": 7
+            }
+          ],
+          "rowsAffected": 1
+        },
+        "7": {
+          "rows": [
+            {
+              "id": 7,
+              "start date": "2025-10-16T00:00:00.000Z"
+            }
+          ],
+          "rowsAffected": 1
+        },
+        "9": {
+          "rows": [
+            {
+              "id": 4,
+              "id_channel": 1,
+              "id_conversation": 7
+            }
+          ],
+          "rowsAffected": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

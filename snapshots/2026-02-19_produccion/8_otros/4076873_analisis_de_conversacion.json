@@ -1,0 +1,174 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "filter": null,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Analisis de Conversacion (Dev)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1881854
+      }
+    },
+    {
+      "id": 5,
+      "filter": {
+        "name": "Analyze",
+        "conditions": [
+          [
+            {
+              "a": "{{2.record.status}}",
+              "b": "preprocessed",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "command": "with current_conversation as (\r\n    select id_conversation\r\n    from person_conversation\r\n\r\n    where id = {{2.record.id_person_conversation}}\r\n    limit 1\r\n),\r\n\r\nfiltered_conversation as (\r\n    select i.id, i.text, i.time_stamp, i.external_ref, m.description as media,\r\n        case\r\n            when i.id_person_conversation is null then 'system'\r\n            else 'user'\r\n        end as role\r\n\r\n    from interactions i\r\n\r\n    left join system_conversation sc\r\n    on i.id_system_conversation = sc.id\r\n\r\n    left join person_conversation pc\r\n    on i.id_person_conversation = pc.id\r\n\r\n    left join interaction_medias im\r\n    on i.id = im.interaction_id\r\n\r\n    left join medias m\r\n    on m.id = im.media_id\r\n\r\n    where coalesce(sc.id_conversation, pc.id_conversation) = (select id_conversation from current_conversation)\r\n    order by i.time_stamp desc\r\n\r\n    limit 10\r\n),\r\n\r\nchannel_info as (\r\n    select c.address as channel_address, cp.name as channel_name, pc.address as person_address, cp.id as channel_provider_id\r\n    from channels c\r\n\r\n    left join channel_providers cp\r\n    on c.id_channel_provider = cp.id\r\n\r\n    left join system_conversation sc\r\n    on sc.id_channel = c.id\r\n\r\n    left join person_conversation pc\r\n    on pc.id_conversation = sc.id_conversation\r\n\r\n    where sc.id_conversation = (select id_conversation from current_conversation)\r\n),\r\n\r\nconversation_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as conversation_text\r\n    from filtered_conversation\r\n),\r\n\r\nconversation_list as (\r\n    select\r\n        jsonb_agg(to_jsonb(filtered_conversation) order by time_stamp asc) as interactions\r\n    from filtered_conversation\r\n)\r\n\r\nselect cl.interactions, ct.conversation_text, ci.channel_name, ci.channel_address, ci.person_address, ci.channel_provider_id\r\nfrom conversation_list cl, conversation_text ct, channel_info ci\n"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "Analisis de conversacion",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "type": "UPDATE",
+          "table": "interactions",
+          "record": {
+            "id": 170,
+            "text": "Mensaje de prueba",
+            "ad_id": null,
+            "status": "preprocessed",
+            "user_id": null,
+            "time_stamp": "2026-02-13T15:59:08.601",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDRTE1RjcyRTFCOTYwM0ZFM0VERUFBMjFDQUIwODJCAA==",
+            "id_person_conversation": 3,
+            "id_system_conversation": null
+          },
+          "schema": "public",
+          "old_record": {
+            "id": 170,
+            "text": "Mensaje de prueba",
+            "ad_id": null,
+            "status": "new",
+            "user_id": null,
+            "time_stamp": "2026-02-13T15:59:08.601",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDRTE1RjcyRTFCOTYwM0ZFM0VERUFBMjFDQUIwODJCAA==",
+            "id_person_conversation": 3,
+            "id_system_conversation": null
+          }
+        },
+        "5": {
+          "channel_name": "whatsapp",
+          "interactions": [
+            {
+              "id": 1561,
+              "role": "user",
+              "text": "Bien tengas horarios y precios. Me podrían pasar",
+              "media": null,
+              "time_stamp": "2025-10-30T15:03:08.128",
+              "external_ref": "wamid.HBgNNTQ5Mzg3NTMxNzkxMxUCABIYIEFDMjNDRjM1NzBCQTU2NzEyNEEzMTlBRjBEM0QzQzkzAA=="
+            }
+          ],
+          "person_address": "5493875317913",
+          "channel_address": "5493872550001",
+          "conversation_text": "- system (2025-10-20 20:47:55.003):\n    [texto del mensaje]: [sin texto]\n\n\n- system (2025-10-20 20:4...",
+          "channel_provider_id": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

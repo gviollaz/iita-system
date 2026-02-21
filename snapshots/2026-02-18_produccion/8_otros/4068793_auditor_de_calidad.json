@@ -1,0 +1,1068 @@
+{
+  "flow": [
+    {
+      "id": 21,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "New records to be evaluated"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "New record"
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1881732
+      }
+    },
+    {
+      "id": 28,
+      "mapper": {
+        "command": "SELECT id_person_conversation FROM interactions\nWHERE id={{21.record.associated_interaction_id}}"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 23,
+      "mapper": {
+        "command": "with current_conversation as (\r\n    select id_conversation\r\n    from person_conversation\r\n\r\n    where id ={{28.id_person_conversation}}    limit 1\r\n),\n\r\n\r\nfiltered_conversation as (\r\n    select i.id, i.text, i.time_stamp, i.external_ref, m.description as media,\r\n        case\r\n            when i.id_person_conversation is null then 'system'\r\n            else 'user'\r\n        end as role\r\n\r\n    from interactions i\r\n\r\n    left join system_conversation sc\r\n    on i.id_system_conversation = sc.id\r\n\r\n    left join person_conversation pc\r\n    on i.id_person_conversation = pc.id\r\n\r\n    left join interaction_medias im\r\n    on i.id = im.interaction_id\r\n\r\n    left join medias m\r\n    on m.id = im.media_id\r\n\r\n    where coalesce(sc.id_conversation, pc.id_conversation) = (select id_conversation from current_conversation)\r\n    order by i.time_stamp desc\r\n\r\n    limit 10\r\n),\r\n\r\nunanswered_user_messages as (\r\n  select fc.*\r\n  from filtered_conversation fc\r\n  where fc.role = 'user'\r\n    and fc.time_stamp > coalesce(\r\n      (select max(time_stamp) from filtered_conversation where role = 'system'),\r\n      to_timestamp(0)\r\n    )\r\n),\r\n\r\nchannel_info as (\r\n    select c.address as channel_address, c.name as channel_name, pc.address as person_address, cp.id as channel_provider_id\r\n    from channels c\r\n\r\n    left join channel_providers cp\r\n    on c.id_channel_provider = cp.id\r\n\r\n    left join system_conversation sc\r\n    on sc.id_channel = c.id\r\n\r\n    left join person_conversation pc\r\n    on pc.id_conversation = sc.id_conversation\r\n\r\n    where sc.id_conversation = (select id_conversation from current_conversation)\r\n),\r\n\r\nconversation_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as conversation_text\r\n    from filtered_conversation\r\n    where time_stamp <= (\r\n        select coalesce(max(time_stamp), to_timestamp(0))\r\n        from filtered_conversation\r\n        where role = 'system'\r\n    )\r\n),\r\n\r\nunanswered_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as unanswered_text\r\n    from unanswered_user_messages\r\n),\r\n\r\nconversation_list as (\r\n    select\r\n        jsonb_agg(to_jsonb(filtered_conversation) order by time_stamp asc) as interactions\r\n    from filtered_conversation\r\n)\r\n\r\nselect cl.interactions, ct.conversation_text, ut.unanswered_text, ci.channel_name, ci.channel_address, ci.person_address, ci.channel_provider_id\r\nfrom conversation_list cl, conversation_text ct, unanswered_text ut, channel_info ci"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 7346367,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 7,
+      "tools": [
+        {
+          "flow": [
+            {
+              "id": 15,
+              "mapper": {
+                "data": {
+                  "age": "{{7.data.age}}",
+                  "modality": "{{7.data.modality}}",
+                  "branch_id": "{{7.data.branch_id}}",
+                  "courses_name": "{{7.data.courses_name}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "courses_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "age",
+                        "type": "integer",
+                        "label": ""
+                      },
+                      {
+                        "name": "modality",
+                        "type": "select",
+                        "label": "",
+                        "validate": {
+                          "enum": [
+                            "PRESENTIAL",
+                            "VIRTUAL"
+                          ]
+                        }
+                      },
+                      {
+                        "name": "branch_id",
+                        "type": "integer",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "age": {
+                          "extra": {
+                            "aiHelp": "age for the course"
+                          }
+                        },
+                        "modality": {
+                          "mode": "edit",
+                          "extra": {
+                            "aiHelp": "modality for the course"
+                          }
+                        },
+                        "branch_id": {
+                          "extra": {
+                            "aiHelp": "branch_id for the course"
+                          }
+                        },
+                        "courses_name": {
+                          "extra": {
+                            "aiHelp": "lista de nombres de cursos para buscar"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "Search courses edition info"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 250
+                },
+                "interface": [
+                  {
+                    "help": "Resultado de la busqueda de cursos",
+                    "name": "Search",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": true
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3794184",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ],
+          "name": "Search courses edition info",
+          "description": "Retrieves editions of a course, including edition ID, age range, start date, branch name/location, and schedule. Requires the exact course name. Optional filters: age, modality (PRESENTIAL/VIRTUAL), branch_id."
+        },
+        {
+          "flow": [
+            {
+              "id": 14,
+              "mapper": {},
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "restore": {
+                  "parameters": {
+                    "scenario": {
+                      "label": "Find Branches Information"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 450
+                },
+                "interface": [
+                  {
+                    "help": "",
+                    "name": "tool_output",
+                    "type": "dynamicCollection",
+                    "label": "",
+                    "default": "",
+                    "required": false
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3671815",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ],
+          "name": "Find Branches Information",
+          "description": "Returns the address where the institute's headquarters/branches are located, a Google Maps link to facilitate the search for the client and the branch id in our data base (dont share the info)."
+        },
+        {
+          "flow": [
+            {
+              "id": 13,
+              "mapper": {
+                "data": {
+                  "age": "{{7.data.age}}",
+                  "modality": "{{7.data.modality}}",
+                  "branch_id": "{{7.data.branch_id}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "age",
+                        "type": "integer",
+                        "label": ""
+                      },
+                      {
+                        "name": "branch_id",
+                        "type": "integer",
+                        "label": ""
+                      },
+                      {
+                        "name": "modality",
+                        "type": "select",
+                        "label": "",
+                        "validate": {
+                          "enum": [
+                            "PRESENTIAL",
+                            "VIRTUAL"
+                          ]
+                        }
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "age": {
+                          "extra": {
+                            "aiHelp": "edad para buscar cursos"
+                          }
+                        },
+                        "modality": {
+                          "mode": "edit",
+                          "extra": {
+                            "aiHelp": "modalidad del curso"
+                          }
+                        },
+                        "branch_id": {
+                          "extra": {
+                            "aiHelp": "id de la sede"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "Search available courses for registration"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 650
+                },
+                "interface": [
+                  {
+                    "help": "Contains the names of the courses that is availables for registration.",
+                    "name": "course_names",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": true
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3614175",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ],
+          "name": "Search available courses for registration",
+          "description": "Returns course names available for registration. Use before searching course details by name. Optional filters: age, branch_id (get it first using the branches tool; virtual courses have no branch), modality: PRESENTIAL, VIRTUAL, or both"
+        },
+        {
+          "flow": [
+            {
+              "id": 12,
+              "mapper": {
+                "data": {
+                  "courses_names": "{{7.data.courses_names}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "courses_names",
+                        "spec": {
+                          "name": "value",
+                          "type": "text"
+                        },
+                        "type": "array",
+                        "label": "",
+                        "required": true
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "courses_names": {
+                          "mode": "edit",
+                          "extra": {
+                            "aiHelp": "lista de nombres de cursos para buscar"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "Search courses info by name"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 1200,
+                  "y": 850
+                },
+                "interface": [
+                  {
+                    "help": "Resultado de la busqueda de cursos",
+                    "name": "Search",
+                    "type": "text",
+                    "label": "",
+                    "default": "",
+                    "required": false,
+                    "multiline": true
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for the scenario to finish",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3794086",
+                "shouldWaitForExecutionEnd": true
+              }
+            }
+          ],
+          "name": "Search courses info by name",
+          "description": "Retrieves information for one or more courses, including description, pricing, bill type, and duration.\nBefore using this tool, you must first retrieve the available course names and provide the exact course name(s) as a single keyword list"
+        }
+      ],
+      "mapper": {
+        "files": [],
+        "message": "Historial de conversación: \"{{23.conversation_text}}\"\nMensajes a contestar: \"{{23.unanswered_text}}\"\nÚltimo mensaje: \"{{21.record.response}}\"",
+        "timeout": "",
+        "threadId": "",
+        "outputType": "make-schema",
+        "modelConfig": {
+          "recursionLimit": 300,
+          "iterationsFromHistoryCount": "0"
+        },
+        "defaultModel": "gpt-4o-mini",
+        "outputSchema": [
+          {
+            "help": "Contiene un número entre 0 y 100, es la calificación final de la respuesta.",
+            "name": "score",
+            "type": "number",
+            "label": "Puntaje total",
+            "default": "",
+            "required": true
+          },
+          {
+            "help": "Contiene un resumen breve de la razón del puntaje.",
+            "name": "feedback",
+            "type": "text",
+            "label": "Resumen breve",
+            "default": "",
+            "required": true,
+            "multiline": false
+          },
+          {
+            "help": "Valor booleano, indica si la conversación se trata de spam.",
+            "name": "spam",
+            "type": "boolean",
+            "label": "Spam",
+            "required": true
+          },
+          {
+            "help": "Contiene el estado de la evaluación, sólo puede ser \"approved\" o \"conflictive\".",
+            "name": "status",
+            "type": "text",
+            "label": "Evaluación",
+            "default": "",
+            "required": true,
+            "multiline": false
+          }
+        ],
+        "systemPrompt": "Eres un AUDITOR ESTRICTO de calidad conversacional para chats de ventas/soporte.\r\n\r\nOBJETIVO\r\nEvaluar la calidad del ÚLTIMO mensaje enviado por un agente de IA (la respuesta más reciente), usando:\r\n- El historial completo de la conversación (mensajes del cliente y del agente).\r\n- La evidencia disponible de herramientas para verificar coherencia con lo que el agente “dice haber consultado” o con datos supuestamente verificados.\r\n\r\nIMPORTANTE\r\n- Tu salida DEBE ser únicamente un JSON con las claves: \"score\", \"feedback\", \"spam\", \"status\".\r\n- No incluyas texto fuera del JSON.\r\n- No inventes información. Si no hay evidencia de herramientas, dilo explícitamente en feedback y penaliza si el agente afirma haber verificado algo sin pruebas.\r\n\r\nENTRADA (lo que recibirás)\r\n- Historial de conversación: historial de mensajes en orden cronológico.\n- Mensajes a contestar: mensaje/s que deberá responder el mensaje generado.\r\n- Último mensaje: el ÚLTIMO mensaje del agente IA a evaluar.\r\n\r\nFLUJO DE DECISIÓN (OBLIGATORIO)\r\n\r\nPASO 1) DETECCIÓN DE SPAM (PRIORIDAD MÁXIMA)\r\nMarca spam=true si el/los mensajes del cliente (especialmente los últimos) cumplen claramente con una o más:\r\n- Publicidad masiva o irrelevante (links sospechosos, promociones sin relación).\r\n- Mensajes repetidos sin intención conversacional.\r\n- Contenido malicioso o phishing (solicita credenciales/códigos).\r\n- Texto sin sentido, flood de caracteres, o contenido claramente automático.\r\n- Contenido sexual explícito no solicitado, estafas, o “gana dinero rápido”.\r\nSi spam=true:\r\n- \"score\" debe ser 0.\r\n- \"status\" debe ser \"conflictive\".\r\n- \"feedback\" debe explicar brevemente por qué se detectó spam.\r\n- NO evalúes calidad conversacional más allá de esto.\r\n\r\nPASO 2) ALCANCE DE EVALUACIÓN\r\nSi no es spam:\r\n- Evalúa ÚNICAMENTE agent_last_message.\r\n- Usa conversation y tool_evidence solo como contexto para juzgar coherencia, precisión y utilidad.\r\n- No reescribas la conversación ni propongas estrategias globales.\r\n\r\nPASO 3) CRITERIOS DE EVALUACIÓN (PUNTUACIÓN 0–100)\r\nAsigna \"score\" (0 a 100) según estos ejes (ponderación sugerida):\r\nA) Relevancia y respuesta directa (0–30)\r\n- Responde exactamente a la pregunta/solicitud del cliente.\r\n- Evita divagar o contestar otra cosa.\r\n\r\nB) Coherencia con el contexto (0–25)\r\n- Usa correctamente datos previos (producto/servicio, restricciones, pedidos del cliente).\r\n- No contradice el historial.\r\n\r\nC) Verificación y uso de evidencia de herramientas (0–25)\r\n- Si tool_evidence existe: el mensaje coincide con la evidencia.\r\n- Si el mensaje afirma “verifiqué / consulté / según el sistema” pero NO hay evidencia: penalización fuerte.\r\n- Si hay evidencia y el agente la ignora o la interpreta mal: penalización fuerte.\r\n\r\nD) Claridad, seguridad y próximos pasos (0–20)\r\n- Mensaje claro, accionable, sin ambigüedad.\r\n- Pide datos faltantes solo si son imprescindibles.\r\n- Evita promesas falsas, datos inventados, o afirmaciones absolutas sin base.\r\n\r\nREGLAS DE PENALIZACIÓN RÁPIDA (aplican aunque lo demás esté bien)\r\n- Alucinación / inventar datos (precios, stock, políticas, registros, acciones realizadas): score máximo 40.\r\n- Contradicciones claras con conversation o tool_evidence: score máximo 35.\r\n- No responde a la pregunta del cliente: score máximo 50.\r\n- Respuesta dañina/ilegal/peligrosa: score máximo 10 (y status conflictive).\r\n\r\nPASO 4) STATUS FINAL\r\nDevuelve:\r\n- status=\"approved\" si score >= 80 y no hay señales relevantes de alucinación o incoherencia.\r\n- status=\"conflictive\" si score <= 40 o si hay cualquier alucinación relevante, contradicción fuerte, o uso engañoso de “verificación”.\r\n- Si 41–79: elige según severidad. Si hay riesgo de error factual o confusión: \"conflictive\". Si son mejoras menores: \"approved\".\r\n\r\nPASO 5) FEEDBACK (OBLIGATORIO Y CONCISO)\r\n\"feedback\" debe:\r\n- Explicar 2–6 razones concretas del score.\r\n- Mencionar explícitamente si hubo o no tool_evidence, y si el agente la usó bien.\r\n- Indicar el principal problema y el principal acierto.\r\n\r\nFORMATO DE SALIDA (OBLIGATORIO)\r\nResponde únicamente con este JSON:\r\n{\r\n  \"score\": <numero entero 0..100>,\r\n  \"feedback\": \"<texto>\",\r\n  \"spam\": <true|false>,\r\n  \"status\": \"<approved|conflictive>\"\r\n}",
+        "makeConnectionId": 4371900
+      },
+      "module": "ai-local-agent:RunLocalAIAgent",
+      "version": 0,
+      "metadata": {
+        "expect": [
+          {
+            "name": "makeConnectionId",
+            "type": "account:ai-provider,openai-gpt-3,anthropic-claude,gemini-ai-q9zyjp,ai-agent-foundry-openai,ai-agent-foundry-non-openai,mistral-ai,cohere,groq,ai-agent-xai,amazon-bedrock,ai-agent-openai-compatible",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "systemPrompt",
+            "type": "text",
+            "label": "Instructions"
+          },
+          {
+            "name": "message",
+            "type": "text",
+            "label": "Input",
+            "required": true
+          },
+          {
+            "name": "files",
+            "spec": [
+              {
+                "name": "fileName",
+                "type": "filename",
+                "label": "File name",
+                "semantic": "file:name"
+              },
+              {
+                "name": "data",
+                "type": "buffer",
+                "label": "Data",
+                "semantic": "file:data"
+              }
+            ],
+            "type": "array",
+            "label": "Input files"
+          },
+          {
+            "name": "threadId",
+            "type": "text",
+            "label": "Conversation ID"
+          },
+          {
+            "name": "modelConfig",
+            "spec": [
+              {
+                "name": "tokenLimit",
+                "type": "hidden",
+                "label": "Max output tokens"
+              },
+              {
+                "name": "recursionLimit",
+                "type": "hidden",
+                "label": "Steps per agent call"
+              },
+              {
+                "name": "iterationsFromHistoryCount",
+                "type": "number",
+                "label": "Maximum conversation history"
+              }
+            ],
+            "type": "collection",
+            "label": "Model configuration"
+          },
+          {
+            "name": "timeout",
+            "type": "number",
+            "label": "Step timeout",
+            "validate": {
+              "max": 600,
+              "min": 120
+            }
+          },
+          {
+            "name": "outputType",
+            "type": "select",
+            "label": "Response format",
+            "validate": {
+              "enum": [
+                "text",
+                "make-schema"
+              ]
+            }
+          },
+          {
+            "name": "defaultModel",
+            "type": "select",
+            "label": "Model",
+            "required": true
+          },
+          {
+            "name": "outputSchema",
+            "spec": [
+              {
+                "name": "name",
+                "type": "text",
+                "label": "Name",
+                "required": true,
+                "placeholder": "Enter name"
+              },
+              {
+                "name": "label",
+                "type": "text",
+                "label": "Label"
+              },
+              {
+                "name": "help",
+                "type": "text",
+                "label": "Description",
+                "placeholder": "Enter description"
+              },
+              {
+                "name": "type",
+                "type": "udttype",
+                "label": "Type",
+                "required": true
+              }
+            ],
+            "type": "udtspec",
+            "label": "Response structure"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "files": {
+              "mode": "chose"
+            },
+            "outputType": {
+              "label": "Data structure"
+            },
+            "defaultModel": {
+              "mode": "chose",
+              "label": "GPT-4o miniFast, affordable small model for focused tasks",
+              "nested": []
+            },
+            "outputSchema": {
+              "items": [
+                null,
+                null,
+                null,
+                null
+              ]
+            },
+            "makeConnectionId": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "Open AI connection (produccion)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 900,
+          "y": 0,
+          "name": "Auditor"
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 30,
+      "mapper": {
+        "@id": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{21.record.id}}",
+              "o": "equal"
+            }
+          ]
+        ],
+        "@score": "{{7.jsonResponse.score}}",
+        "@feedback": "{{7.jsonResponse.feedback}}",
+        "@response": "",
+        "@evaluation": "{{7.jsonResponse.status}}",
+        "@system_prompt": "",
+        "@evaluator_user_id": "",
+        "@generated_interaction_id": "",
+        "@associated_interaction_id": ""
+      },
+      "module": "postgres:UpdateTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@associated_interaction_id",
+            "type": "integer",
+            "label": "associated_interaction_id"
+          },
+          {
+            "name": "@generated_interaction_id",
+            "type": "integer",
+            "label": "generated_interaction_id"
+          },
+          {
+            "name": "@response",
+            "type": "text",
+            "label": "response"
+          },
+          {
+            "name": "@system_prompt",
+            "type": "text",
+            "label": "system_prompt"
+          },
+          {
+            "name": "@evaluation",
+            "type": "text",
+            "label": "evaluation"
+          },
+          {
+            "name": "@feedback",
+            "type": "text",
+            "label": "feedback"
+          },
+          {
+            "name": "@score",
+            "type": "integer",
+            "label": "score"
+          },
+          {
+            "name": "@evaluator_user_id",
+            "type": "integer",
+            "label": "evaluator_user_id"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "associated_interaction_id",
+                  "value": "associated_interaction_id"
+                },
+                {
+                  "label": "generated_interaction_id",
+                  "value": "generated_interaction_id"
+                },
+                {
+                  "label": "response",
+                  "value": "response"
+                },
+                {
+                  "label": "system_prompt",
+                  "value": "system_prompt"
+                },
+                {
+                  "label": "evaluation",
+                  "value": "evaluation"
+                },
+                {
+                  "label": "feedback",
+                  "value": "feedback"
+                },
+                {
+                  "label": "score",
+                  "value": "score"
+                },
+                {
+                  "label": "evaluator_user_id",
+                  "value": "evaluator_user_id"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.ai_interaction"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "Nico DB - Desarrollo (postgres.kacygprzxwysoijsvqdv@aws-1-us-east-2.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 1200,
+          "y": 0,
+          "name": "Update record"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"ai_interaction\"",
+        "account": 7346367,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "Auditor de calidad",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "7": {
+          "metadata": {
+            "executionSteps": [
+              {
+                "id": "msg_0bcc50c61e42bd8401698f404d06c881978dc0a4c9d2d57c3c",
+                "role": "assistant",
+                "content": "{\"score\":50,\"feedback\":\"La respuesta del agente no proporciona información completa sobre el curso d...",
+                "tokenUsage": {
+                  "totalTokens": 1533,
+                  "promptTokens": 1426,
+                  "completionTokens": 107
+                },
+                "executionTimeMs": 3463,
+                "agentIterationId": "e7e58df5-2d1a-41c7-9c33-47fed7815424"
+              }
+            ],
+            "executionTimeMs": 7320,
+            "tokenUsageSummary": {
+              "totalTokens": 3563,
+              "promptTokens": 3348,
+              "completionTokens": 215
+            },
+            "lastAgentIterationId": "e7e58df5-2d1a-41c7-9c33-47fed7815424"
+          },
+          "response": "{\"score\":50,\"feedback\":\"La respuesta del agente no proporciona información completa sobre el curso d...",
+          "threadId": "8fce8b37-92f0-419c-b110-8c9e5acc4508",
+          "jsonResponse": {
+            "spam": false,
+            "score": 50,
+            "status": "approved",
+            "feedback": "La respuesta del agente no proporciona información completa sobre el curso de Python, solo menciona ..."
+          }
+        },
+        "21": {
+          "type": "INSERT",
+          "table": "ai_interaction",
+          "record": {
+            "id": 13,
+            "score": null,
+            "feedback": null,
+            "response": "¡Hola! 😃 Perfecto, recibí tu mensaje de prueba.\n\nSi querés que te pase info real y fechas disponibl...",
+            "evaluation": "pending",
+            "system_prompt": "Role and objective\r\nYour name is Ana. You and course seller for IITA (Instituto de Innovación y Tecn...",
+            "evaluator_user_id": null,
+            "generated_interaction_id": null,
+            "associated_interaction_id": 169
+          },
+          "schema": "public",
+          "old_record": null
+        },
+        "23": {
+          "channel_name": "IITA 3D",
+          "interactions": [
+            {
+              "id": 169,
+              "role": "user",
+              "text": "Hola, mensaje de prueba! 😃\nHola, mensaje de prueba! 😃",
+              "media": null,
+              "time_stamp": "2026-02-13T15:55:56.459",
+              "external_ref": "wamid.HBgNNTQ5Mzg3NDU0NTA3OBUCABIYIEFDNkIyMTM2RTc3OTEwMjkxNzhDQjE1QjQxMjU3OTgwAA=="
+            }
+          ],
+          "person_address": "5493874545078",
+          "channel_address": "5493875809318",
+          "unanswered_text": "- user (2026-02-13 15:51:43.205):\n    [texto del mensaje]: Hola, mensaje de prueba! 😃\n\n\n- user (202...",
+          "conversation_text": "- system (2026-02-13 14:13:19.414136):\n    [texto del mensaje]: ¡Buenos días! Soy Ana, asesora de cu...",
+          "channel_provider_id": 1
+        },
+        "28": {
+          "id_person_conversation": 58
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,1404 @@
+{
+  "flow": [
+    {
+      "id": 33,
+      "mapper": {},
+      "module": "whatsapp-business-cloud:watchEvents2",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "IITA San Lorenzo (Coexistence)"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 300
+        },
+        "interface": [
+          {
+            "name": "id",
+            "type": "text",
+            "label": "WhatsApp Business Account ID"
+          },
+          {
+            "name": "time",
+            "type": "date",
+            "label": "Time"
+          },
+          {
+            "name": "field",
+            "type": "text",
+            "label": "Field"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "spec": [
+                {
+                  "name": "from",
+                  "type": "text",
+                  "label": "Sender"
+                },
+                {
+                  "name": "id",
+                  "type": "text",
+                  "label": "Message ID"
+                },
+                {
+                  "name": "timestamp",
+                  "type": "date",
+                  "label": "Timestamp"
+                },
+                {
+                  "name": "text",
+                  "spec": [
+                    {
+                      "name": "body",
+                      "type": "text",
+                      "label": "Body"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Text"
+                },
+                {
+                  "name": "type",
+                  "type": "text",
+                  "label": "Type"
+                },
+                {
+                  "name": "image",
+                  "spec": [
+                    {
+                      "name": "caption",
+                      "type": "text",
+                      "label": "Caption"
+                    },
+                    {
+                      "name": "mime_type",
+                      "type": "text",
+                      "label": "MIME Type"
+                    },
+                    {
+                      "name": "sha256",
+                      "type": "text",
+                      "label": "SHA256"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Media ID"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Image"
+                },
+                {
+                  "name": "audio",
+                  "spec": [
+                    {
+                      "name": "mime_type",
+                      "type": "text",
+                      "label": "MIME Type"
+                    },
+                    {
+                      "name": "sha256",
+                      "type": "text",
+                      "label": "SHA256"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Media ID"
+                    },
+                    {
+                      "name": "voice",
+                      "type": "boolean",
+                      "label": "Voice"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Audio"
+                },
+                {
+                  "name": "video",
+                  "spec": [
+                    {
+                      "name": "caption",
+                      "type": "text",
+                      "label": "Caption"
+                    },
+                    {
+                      "name": "mime_type",
+                      "type": "text",
+                      "label": "MIME Type"
+                    },
+                    {
+                      "name": "sha256",
+                      "type": "text",
+                      "label": "SHA256"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Media ID"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Video"
+                },
+                {
+                  "name": "document",
+                  "spec": [
+                    {
+                      "name": "caption",
+                      "type": "text",
+                      "label": "Caption"
+                    },
+                    {
+                      "name": "filename",
+                      "type": "text",
+                      "label": "File Name"
+                    },
+                    {
+                      "name": "mime_type",
+                      "type": "text",
+                      "label": "MIME Type"
+                    },
+                    {
+                      "name": "sha256",
+                      "type": "text",
+                      "label": "SHA256"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Media ID"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Document"
+                },
+                {
+                  "name": "contacts",
+                  "spec": {
+                    "spec": [
+                      {
+                        "name": "name",
+                        "spec": [
+                          {
+                            "name": "formatted_name",
+                            "type": "text",
+                            "label": "Formatted Name"
+                          },
+                          {
+                            "name": "first_name",
+                            "type": "text",
+                            "label": "First Name"
+                          },
+                          {
+                            "name": "last_name",
+                            "type": "text",
+                            "label": "Last Name"
+                          },
+                          {
+                            "name": "middle_name",
+                            "type": "text",
+                            "label": "Middle Name"
+                          },
+                          {
+                            "name": "suffix",
+                            "type": "text",
+                            "label": "Name Suffix"
+                          },
+                          {
+                            "name": "prefix",
+                            "type": "text",
+                            "label": "Name Prefix"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Name"
+                      },
+                      {
+                        "name": "phones",
+                        "spec": [
+                          {
+                            "name": "phone",
+                            "type": "text",
+                            "label": "Phone"
+                          },
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "Type"
+                          }
+                        ],
+                        "type": "array",
+                        "label": "Phones"
+                      },
+                      {
+                        "name": "emails",
+                        "spec": [
+                          {
+                            "name": "email",
+                            "type": "email",
+                            "label": "Email"
+                          },
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "Type"
+                          }
+                        ],
+                        "type": "array",
+                        "label": "Emails"
+                      },
+                      {
+                        "name": "org",
+                        "spec": [
+                          {
+                            "name": "company",
+                            "type": "text",
+                            "label": "Company"
+                          },
+                          {
+                            "name": "department",
+                            "type": "text",
+                            "label": "Department"
+                          },
+                          {
+                            "name": "title",
+                            "type": "text",
+                            "label": "Title"
+                          }
+                        ],
+                        "type": "collection",
+                        "label": "Organization"
+                      },
+                      {
+                        "name": "urls",
+                        "spec": [
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "Type"
+                          },
+                          {
+                            "name": "url",
+                            "type": "url",
+                            "label": "URL"
+                          }
+                        ],
+                        "type": "array",
+                        "label": "URLs"
+                      },
+                      {
+                        "name": "addresses",
+                        "spec": [
+                          {
+                            "name": "type",
+                            "type": "text",
+                            "label": "Type"
+                          },
+                          {
+                            "name": "street",
+                            "type": "text",
+                            "label": "Street"
+                          },
+                          {
+                            "name": "city",
+                            "type": "text",
+                            "label": "City"
+                          },
+                          {
+                            "name": "zip",
+                            "type": "text",
+                            "label": "ZIP"
+                          },
+                          {
+                            "name": "country",
+                            "type": "text",
+                            "label": "Country"
+                          },
+                          {
+                            "name": "country_code",
+                            "type": "text",
+                            "label": "Country Code"
+                          }
+                        ],
+                        "type": "array",
+                        "label": "Addresses"
+                      },
+                      {
+                        "name": "birthday",
+                        "type": "text",
+                        "label": "Birthday"
+                      }
+                    ],
+                    "type": "collection"
+                  },
+                  "type": "array",
+                  "label": "Contacts"
+                },
+                {
+                  "name": "sticker",
+                  "spec": [
+                    {
+                      "name": "mime_type",
+                      "type": "text",
+                      "label": "MIME Type"
+                    },
+                    {
+                      "name": "sha256",
+                      "type": "text",
+                      "label": "SHA256"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Media ID"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Sticker"
+                },
+                {
+                  "name": "location",
+                  "spec": [
+                    {
+                      "name": "latitude",
+                      "type": "number",
+                      "label": "Latitude"
+                    },
+                    {
+                      "name": "longitude",
+                      "type": "number",
+                      "label": "Longitude"
+                    },
+                    {
+                      "name": "name",
+                      "type": "text",
+                      "label": "Name"
+                    },
+                    {
+                      "name": "address",
+                      "type": "text",
+                      "label": "Address"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Location"
+                },
+                {
+                  "name": "context",
+                  "spec": [
+                    {
+                      "name": "from",
+                      "type": "text",
+                      "label": "From"
+                    },
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Context ID"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Context"
+                },
+                {
+                  "name": "button",
+                  "spec": [
+                    {
+                      "name": "payload",
+                      "type": "text",
+                      "label": "Payload"
+                    },
+                    {
+                      "name": "text",
+                      "type": "text",
+                      "label": "Text"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Button"
+                },
+                {
+                  "name": "interactive",
+                  "spec": [
+                    {
+                      "name": "type",
+                      "type": "text",
+                      "label": "Type"
+                    },
+                    {
+                      "name": "list_reply",
+                      "spec": [
+                        {
+                          "name": "id",
+                          "type": "number",
+                          "label": "ID"
+                        },
+                        {
+                          "name": "title",
+                          "type": "text",
+                          "label": "Title"
+                        },
+                        {
+                          "name": "description",
+                          "type": "text",
+                          "label": "Description"
+                        }
+                      ],
+                      "type": "collection",
+                      "label": "List Reply"
+                    },
+                    {
+                      "name": "button_reply",
+                      "spec": [
+                        {
+                          "name": "id",
+                          "type": "number",
+                          "label": "ID"
+                        },
+                        {
+                          "name": "title",
+                          "type": "text",
+                          "label": "Title"
+                        }
+                      ],
+                      "type": "collection",
+                      "label": "Button Reply"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Interactive"
+                }
+              ],
+              "type": "collection"
+            },
+            "type": "array",
+            "label": "Messages"
+          },
+          {
+            "name": "messaging_product",
+            "type": "text",
+            "label": "Messaging Product"
+          },
+          {
+            "name": "metadata",
+            "spec": [
+              {
+                "name": "display_phone_number",
+                "type": "text",
+                "label": "Display Phone Number"
+              },
+              {
+                "name": "phone_number_id",
+                "type": "text",
+                "label": "Phone Number ID"
+              }
+            ],
+            "type": "collection",
+            "label": "Metadata"
+          },
+          {
+            "name": "contacts",
+            "spec": {
+              "spec": [
+                {
+                  "name": "profile",
+                  "spec": [
+                    {
+                      "name": "name",
+                      "type": "text",
+                      "label": "Name"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Profile"
+                },
+                {
+                  "name": "wa_id",
+                  "type": "text",
+                  "label": "WhatsApp ID"
+                }
+              ],
+              "type": "collection"
+            },
+            "type": "array",
+            "label": "Contacts"
+          },
+          {
+            "name": "statuses",
+            "spec": {
+              "spec": [
+                {
+                  "name": "id",
+                  "type": "text",
+                  "label": "Message ID"
+                },
+                {
+                  "name": "status",
+                  "type": "text",
+                  "label": "Status"
+                },
+                {
+                  "name": "timestamp",
+                  "type": "date",
+                  "label": "Timestamp"
+                },
+                {
+                  "name": "recipient_id",
+                  "type": "text",
+                  "label": "Recipient ID"
+                },
+                {
+                  "name": "conversation",
+                  "spec": [
+                    {
+                      "name": "id",
+                      "type": "text",
+                      "label": "Conversation ID"
+                    },
+                    {
+                      "name": "expiration_timestamp",
+                      "type": "date",
+                      "label": "Expiration Timestamp"
+                    },
+                    {
+                      "name": "origin",
+                      "spec": [
+                        {
+                          "name": "type",
+                          "type": "text",
+                          "label": "Type"
+                        }
+                      ],
+                      "type": "collection",
+                      "label": "Origin"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Conversation"
+                },
+                {
+                  "name": "pricing",
+                  "spec": [
+                    {
+                      "name": "billable",
+                      "type": "boolean",
+                      "label": "Billable"
+                    },
+                    {
+                      "name": "pricing_model",
+                      "type": "text",
+                      "label": "Pricing Model"
+                    },
+                    {
+                      "name": "category",
+                      "type": "text",
+                      "label": "Category"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Pricing"
+                }
+              ],
+              "type": "collection"
+            },
+            "type": "array",
+            "label": "Statuses"
+          },
+          {
+            "name": "event",
+            "type": "text",
+            "label": "Event"
+          },
+          {
+            "name": "message_template_id",
+            "type": "number",
+            "label": "Message Template ID"
+          },
+          {
+            "name": "message_template_name",
+            "type": "text",
+            "label": "Message Template Name"
+          },
+          {
+            "name": "message_template_language",
+            "type": "text",
+            "label": "Message Template Language"
+          },
+          {
+            "name": "reason",
+            "type": "text",
+            "label": "Reason"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:whatsapp-business-cloud",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1671730
+      }
+    },
+    {
+      "id": 34,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 37,
+              "filter": {
+                "name": "Mensaje cliente",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{33.messages}}",
+                      "o": "exist"
+                    }
+                  ]
+                ]
+              },
+              "mapper": null,
+              "module": "builtin:BasicRouter",
+              "routes": [
+                {
+                  "flow": [
+                    {
+                      "id": 38,
+                      "filter": {
+                        "name": "Sin media",
+                        "conditions": [
+                          [
+                            {
+                              "a": "{{33.messages[].image}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{33.messages[].audio}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{33.messages[].video}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{33.messages[].document}}",
+                              "o": "notexist"
+                            },
+                            {
+                              "a": "{{33.messages[].sticker}}",
+                              "o": "notexist"
+                            }
+                          ]
+                        ]
+                      },
+                      "mapper": {
+                        "data": {
+                          "text": "{{33.messages[].text.body}}",
+                          "status": "new",
+                          "is_user": true,
+                          "person_name": "{{33.contacts[].profile.name}}",
+                          "external_ref": "{{33.messages[].id}}",
+                          "provider_name": "{{33.messaging_product}}",
+                          "person_address": "{{33.contacts[].wa_id}}",
+                          "channel_address": "{{33.metadata.display_phone_number}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 0
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                },
+                {
+                  "flow": [
+                    {
+                      "id": 39,
+                      "filter": {
+                        "name": "Contiene media",
+                        "conditions": []
+                      },
+                      "mapper": {
+                        "mediaId": "{{if(33.messages[].image.id != null; 33.messages[].image.id; if(33.messages[].audio.id != null; 33.messages[].audio.id; if(33.messages[].video.id != null; 33.messages[].video.id; if(33.messages[].document.id != null; 33.messages[].document.id; if(33.messages[].sticker.id != null; 33.messages[].sticker.id; )))))}}"
+                      },
+                      "module": "whatsapp-business-cloud:getMedia",
+                      "version": 1,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "mediaId",
+                            "type": "text",
+                            "label": "Media ID",
+                            "required": true
+                          },
+                          {
+                            "name": "mediaId",
+                            "type": "text",
+                            "label": "Media ID",
+                            "required": true
+                          }
+                        ],
+                        "restore": {
+                          "parameters": {
+                            "__IMTCONN__": {
+                              "data": {
+                                "scoped": "true",
+                                "connection": "whatsapp-business-cloud"
+                              },
+                              "label": "IITA 3d - Flujo de entrada (Instituto de Innovación y Tecnología Aplicada (111869345312688))"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 900,
+                          "y": 300,
+                          "name": "Descargar media"
+                        },
+                        "parameters": [
+                          {
+                            "name": "__IMTCONN__",
+                            "type": "account:whatsapp-business-cloud,whatsapp-business-cloud2",
+                            "label": "Connection",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "__IMTCONN__": 6007817
+                      }
+                    },
+                    {
+                      "id": 40,
+                      "mapper": {
+                        "name": "Messages",
+                        "scope": "roundtrip",
+                        "value": "{{if(33.messages[].image.caption; 33.messages[].image.caption; if(33.messages[].video.caption; 33.messages[].video.caption; if(33.messages[].document.caption; 33.messages[].document.caption; )))}}"
+                      },
+                      "module": "util:SetVariable2",
+                      "version": 1,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "name",
+                            "type": "text",
+                            "label": "Variable name",
+                            "required": true
+                          },
+                          {
+                            "name": "scope",
+                            "type": "select",
+                            "label": "Variable lifetime",
+                            "required": true,
+                            "validate": {
+                              "enum": [
+                                "roundtrip",
+                                "execution"
+                              ]
+                            }
+                          },
+                          {
+                            "name": "value",
+                            "type": "any",
+                            "label": "Variable value"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "scope": {
+                              "label": "One cycle"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1200,
+                          "y": 300,
+                          "name": "Obtener caption"
+                        },
+                        "interface": [
+                          {
+                            "name": "Messages",
+                            "type": "any",
+                            "label": "Messages"
+                          }
+                        ]
+                      },
+                      "parameters": {}
+                    },
+                    {
+                      "id": 41,
+                      "mapper": {
+                        "data": {
+                          "text": "{{40.Messages}}",
+                          "status": "new",
+                          "is_user": true,
+                          "media_data": "{{base64(39.mediaData)}}",
+                          "person_name": "{{33.contacts[].profile.name}}",
+                          "external_ref": "{{33.messages[].id}}",
+                          "provider_name": "{{33.messaging_product}}",
+                          "person_address": "{{33.contacts[].wa_id}}",
+                          "channel_address": "{{33.metadata.display_phone_number}}",
+                          "media_extension": "{{last(split(39.mime_type; \"/\"))}}",
+                          "media_external_id": "{{39.id}}"
+                        }
+                      },
+                      "module": "scenario-service:CallSubscenario",
+                      "version": 2,
+                      "metadata": {
+                        "expect": [
+                          {
+                            "name": "data",
+                            "spec": [
+                              {
+                                "name": "external_ref",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "provider_name",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "channel_address",
+                                "type": "text",
+                                "label": "",
+                                "required": true
+                              },
+                              {
+                                "name": "person_address",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "text",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "is_user",
+                                "type": "boolean",
+                                "label": ""
+                              },
+                              {
+                                "name": "person_name",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "ad_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_external_id",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_data",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "media_extension",
+                                "type": "text",
+                                "label": ""
+                              },
+                              {
+                                "name": "status",
+                                "type": "select",
+                                "label": "",
+                                "validate": {
+                                  "enum": [
+                                    "new",
+                                    "preprocessed",
+                                    "processed",
+                                    "pending_delivery",
+                                    "sending",
+                                    "send"
+                                  ]
+                                }
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "Scenario Inputs"
+                          }
+                        ],
+                        "restore": {
+                          "expect": {
+                            "data": {
+                              "nested": {
+                                "status": {
+                                  "mode": "chose",
+                                  "label": "new"
+                                },
+                                "is_user": {
+                                  "mode": "chose"
+                                }
+                              }
+                            }
+                          },
+                          "parameters": {
+                            "scenario": {
+                              "label": "IITA - Create new interaction (new)"
+                            }
+                          }
+                        },
+                        "designer": {
+                          "x": 1500,
+                          "y": 300
+                        },
+                        "interface": [
+                          {
+                            "help": "",
+                            "name": "id_interaction",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          },
+                          {
+                            "help": "",
+                            "name": "id_person_conversation",
+                            "type": "text",
+                            "label": "",
+                            "default": "",
+                            "required": false,
+                            "multiline": false
+                          }
+                        ],
+                        "parameters": [
+                          {
+                            "name": "scenario",
+                            "type": "scenario",
+                            "label": "Scenario",
+                            "required": true
+                          },
+                          {
+                            "name": "shouldWaitForExecutionEnd",
+                            "type": "boolean",
+                            "label": "Wait for the scenario to finish",
+                            "required": true
+                          }
+                        ]
+                      },
+                      "parameters": {
+                        "scenario": "SCN_3730125",
+                        "shouldWaitForExecutionEnd": true
+                      }
+                    }
+                  ]
+                }
+              ],
+              "version": 1,
+              "metadata": {
+                "designer": {
+                  "x": 600,
+                  "y": 150
+                }
+              },
+              "parameters": {
+                "else": 1
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 36,
+              "filter": {
+                "name": "self",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{33.statuses}}",
+                      "o": "exist"
+                    },
+                    {
+                      "a": "{{33.statuses[].status}}",
+                      "b": "delivered",
+                      "o": "text:equal"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "data": {
+                  "text": "Respondido desde telefono",
+                  "is_user": false,
+                  "person_name": "{{33.contacts[].profile.name}}",
+                  "external_ref": "{{33.statuses[].id}}",
+                  "provider_name": "{{33.messaging_product}}",
+                  "person_address": "{{33.statuses[].recipient_id}}",
+                  "channel_address": "{{33.metadata.display_phone_number}}"
+                }
+              },
+              "module": "scenario-service:CallSubscenario",
+              "version": 2,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "data",
+                    "spec": [
+                      {
+                        "name": "external_ref",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "provider_name",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "channel_address",
+                        "type": "text",
+                        "label": "",
+                        "required": true
+                      },
+                      {
+                        "name": "person_address",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "text",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "is_user",
+                        "type": "boolean",
+                        "label": ""
+                      },
+                      {
+                        "name": "person_name",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "ad_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_external_id",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_data",
+                        "type": "text",
+                        "label": ""
+                      },
+                      {
+                        "name": "media_extension",
+                        "type": "text",
+                        "label": ""
+                      }
+                    ],
+                    "type": "collection",
+                    "label": "Scenario Inputs"
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "data": {
+                      "nested": {
+                        "is_user": {
+                          "mode": "chose"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "scenario": {
+                      "label": "test--IITA - Create interaction"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": 600
+                },
+                "interface": [
+                  {
+                    "name": "executionId",
+                    "type": "text",
+                    "label": "Execution ID"
+                  }
+                ],
+                "parameters": [
+                  {
+                    "name": "scenario",
+                    "type": "scenario",
+                    "label": "Scenario",
+                    "required": true
+                  },
+                  {
+                    "name": "shouldWaitForExecutionEnd",
+                    "type": "boolean",
+                    "label": "Wait for subscenario output",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "scenario": "SCN_3730125",
+                "shouldWaitForExecutionEnd": false
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 300
+        }
+      }
+    }
+  ],
+  "name": "[INPUT] IITA 3D - WhatsApp Coexistence",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "33": {
+          "id": "109900548507307",
+          "time": null,
+          "field": "messages",
+          "contacts": [
+            {
+              "wa_id": "5493875354413",
+              "profile": {
+                "name": "Nico Martinelli"
+              }
+            }
+          ],
+          "messages": [
+            {
+              "id": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDQ0VGNDFCN0Q1NkM4OENGMDJDNkFDMjlGMjczQzM1AA==",
+              "from": "5493875354413",
+              "type": "image",
+              "image": {
+                "id": "748439081319808",
+                "url": "https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=748439081319808&source=webhook&ext=17...",
+                "sha256": "jnlnZYkK2azvLOyBf3dnqfOjz6RtBgTpU8HMN307VvQ=",
+                "mime_type": "image/jpeg"
+              },
+              "timestamp": "2026-02-05T12:31:57.000Z"
+            }
+          ],
+          "metadata": {
+            "phone_number_id": "105728648930541",
+            "display_phone_number": "5493875809318"
+          },
+          "messaging_product": "whatsapp"
+        },
+        "36": {
+          "executionId": "5a88be2536ed404ebae18c0720e5534e"
+        },
+        "38": {
+          "executionId": "12c139e52f7c48b4b8dbf9b83344294d"
+        },
+        "39": {
+          "id": "748439081319808",
+          "sha256": "8e796765890ad9acef2cec817f7767a9f3a3cfa46d0604e953c1cc377d3b56f4",
+          "file_size": 70040,
+          "mediaData": "IMTBuffer(70040, binary, ebcf41445286f330c85a306399ed9befe3572aa6): ffd8ffe000104a464946000101000001...",
+          "mediaName": "File.jpg",
+          "mime_type": "image/jpeg",
+          "messaging_product": "whatsapp"
+        },
+        "40": {
+          "Messages": null
+        },
+        "41": {
+          "executionId": "1a3301943c904f968bcbccd31ca16201"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

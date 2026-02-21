@@ -1,0 +1,136 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Pending_delivery_AND_Send"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 300,
+          "name": "Watch new interaction"
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1877303
+      }
+    },
+    {
+      "id": 4,
+      "filter": {
+        "name": "Pending_delivery",
+        "conditions": [
+          [
+            {
+              "a": "{{2.record.id_person_conversation}}",
+              "o": "notexist"
+            },
+            {
+              "a": "{{2.record.status}}",
+              "b": "pending_delivery",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "data": {
+          "id_interaction": "{{2.record.id}}"
+        }
+      },
+      "module": "scenario-service:CallSubscenario",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "id_interaction",
+                "type": "text",
+                "label": "",
+                "required": true
+              }
+            ],
+            "type": "collection",
+            "label": "Scenario Inputs"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "scenario": {
+              "label": "IITA - Message dispatcher (Producción)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 300,
+          "name": "Message dispatcher"
+        },
+        "interface": [
+          {
+            "name": "executionId",
+            "type": "text",
+            "label": "Execution ID"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scenario",
+            "type": "scenario",
+            "label": "Scenario",
+            "required": true
+          },
+          {
+            "name": "shouldWaitForExecutionEnd",
+            "type": "boolean",
+            "label": "Wait for the scenario to finish",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "scenario": "SCN_4124755",
+        "shouldWaitForExecutionEnd": false
+      }
+    }
+  ],
+  "name": "Sending messages (Producción)",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": { "orphans": [] },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

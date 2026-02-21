@@ -1,0 +1,710 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {
+        "model": "gemini-1.5-flash",
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Hola como estas?",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "generationConfig": {
+          "thinkingConfig": {}
+        },
+        "system_instruction": {}
+      },
+      "module": "gemini-ai:createACompletionGeminiPro",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "model",
+            "type": "select",
+            "label": "AI Model",
+            "required": true
+          },
+          {
+            "name": "contents",
+            "spec": [
+              {
+                "name": "role",
+                "type": "select",
+                "label": "Role",
+                "options": [
+                  {
+                    "label": "User",
+                    "value": "user"
+                  },
+                  {
+                    "label": "Model",
+                    "value": "model"
+                  }
+                ]
+              },
+              {
+                "name": "parts",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Message Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "name": "text",
+                            "type": "text",
+                            "label": "Text",
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "File",
+                        "value": "file",
+                        "nested": [
+                          {
+                            "name": "file_data",
+                            "spec": [
+                              {
+                                "name": "mime_type",
+                                "type": "text",
+                                "label": "Mime Type",
+                                "required": false
+                              },
+                              {
+                                "help": "You get this from the 'Upload a File' module.",
+                                "name": "file_uri",
+                                "type": "text",
+                                "label": "File URI",
+                                "required": false
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "File Data",
+                            "required": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "array",
+                "label": "Parts"
+              }
+            ],
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "system_instruction",
+            "spec": [
+              {
+                "name": "parts",
+                "spec": {
+                  "name": "value",
+                  "spec": [
+                    {
+                      "name": "text",
+                      "type": "text",
+                      "label": "Value"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Prompt"
+                },
+                "type": "array",
+                "label": "Prompts"
+              }
+            ],
+            "type": "collection",
+            "label": "System Instructions"
+          },
+          {
+            "name": "safetySettings",
+            "spec": [
+              {
+                "name": "category",
+                "type": "select",
+                "label": "Category",
+                "options": [
+                  {
+                    "label": "Harassment content",
+                    "value": "HARM_CATEGORY_HARASSMENT"
+                  },
+                  {
+                    "label": "Hate speech and content",
+                    "value": "HARM_CATEGORY_HATE_SPEECH"
+                  },
+                  {
+                    "label": "Sexually explicit content.",
+                    "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                  },
+                  {
+                    "label": "Dangerous content:",
+                    "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                  }
+                ]
+              },
+              {
+                "name": "threshold",
+                "type": "select",
+                "label": "Threshold",
+                "options": [
+                  {
+                    "label": "Block low and above.",
+                    "value": "BLOCK_LOW_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block medium and above.",
+                    "value": "BLOCK_MEDIUM_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block only high.",
+                    "value": "BLOCK_ONLY_HIGH"
+                  },
+                  {
+                    "label": "Block none.",
+                    "value": "BLOCK_NONE"
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "label": "Safety Settings"
+          },
+          {
+            "name": "generationConfig",
+            "spec": [
+              {
+                "name": "stopSequences",
+                "spec": {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Stop Sequence"
+                },
+                "type": "array",
+                "label": "Stop Sequences"
+              },
+              {
+                "name": "responseModalities",
+                "type": "select",
+                "label": "Response Modalities",
+                "multiple": true,
+                "validate": {
+                  "enum": [
+                    "text",
+                    "image"
+                  ]
+                }
+              },
+              {
+                "name": "maxOutputTokens",
+                "type": "number",
+                "label": "Max Output Tokens"
+              },
+              {
+                "name": "temperature",
+                "type": "number",
+                "label": "Temperature",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topP",
+                "type": "number",
+                "label": "Top P",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topK",
+                "type": "number",
+                "label": "Top K"
+              },
+              {
+                "name": "thinkingConfig",
+                "spec": [
+                  {
+                    "name": "thinkingBudget",
+                    "type": "number",
+                    "label": "Thinking Budget"
+                  },
+                  {
+                    "name": "include_thoughts",
+                    "type": "boolean",
+                    "label": "Include Thoughts"
+                  }
+                ],
+                "type": "collection",
+                "label": "Thinking Config"
+              },
+              {
+                "name": "responseMimeType",
+                "type": "select",
+                "label": "Response Mime Type"
+              }
+            ],
+            "type": "collection",
+            "label": "Generation configurations"
+          },
+          {
+            "name": "tools",
+            "type": "any",
+            "label": "Tools"
+          },
+          {
+            "name": "tool_config",
+            "type": "any",
+            "label": "Tool Config"
+          },
+          {
+            "name": "url_context",
+            "type": "boolean",
+            "label": "URL Context"
+          },
+          {
+            "name": "google_search_context",
+            "type": "boolean",
+            "label": "Google Search Grounding"
+          },
+          {
+            "name": "code_execution",
+            "type": "boolean",
+            "label": "Code Execution"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "AI Model",
+            "required": true
+          },
+          {
+            "name": "contents",
+            "spec": [
+              {
+                "name": "role",
+                "type": "select",
+                "label": "Role",
+                "options": [
+                  {
+                    "label": "User",
+                    "value": "user"
+                  },
+                  {
+                    "label": "Model",
+                    "value": "model"
+                  }
+                ]
+              },
+              {
+                "name": "parts",
+                "spec": [
+                  {
+                    "name": "type",
+                    "type": "select",
+                    "label": "Message Type",
+                    "options": [
+                      {
+                        "label": "Text",
+                        "value": "text",
+                        "nested": [
+                          {
+                            "name": "text",
+                            "type": "text",
+                            "label": "Text",
+                            "required": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "File",
+                        "value": "file",
+                        "nested": [
+                          {
+                            "name": "file_data",
+                            "spec": [
+                              {
+                                "name": "mime_type",
+                                "type": "text",
+                                "label": "Mime Type",
+                                "required": false
+                              },
+                              {
+                                "help": "You get this from the 'Upload a File' module.",
+                                "name": "file_uri",
+                                "type": "text",
+                                "label": "File URI",
+                                "required": false
+                              }
+                            ],
+                            "type": "collection",
+                            "label": "File Data",
+                            "required": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "type": "array",
+                "label": "Parts"
+              }
+            ],
+            "type": "array",
+            "label": "Messages",
+            "required": true
+          },
+          {
+            "name": "system_instruction",
+            "spec": [
+              {
+                "name": "parts",
+                "spec": {
+                  "name": "value",
+                  "spec": [
+                    {
+                      "name": "text",
+                      "type": "text",
+                      "label": "Value"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Prompt"
+                },
+                "type": "array",
+                "label": "Prompts"
+              }
+            ],
+            "type": "collection",
+            "label": "System Instructions"
+          },
+          {
+            "name": "safetySettings",
+            "spec": [
+              {
+                "name": "category",
+                "type": "select",
+                "label": "Category",
+                "options": [
+                  {
+                    "label": "Harassment content",
+                    "value": "HARM_CATEGORY_HARASSMENT"
+                  },
+                  {
+                    "label": "Hate speech and content",
+                    "value": "HARM_CATEGORY_HATE_SPEECH"
+                  },
+                  {
+                    "label": "Sexually explicit content.",
+                    "value": "HARM_CATEGORY_SEXUALLY_EXPLICIT"
+                  },
+                  {
+                    "label": "Dangerous content:",
+                    "value": "HARM_CATEGORY_DANGEROUS_CONTENT"
+                  }
+                ]
+              },
+              {
+                "name": "threshold",
+                "type": "select",
+                "label": "Threshold",
+                "options": [
+                  {
+                    "label": "Block low and above.",
+                    "value": "BLOCK_LOW_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block medium and above.",
+                    "value": "BLOCK_MEDIUM_AND_ABOVE"
+                  },
+                  {
+                    "label": "Block only high.",
+                    "value": "BLOCK_ONLY_HIGH"
+                  },
+                  {
+                    "label": "Block none.",
+                    "value": "BLOCK_NONE"
+                  }
+                ]
+              }
+            ],
+            "type": "array",
+            "label": "Safety Settings"
+          },
+          {
+            "name": "generationConfig",
+            "spec": [
+              {
+                "name": "stopSequences",
+                "spec": {
+                  "name": "value",
+                  "type": "text",
+                  "label": "Stop Sequence"
+                },
+                "type": "array",
+                "label": "Stop Sequences"
+              },
+              {
+                "name": "responseModalities",
+                "type": "select",
+                "label": "Response Modalities",
+                "multiple": true,
+                "validate": {
+                  "enum": [
+                    "text",
+                    "image"
+                  ]
+                }
+              },
+              {
+                "name": "maxOutputTokens",
+                "type": "number",
+                "label": "Max Output Tokens"
+              },
+              {
+                "name": "temperature",
+                "type": "number",
+                "label": "Temperature",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topP",
+                "type": "number",
+                "label": "Top P",
+                "validate": {
+                  "max": 1,
+                  "min": 0
+                }
+              },
+              {
+                "name": "topK",
+                "type": "number",
+                "label": "Top K"
+              },
+              {
+                "name": "thinkingConfig",
+                "spec": [
+                  {
+                    "name": "thinkingBudget",
+                    "type": "number",
+                    "label": "Thinking Budget"
+                  },
+                  {
+                    "name": "include_thoughts",
+                    "type": "boolean",
+                    "label": "Include Thoughts"
+                  }
+                ],
+                "type": "collection",
+                "label": "Thinking Config"
+              },
+              {
+                "name": "responseMimeType",
+                "type": "select",
+                "label": "Response Mime Type"
+              }
+            ],
+            "type": "collection",
+            "label": "Generation configurations"
+          },
+          {
+            "name": "tools",
+            "type": "any",
+            "label": "Tools"
+          },
+          {
+            "name": "tool_config",
+            "type": "any",
+            "label": "Tool Config"
+          },
+          {
+            "name": "url_context",
+            "type": "boolean",
+            "label": "URL Context"
+          },
+          {
+            "name": "google_search_context",
+            "type": "boolean",
+            "label": "Google Search Grounding"
+          },
+          {
+            "name": "code_execution",
+            "type": "boolean",
+            "label": "Code Execution"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "model": {
+              "mode": "chose",
+              "label": "Gemini 1.5 Flash"
+            },
+            "contents": {
+              "mode": "chose",
+              "items": [
+                {
+                  "role": {
+                    "mode": "chose",
+                    "label": "User"
+                  },
+                  "parts": {
+                    "mode": "chose",
+                    "items": [
+                      {
+                        "type": {
+                          "mode": "chose",
+                          "label": "Text"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "collapsed": true
+            },
+            "url_context": {
+              "mode": "chose"
+            },
+            "code_execution": {
+              "mode": "chose"
+            },
+            "safetySettings": {
+              "mode": "chose"
+            },
+            "generationConfig": {
+              "nested": {
+                "stopSequences": {
+                  "mode": "chose"
+                },
+                "thinkingConfig": {
+                  "nested": {
+                    "include_thoughts": {
+                      "mode": "chose"
+                    }
+                  }
+                },
+                "responseMimeType": {
+                  "mode": "chose",
+                  "label": "Empty"
+                },
+                "responseModalities": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "system_instruction": {
+              "nested": {
+                "parts": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "google_search_context": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "gemini-ai-q9zyjp"
+              },
+              "label": "Pablo connection"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:gemini-ai-q9zyjp",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5340339
+      }
+    }
+  ],
+  "name": "Integration Gmail",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "result": "¡Hola! Estoy bien, gracias por preguntar. ¿Cómo estás tú?\n",
+          "candidates": [
+            {
+              "content": {
+                "role": "model",
+                "parts": [
+                  {
+                    "text": "¡Hola! Estoy bien, gracias por preguntar. ¿Cómo estás tú?\n"
+                  }
+                ]
+              },
+              "avgLogprobs": -0.006312693934887648,
+              "finishReason": "STOP"
+            }
+          ],
+          "responseId": "s1PDaNDNH9eV_uMPmKzdkQg",
+          "modelVersion": "gemini-1.5-flash",
+          "usageMetadata": {
+            "totalTokenCount": 20,
+            "promptTokenCount": 4,
+            "promptTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 4
+              }
+            ],
+            "candidatesTokenCount": 16,
+            "candidatesTokensDetails": [
+              {
+                "modality": "TEXT",
+                "tokenCount": 16
+              }
+            ]
+          }
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

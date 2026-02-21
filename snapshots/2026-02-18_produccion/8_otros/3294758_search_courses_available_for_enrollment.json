@@ -1,0 +1,366 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "restore": {},
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 5,
+      "mapper": {
+        "sort": [],
+        "limit": "",
+        "where": [
+          [
+            {
+              "a": "status",
+              "b": "Enrolling",
+              "o": "equal"
+            }
+          ]
+        ]
+      },
+      "module": "postgres:SelectFromTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "course_id",
+                  "value": "course_id"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                },
+                {
+                  "label": "student_capacity",
+                  "value": "student_capacity"
+                },
+                {
+                  "label": "tentative_start_date",
+                  "value": "tentative_start_date"
+                },
+                {
+                  "label": "min_age",
+                  "value": "min_age"
+                },
+                {
+                  "label": "max_age",
+                  "value": "max_age"
+                },
+                {
+                  "label": "detail",
+                  "value": "detail"
+                },
+                {
+                  "label": "modality",
+                  "value": "modality"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name": "sort",
+            "spec": [
+              {
+                "name": "column",
+                "type": "select",
+                "label": "Column",
+                "dynamic": true,
+                "options": [],
+                "required": true
+              },
+              {
+                "name": "order",
+                "type": "select",
+                "label": "Order",
+                "options": [
+                  {
+                    "label": "Ascending",
+                    "value": "asc"
+                  },
+                  {
+                    "label": "Descending",
+                    "value": "desc"
+                  }
+                ],
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Sort"
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.course_editions"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 337,
+          "y": -4
+        },
+        "interface": [
+          {
+            "name": "__IMTLENGTH__",
+            "type": "uinteger",
+            "label": "Total number of bundles"
+          },
+          {
+            "name": "__IMTINDEX__",
+            "type": "uinteger",
+            "label": "Bundle order position"
+          },
+          {
+            "name": "id",
+            "type": "integer",
+            "label": "id",
+            "required": false
+          },
+          {
+            "name": "course_id",
+            "type": "integer",
+            "label": "course_id",
+            "required": false
+          },
+          {
+            "name": "status",
+            "type": "text",
+            "label": "status",
+            "required": false
+          },
+          {
+            "name": "student_capacity",
+            "type": "integer",
+            "label": "student_capacity",
+            "required": false
+          },
+          {
+            "name": "tentative_start_date",
+            "type": "date",
+            "label": "tentative_start_date",
+            "required": false
+          },
+          {
+            "name": "min_age",
+            "type": "integer",
+            "label": "min_age",
+            "required": false
+          },
+          {
+            "name": "max_age",
+            "type": "integer",
+            "label": "max_age",
+            "required": false
+          },
+          {
+            "name": "detail",
+            "type": "text",
+            "label": "detail",
+            "required": false
+          },
+          {
+            "name": "modality",
+            "type": "text",
+            "label": "modality",
+            "required": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"course_editions\"",
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {},
+      "module": "builtin:BasicAggregator",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "extra": {
+            "feeder": {
+              "label": "PostgreSQL - Select row(s) from a table [5]"
+            },
+            "target": {
+              "label": "Custom"
+            }
+          }
+        },
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      },
+      "parameters": {
+        "feeder": 5
+      }
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "tool_output": "{{`3`}}"
+      },
+      "module": "scenario-service:ReturnData",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "tool_output",
+            "type": "dynamicCollection",
+            "label": ""
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 1200,
+          "y": 0
+        }
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Search courses available for enrollment",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

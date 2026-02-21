@@ -1,0 +1,106 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "util:BasicTrigger",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "values": {
+              "items": [
+                {
+                  "spec": {
+                    "mode": "chose",
+                    "items": [
+                      null
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "designer": {
+          "x": -469,
+          "y": -5
+        },
+        "interface": [
+          {
+            "name": "dato",
+            "type": "text",
+            "label": "dato"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "spec",
+                "spec": [
+                  {
+                    "name": "name",
+                    "type": "text",
+                    "label": "Name",
+                    "required": true
+                  },
+                  {
+                    "name": "value",
+                    "type": "text",
+                    "label": "Value",
+                    "required": true
+                  }
+                ],
+                "type": "array",
+                "label": "Items",
+                "required": true
+              }
+            ],
+            "type": "array",
+            "label": "Bundles",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "values": [
+          {
+            "spec": [
+              {
+                "name": "Dato",
+                "value": "1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "name": "Integration Tools",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "1": {
+          "dato": "1"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

@@ -1,0 +1,307 @@
+{
+  "flow": [
+    {
+      "id": 3,
+      "mapper": {
+        "n": "1",
+        "model": "gpt-image-1",
+        "prompt": "Creá una imagen cuadrada estilo publicación de Instagram atractiva y profesional. Usá colores modernos y llamativos. Mostrá de forma clara el siguiente mensaje con íconos o emojis:\n\n💡 CURSO DE AUTOMATIZACIÓN CON IA, MAKE y n8n\nAutomatizá tareas, conectá servicios y ganá tiempo.\nSin necesidad de programar.\n\n✅ Automatizá mails, formularios, reportes\n✅ Usá IA para ahorrar tiempo\n✅ Conectá WhatsApp, Gmail, Google Sheets\n\n🎓 No necesitás experiencia previa\n🖥️ Modalidad virtual en vivo. \n🕒 Duración: 3 meses\n💰 Valor total: $270.000\n📲 Pagá con tarjeta, débito o transferencia\n\n¡Cupos limitados!\nEl estilo debe ser claro, tecnológico, con íconos visuales para cada sección (IA, automatización, computadora, dinero, calendario, etc). Incluir un llamado a la acción como “Inscribite ahora” o “Consultanos por WhatsApp”. Texto legible y bien distribuido. No incluir más de 950 caracteres en total."
+      },
+      "module": "openai-gpt-3:GenerateImage",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model",
+            "required": true,
+            "validate": {
+              "enum": [
+                "gpt-image-1",
+                "gpt-image-1-mini",
+                "dall-e-3",
+                "dall-e-2"
+              ]
+            }
+          },
+          {
+            "name": "prompt",
+            "type": "text",
+            "label": "Prompt",
+            "required": true,
+            "validate": {
+              "max": 32000,
+              "min": 1
+            }
+          },
+          {
+            "name": "size",
+            "type": "select",
+            "label": "Size",
+            "validate": {
+              "enum": [
+                "auto",
+                "1024x1024",
+                "1536x1024",
+                "1024x1536"
+              ]
+            }
+          },
+          {
+            "name": "quality",
+            "type": "select",
+            "label": "Quality",
+            "validate": {
+              "enum": [
+                "auto",
+                "high",
+                "medium",
+                "low"
+              ]
+            }
+          },
+          {
+            "name": "background",
+            "type": "select",
+            "label": "Background",
+            "validate": {
+              "enum": [
+                "auto",
+                "transparent",
+                "opaque"
+              ]
+            }
+          },
+          {
+            "name": "output_format",
+            "type": "select",
+            "label": "Output Format",
+            "validate": {
+              "enum": [
+                "png",
+                "jpeg",
+                "webp"
+              ]
+            }
+          },
+          {
+            "name": "n",
+            "type": "integer",
+            "label": "Number",
+            "validate": {
+              "max": 10,
+              "min": 1
+            }
+          },
+          {
+            "name": "moderation",
+            "type": "select",
+            "label": "Moderation",
+            "validate": {
+              "enum": [
+                "auto",
+                "low"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "size": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "GPT Image 1State-of-the-art image generation model"
+            },
+            "quality": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "background": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "moderation": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "output_format": {
+              "mode": "chose",
+              "label": "Empty"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "AI Content Generator"
+            }
+          }
+        },
+        "designer": {
+          "x": 163,
+          "y": 61
+        },
+        "interface": [
+          {
+            "name": "created",
+            "type": "date",
+            "label": "Created"
+          },
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "fileName",
+                "type": "text",
+                "label": "File Name",
+                "semantic": "file:name"
+              },
+              {
+                "name": "fileData",
+                "type": "buffer",
+                "label": "File Data",
+                "semantic": "file:data"
+              }
+            ],
+            "type": "array",
+            "label": "Images"
+          },
+          {
+            "name": "resImgName",
+            "type": "text",
+            "label": "Response Image Name",
+            "semantic": "file:name"
+          },
+          {
+            "name": "resImgData",
+            "type": "buffer",
+            "label": "Response Image Data",
+            "semantic": "file:data"
+          },
+          {
+            "name": "background",
+            "type": "text",
+            "label": "Background"
+          },
+          {
+            "name": "output_format",
+            "type": "text",
+            "label": "Output Format"
+          },
+          {
+            "name": "quality",
+            "type": "text",
+            "label": "Quality"
+          },
+          {
+            "name": "size",
+            "type": "text",
+            "label": "Size"
+          },
+          {
+            "name": "usage",
+            "spec": [
+              {
+                "name": "input_tokens",
+                "type": "uinteger",
+                "label": "Input Tokens"
+              },
+              {
+                "name": "input_tokens_details",
+                "spec": [
+                  {
+                    "name": "image_tokens",
+                    "type": "uinteger",
+                    "label": "Image Tokens"
+                  },
+                  {
+                    "name": "text_tokens",
+                    "type": "uinteger",
+                    "label": "Text Tokens"
+                  }
+                ],
+                "type": "collection",
+                "label": "Input Tokens Details"
+              },
+              {
+                "name": "output_tokens",
+                "type": "uinteger",
+                "label": "Output Tokens"
+              },
+              {
+                "name": "total_tokens",
+                "type": "uinteger",
+                "label": "Total Tokens"
+              }
+            ],
+            "type": "collection",
+            "label": "Usage"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 4371900
+      }
+    }
+  ],
+  "name": "IITA - Create content for social media",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "3": {
+          "data": [
+            {
+              "fileData": "IMTBuffer(1601976, binary, 71a165139bcb903f086f267c0dc2e71c108cd59c): 89504e470d0a1a0a0000000d494844...",
+              "fileName": "output1.png"
+            }
+          ],
+          "size": "1024x1024",
+          "usage": {
+            "input_tokens": 246,
+            "total_tokens": 4406,
+            "output_tokens": 4160,
+            "input_tokens_details": {
+              "text_tokens": 246,
+              "image_tokens": 0
+            }
+          },
+          "created": "2025-07-14T14:55:13.000Z",
+          "quality": "high",
+          "background": "opaque",
+          "resImgData": "IMTBuffer(1601976, binary, 71a165139bcb903f086f267c0dc2e71c108cd59c): 89504e470d0a1a0a0000000d494844...",
+          "resImgName": "output1.png",
+          "output_format": "png"
+        }
+      }
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

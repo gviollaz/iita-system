@@ -1,0 +1,595 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "module": "scenario-service:StartSubscenario",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "interface": [
+          {
+            "help": "Contains the transaction order identifier.",
+            "name": "id_order",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the cbu belonging to the issuer's bank account.",
+            "name": "CBU_issuer",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the identifier of the issuer with which the banking transaction operates.",
+            "name": "CUIL_issuer",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the first and last name of the person who is going to register for the course.",
+            "name": "name",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the amount of the bank transaction.",
+            "name": "amount",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the name of the bank from which the transaction is made.",
+            "name": "issuing_bank",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the name of the course to which the person registers.",
+            "name": "course_name",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "Contains the date and time of the bank transaction.",
+            "name": "date",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "mode": "fromAll",
+        "values": {
+          "0": "{{2.id_order}}",
+          "1": "{{2.CBU_issuer}}",
+          "2": "{{2.CUIL_issuer}}",
+          "3": "{{2.name}}",
+          "4": "{{2.amount}}",
+          "5": "{{2.issuing_bank}}",
+          "6": "{{2.date}}",
+          "7": "{{2.course_name}}"
+        },
+        "sheetId": "Transferencias",
+        "spreadsheetId": "1qXXB8me9BWzGZpw5b9SyHEWIe7xJT0vMRN4RlcS6Rss",
+        "includesHeaders": true,
+        "insertDataOption": "INSERT_ROWS",
+        "valueInputOption": "USER_ENTERED",
+        "insertUnformatted": false
+      },
+      "module": "google-sheets:addRow",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "mode",
+            "type": "select",
+            "label": "Search Method",
+            "required": true,
+            "validate": {
+              "enum": [
+                "select",
+                "fromAll",
+                "map"
+              ]
+            }
+          },
+          {
+            "name": "insertUnformatted",
+            "type": "boolean",
+            "label": "Unformatted",
+            "required": true
+          },
+          {
+            "name": "valueInputOption",
+            "type": "select",
+            "label": "Value input option",
+            "validate": {
+              "enum": [
+                "USER_ENTERED",
+                "RAW"
+              ]
+            }
+          },
+          {
+            "name": "insertDataOption",
+            "type": "select",
+            "label": "Insert data option",
+            "validate": {
+              "enum": [
+                "INSERT_ROWS",
+                "OVERWRITE"
+              ]
+            }
+          },
+          {
+            "name": "spreadsheetId",
+            "type": "text",
+            "label": "Spreadsheet ID",
+            "required": true
+          },
+          {
+            "name": "sheetId",
+            "type": "select",
+            "label": "Sheet Name",
+            "required": true
+          },
+          {
+            "name": "includesHeaders",
+            "type": "select",
+            "label": "Table contains headers",
+            "required": true,
+            "validate": {
+              "enum": [
+                true,
+                false
+              ]
+            }
+          },
+          {
+            "name": "values",
+            "spec": [
+              {
+                "name": "0",
+                "type": "text",
+                "label": "ID Orden (A)"
+              },
+              {
+                "name": "1",
+                "type": "text",
+                "label": "CBU Emisor (B)"
+              },
+              {
+                "name": "2",
+                "type": "text",
+                "label": "CUIL emisor (C)"
+              },
+              {
+                "name": "3",
+                "type": "text",
+                "label": "Nombre y apellido (D)"
+              },
+              {
+                "name": "4",
+                "type": "text",
+                "label": "Monto (E)"
+              },
+              {
+                "name": "5",
+                "type": "text",
+                "label": "Banco emisor (F)"
+              },
+              {
+                "name": "6",
+                "type": "text",
+                "label": "Fecha y hora (G)"
+              },
+              {
+                "name": "7",
+                "type": "text",
+                "label": "Curso elegido (H)"
+              },
+              {
+                "name": "8",
+                "type": "text",
+                "label": "(I)"
+              },
+              {
+                "name": "9",
+                "type": "text",
+                "label": "(J)"
+              },
+              {
+                "name": "10",
+                "type": "text",
+                "label": "(K)"
+              },
+              {
+                "name": "11",
+                "type": "text",
+                "label": "(L)"
+              },
+              {
+                "name": "12",
+                "type": "text",
+                "label": "(M)"
+              },
+              {
+                "name": "13",
+                "type": "text",
+                "label": "(N)"
+              },
+              {
+                "name": "14",
+                "type": "text",
+                "label": "(O)"
+              },
+              {
+                "name": "15",
+                "type": "text",
+                "label": "(P)"
+              },
+              {
+                "name": "16",
+                "type": "text",
+                "label": "(Q)"
+              },
+              {
+                "name": "17",
+                "type": "text",
+                "label": "(R)"
+              },
+              {
+                "name": "18",
+                "type": "text",
+                "label": "(S)"
+              },
+              {
+                "name": "19",
+                "type": "text",
+                "label": "(T)"
+              },
+              {
+                "name": "20",
+                "type": "text",
+                "label": "(U)"
+              },
+              {
+                "name": "21",
+                "type": "text",
+                "label": "(V)"
+              },
+              {
+                "name": "22",
+                "type": "text",
+                "label": "(W)"
+              },
+              {
+                "name": "23",
+                "type": "text",
+                "label": "(X)"
+              },
+              {
+                "name": "24",
+                "type": "text",
+                "label": "(Y)"
+              },
+              {
+                "name": "25",
+                "type": "text",
+                "label": "(Z)"
+              },
+              {
+                "name": "26",
+                "type": "text",
+                "label": "(AA)"
+              },
+              {
+                "name": "27",
+                "type": "text",
+                "label": "(AB)"
+              }
+            ],
+            "type": "collection",
+            "label": "Values"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "mode": {
+              "label": "Select from all"
+            },
+            "sheetId": {
+              "mode": "chose",
+              "label": "Transferencias"
+            },
+            "includesHeaders": {
+              "label": "Yes",
+              "nested": [
+                {
+                  "name": "values",
+                  "spec": [
+                    {
+                      "name": "0",
+                      "type": "text",
+                      "label": "ID Orden (A)"
+                    },
+                    {
+                      "name": "1",
+                      "type": "text",
+                      "label": "CBU Emisor (B)"
+                    },
+                    {
+                      "name": "2",
+                      "type": "text",
+                      "label": "CUIL emisor (C)"
+                    },
+                    {
+                      "name": "3",
+                      "type": "text",
+                      "label": "Nombre y apellido (D)"
+                    },
+                    {
+                      "name": "4",
+                      "type": "text",
+                      "label": "Monto (E)"
+                    },
+                    {
+                      "name": "5",
+                      "type": "text",
+                      "label": "Banco emisor (F)"
+                    },
+                    {
+                      "name": "6",
+                      "type": "text",
+                      "label": "Fecha y hora (G)"
+                    },
+                    {
+                      "name": "7",
+                      "type": "text",
+                      "label": "Curso elegido (H)"
+                    },
+                    {
+                      "name": "8",
+                      "type": "text",
+                      "label": "(I)"
+                    },
+                    {
+                      "name": "9",
+                      "type": "text",
+                      "label": "(J)"
+                    },
+                    {
+                      "name": "10",
+                      "type": "text",
+                      "label": "(K)"
+                    },
+                    {
+                      "name": "11",
+                      "type": "text",
+                      "label": "(L)"
+                    },
+                    {
+                      "name": "12",
+                      "type": "text",
+                      "label": "(M)"
+                    },
+                    {
+                      "name": "13",
+                      "type": "text",
+                      "label": "(N)"
+                    },
+                    {
+                      "name": "14",
+                      "type": "text",
+                      "label": "(O)"
+                    },
+                    {
+                      "name": "15",
+                      "type": "text",
+                      "label": "(P)"
+                    },
+                    {
+                      "name": "16",
+                      "type": "text",
+                      "label": "(Q)"
+                    },
+                    {
+                      "name": "17",
+                      "type": "text",
+                      "label": "(R)"
+                    },
+                    {
+                      "name": "18",
+                      "type": "text",
+                      "label": "(S)"
+                    },
+                    {
+                      "name": "19",
+                      "type": "text",
+                      "label": "(T)"
+                    },
+                    {
+                      "name": "20",
+                      "type": "text",
+                      "label": "(U)"
+                    },
+                    {
+                      "name": "21",
+                      "type": "text",
+                      "label": "(V)"
+                    },
+                    {
+                      "name": "22",
+                      "type": "text",
+                      "label": "(W)"
+                    },
+                    {
+                      "name": "23",
+                      "type": "text",
+                      "label": "(X)"
+                    },
+                    {
+                      "name": "24",
+                      "type": "text",
+                      "label": "(Y)"
+                    },
+                    {
+                      "name": "25",
+                      "type": "text",
+                      "label": "(Z)"
+                    },
+                    {
+                      "name": "26",
+                      "type": "text",
+                      "label": "(AA)"
+                    },
+                    {
+                      "name": "27",
+                      "type": "text",
+                      "label": "(AB)"
+                    }
+                  ],
+                  "type": "collection",
+                  "label": "Values"
+                }
+              ]
+            },
+            "insertDataOption": {
+              "mode": "chose",
+              "label": "Insert rows"
+            },
+            "valueInputOption": {
+              "mode": "chose",
+              "label": "User entered"
+            },
+            "insertUnformatted": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google"
+              },
+              "label": "Gonzalo Fundacion Innovar (gonzaloaybar@fundacioninnovar.org.ar)"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Add bank transfer"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTCONN__": 5710354
+      }
+    }
+  ],
+  "name": "Register bank transfer",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

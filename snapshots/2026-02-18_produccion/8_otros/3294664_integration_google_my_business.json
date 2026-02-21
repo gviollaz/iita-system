@@ -1,0 +1,101 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "google-my-business:watchReviews",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "select": {
+              "label": "By update time"
+            },
+            "account": {
+              "label": "GERARDO BENJAMIN URIBURU ROMERO"
+            },
+            "location": {
+              "label": "IITA San Lorenzo chico / Instituto de Innovación y Tecnología Aplicada (Av. Finca Yerba Buena 1500,  Complejo La Comarca, Las Quin...)"
+            },
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "google-custom"
+              },
+              "label": "Google mi negocio (gerardo) (guribururomero@gmail.com)"
+            }
+          }
+        },
+        "designer": {
+          "x": -161,
+          "y": 19
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:google-custom",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Watch reviews",
+            "required": true,
+            "validate": {
+              "enum": [
+                "create",
+                "update"
+              ]
+            }
+          },
+          {
+            "name": "account",
+            "type": "select",
+            "label": "Account name",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "required": true
+          },
+          {
+            "name": "location",
+            "type": "select",
+            "label": "Location name",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "limit": 1000,
+        "select": "update",
+        "account": "accounts/100349017747145193965",
+        "location": "accounts/100349017747145193965/locations/10239191767739875301",
+        "__IMTCONN__": 5890574
+      }
+    }
+  ],
+  "name": "Integration Google My Business",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

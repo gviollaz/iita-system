@@ -1,0 +1,386 @@
+{
+  "flow": [
+    {
+      "id": 14,
+      "mapper": {},
+      "module": "facebook-pages:WatchComments",
+      "version": 6,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "id": {
+              "mode": "chose",
+              "label": "\"Desde el año 2015,  IITA impartia formación en Python, en una época en la que aún no era un lenguaje ampliamente difundido. Supimos anticiparnos a su relevancia.\""
+            },
+            "page_id": {
+              "label": "IITA San Lorenzo Chico / Instituto de Innovación y Tecnología Aplicada (San Lorenzo)"
+            },
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "false",
+                "connection": "facebook"
+              },
+              "label": "My Facebook connection (Gustavo Viollaz)"
+            }
+          }
+        },
+        "designer": {
+          "x": -86,
+          "y": 312
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:facebook",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "page_id",
+            "type": "select",
+            "label": "Page",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "required": true
+          },
+          {
+            "name": "id",
+            "type": "select",
+            "label": "Post ID",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "id": "106307535517599_682185374592720",
+        "limit": 10,
+        "page_id": "106307535517599",
+        "__IMTCONN__": 3644677
+      }
+    },
+    {
+      "id": 16,
+      "mapper": null,
+      "module": "builtin:BasicRouter",
+      "routes": [
+        {
+          "flow": [
+            {
+              "id": 22,
+              "filter": {
+                "name": "Price",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{14.message}}",
+                      "b": "price",
+                      "o": "text:contain:ci"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "id": "{{14.id}}",
+                "message": "Gracias por dejarnos tu comentario.\n​",
+                "page_id": "106307535517599"
+              },
+              "module": "facebook-pages:CreateComment",
+              "version": 6,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "page_id",
+                    "type": "select",
+                    "label": "Page",
+                    "required": true
+                  },
+                  {
+                    "name": "message",
+                    "type": "text",
+                    "label": "Message"
+                  },
+                  {
+                    "name": "attachment",
+                    "type": "select",
+                    "label": "Attachment type",
+                    "validate": {
+                      "enum": [
+                        "url",
+                        "share"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "id",
+                    "type": "select",
+                    "label": "Post ID",
+                    "required": true
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "id": {
+                      "mode": "edit"
+                    },
+                    "page_id": {
+                      "mode": "chose",
+                      "label": "IITA San Lorenzo Chico / Instituto de Innovación y Tecnología Aplicada (San Lorenzo)"
+                    },
+                    "attachment": {
+                      "mode": "chose",
+                      "label": "Empty"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "facebook"
+                      },
+                      "label": "My Facebook connection (Gustavo Viollaz)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 600,
+                  "y": -450
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:facebook",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 3644677
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 21,
+              "filter": {
+                "name": "Info",
+                "conditions": [
+                  [
+                    {
+                      "a": "{{14.message}}",
+                      "b": "info",
+                      "o": "text:contain:ci"
+                    }
+                  ]
+                ]
+              },
+              "mapper": {
+                "id": "{{14.id}}",
+                "message": "Gracias por dejarnos tu comentario.\nEl curso está especialmente diseñado para aprender en forma rápida a utilizar el Fusion 360.\n​",
+                "page_id": "106307535517599"
+              },
+              "module": "facebook-pages:CreateComment",
+              "version": 6,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "page_id",
+                    "type": "select",
+                    "label": "Page",
+                    "required": true
+                  },
+                  {
+                    "name": "message",
+                    "type": "text",
+                    "label": "Message"
+                  },
+                  {
+                    "name": "attachment",
+                    "type": "select",
+                    "label": "Attachment type",
+                    "validate": {
+                      "enum": [
+                        "url",
+                        "share"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "id",
+                    "type": "select",
+                    "label": "Post ID",
+                    "required": true
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "id": {
+                      "mode": "edit"
+                    },
+                    "page_id": {
+                      "mode": "chose",
+                      "label": "IITA San Lorenzo Chico / Instituto de Innovación y Tecnología Aplicada (San Lorenzo)"
+                    },
+                    "attachment": {
+                      "mode": "chose",
+                      "label": "Empty"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "facebook"
+                      },
+                      "label": "My Facebook connection (Gustavo Viollaz)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 767,
+                  "y": -39
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:facebook",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 3644677
+              }
+            }
+          ]
+        },
+        {
+          "flow": [
+            {
+              "id": 20,
+              "filter": {
+                "name": "Else",
+                "conditions": []
+              },
+              "mapper": {
+                "id": "{{14.id}}",
+                "message": "Gracias por contacate. ",
+                "page_id": "106307535517599"
+              },
+              "module": "facebook-pages:CreateComment",
+              "version": 6,
+              "metadata": {
+                "expect": [
+                  {
+                    "name": "page_id",
+                    "type": "select",
+                    "label": "Page",
+                    "required": true
+                  },
+                  {
+                    "name": "message",
+                    "type": "text",
+                    "label": "Message"
+                  },
+                  {
+                    "name": "attachment",
+                    "type": "select",
+                    "label": "Attachment type",
+                    "validate": {
+                      "enum": [
+                        "url",
+                        "share"
+                      ]
+                    }
+                  },
+                  {
+                    "name": "id",
+                    "type": "select",
+                    "label": "Post ID",
+                    "required": true
+                  }
+                ],
+                "restore": {
+                  "expect": {
+                    "id": {
+                      "mode": "edit"
+                    },
+                    "page_id": {
+                      "mode": "chose",
+                      "label": "IITA San Lorenzo Chico / Instituto de Innovación y Tecnología Aplicada (San Lorenzo)"
+                    },
+                    "attachment": {
+                      "mode": "chose",
+                      "label": "Empty"
+                    }
+                  },
+                  "parameters": {
+                    "__IMTCONN__": {
+                      "data": {
+                        "scoped": "true",
+                        "connection": "facebook"
+                      },
+                      "label": "My Facebook connection (Gustavo Viollaz)"
+                    }
+                  }
+                },
+                "designer": {
+                  "x": 772,
+                  "y": 296
+                },
+                "parameters": [
+                  {
+                    "name": "__IMTCONN__",
+                    "type": "account:facebook",
+                    "label": "Connection",
+                    "required": true
+                  }
+                ]
+              },
+              "parameters": {
+                "__IMTCONN__": 3644677
+              }
+            }
+          ]
+        }
+      ],
+      "version": 1,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 300
+        }
+      },
+      "parameters": {
+        "else": 2
+      }
+    }
+  ],
+  "name": "Automatically reply to new Facebook Pages comments",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}
