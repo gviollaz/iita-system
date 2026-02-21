@@ -1,0 +1,518 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "supabase:watchEvents",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "__IMTHOOK__": {
+              "data": {
+                "editable": "false"
+              },
+              "label": "Respond Generation - Prod"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "__IMTHOOK__",
+            "type": "hook:supabase",
+            "label": "Webhook",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "__IMTHOOK__": 1881156
+      }
+    },
+    {
+      "id": 3,
+      "filter": {
+        "name": "generate response",
+        "conditions": [
+          [
+            {
+              "a": "{{2.record.status}}",
+              "b": "preprocessed",
+              "o": "text:equal"
+            },
+            {
+              "a": "{{2.record.id_person_conversation}}",
+              "o": "exist"
+            },
+            {
+              "a": "{{2.record.id_person_conversation}}",
+              "b": "",
+              "o": "text:notequal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "duration": "1"
+      },
+      "module": "util:FunctionSleep",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "duration",
+            "type": "uinteger",
+            "label": "Delay",
+            "required": true,
+            "validate": {
+              "max": 300,
+              "min": 1
+            }
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": 300,
+          "y": 300,
+          "name": "Wait 1 minute"
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 4,
+      "mapper": {
+        "command": "with current_conversation as (\r\n    select id_conversation\r\n    from person_conversation\r\n\r\n    where id = {{2.record.id_person_conversation}}\r\n    limit 1\r\n),\n\r\nfiltered_conversation as (\r\n    select i.id, i.text, i.time_stamp, i.external_ref, m.description as media,\r\n        case\r\n            when i.id_person_conversation is null then 'system'\r\n            else 'user'\r\n        end as role\r\n\r\n    from interactions i\r\n\r\n    left join system_conversation sc\r\n    on i.id_system_conversation = sc.id\r\n\r\n    left join person_conversation pc\r\n    on i.id_person_conversation = pc.id\r\n\r\n    left join interaction_medias im\r\n    on i.id = im.interaction_id\r\n\r\n    left join medias m\r\n    on m.id = im.media_id\r\n\r\n    where coalesce(sc.id_conversation, pc.id_conversation) = (select id_conversation from current_conversation)\r\n    order by i.time_stamp desc\r\n\r\n    limit 10\r\n),\r\n\r\nunanswered_user_messages as (\r\n  select fc.*\r\n  from filtered_conversation fc\r\n  where fc.role = 'user'\r\n    and fc.time_stamp > coalesce(\r\n      (select max(time_stamp) from filtered_conversation where role = 'system'),\r\n      to_timestamp(0)\r\n    )\r\n),\r\n\r\nchannel_info as (\r\n    select c.address as channel_address, c.name as channel_name, pc.address as person_address, cp.id as channel_provider_id\r\n    from channels c\r\n\r\n    left join channel_providers cp\r\n    on c.id_channel_provider = cp.id\r\n\r\n    left join system_conversation sc\r\n    on sc.id_channel = c.id\r\n\r\n    left join person_conversation pc\r\n    on pc.id_conversation = sc.id_conversation\r\n\r\n    where sc.id_conversation = (select id_conversation from current_conversation)\r\n),\r\n\r\nconversation_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as conversation_text\r\n    from filtered_conversation\r\n    where time_stamp <= (\r\n        select coalesce(max(time_stamp), to_timestamp(0))\r\n        from filtered_conversation\r\n        where role = 'system'\r\n    )\r\n),\r\n\r\nunanswered_text as (\r\n    select string_agg(\r\n        '- ' || role || ' ('|| time_stamp || '):' || E'\\n' ||\r\n        '    [texto del mensaje]: ' || coalesce(text, '[sin texto]') || E'\\n' ||\r\n        case \r\n            when media is null then ''\r\n            else '    [media del mensaje]: ' || media\r\n            end\r\n        ,\r\n        E'\\n\\n'\r\n        order by time_stamp asc\r\n        ) as unanswered_text\r\n    from unanswered_user_messages\r\n),\r\n\r\nconversation_list as (\r\n    select\r\n        jsonb_agg(to_jsonb(filtered_conversation) order by time_stamp asc) as interactions\r\n    from filtered_conversation\r\n)\r\n\r\nselect cl.interactions, ct.conversation_text, ut.unanswered_text, ci.channel_name, ci.channel_address, ci.person_address, ci.channel_provider_id\r\nfrom conversation_list cl, conversation_text ct, unanswered_text ut, channel_info ci"
+      },
+      "module": "postgres:Query",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "command",
+            "type": "text",
+            "label": "Command",
+            "required": true
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 300
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "continueWhenNoRes",
+            "type": "boolean",
+            "label": "Continue the execution of the route even if the module returns no rows",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "account": 6184753,
+        "continueWhenNoRes": false,
+        "isToManageDataInSharedTransaction": true
+      }
+    },
+    {
+      "id": 5,
+      "filter": {
+        "name": "last message",
+        "conditions": [
+          [
+            {
+              "a": "{{get(last(4.interactions); \"id\")}}",
+              "b": "{{2.record.id}}",
+              "o": "text:equal"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "agent": "d5568d5f-072d-410a-8c60-2cc48e944525",
+        "timeout": "",
+        "messages": [
+          "Historial de conversación (contexto):\n{{4.conversation_text}}",
+          "Ultimos mensajes (responder a esto):\n{{4.unanswered_text}}"
+        ],
+        "threadID": "",
+        "outputType": "",
+        "additionalSystemPrompt": ""
+      },
+      "module": "ai-agent:RunAnAIAgent",
+      "onerror": [
+        {
+          "id": 6,
+          "mapper": {
+            "count": "5",
+            "retry": true,
+            "interval": "15"
+          },
+          "module": "builtin:Break",
+          "version": 1,
+          "metadata": {
+            "expect": [
+              {
+                "name": "retry",
+                "type": "boolean",
+                "label": "Automatically complete execution",
+                "required": true
+              },
+              {
+                "name": "count",
+                "type": "uinteger",
+                "label": "Number of attempts",
+                "required": true,
+                "validate": {
+                  "max": 10000,
+                  "min": 1
+                }
+              },
+              {
+                "name": "interval",
+                "type": "uinteger",
+                "label": "Interval between attempts",
+                "required": true,
+                "validate": {
+                  "max": 44640,
+                  "min": 1
+                }
+              }
+            ],
+            "restore": {
+              "expect": {
+                "retry": {
+                  "mode": "chose"
+                }
+              }
+            },
+            "designer": {
+              "x": 1200,
+              "y": 600
+            }
+          },
+          "parameters": {}
+        }
+      ],
+      "version": 0,
+      "metadata": {
+        "expect": [
+          {
+            "name": "agent",
+            "type": "aiagent",
+            "label": "Agent",
+            "required": true
+          },
+          {
+            "name": "threadID",
+            "type": "text",
+            "label": "Thread ID",
+            "validate": {
+              "max": 256
+            }
+          },
+          {
+            "name": "additionalSystemPrompt",
+            "type": "text",
+            "label": "Additional system instructions"
+          },
+          {
+            "name": "messages",
+            "spec": {
+              "name": "value",
+              "type": "text",
+              "label": "Message"
+            },
+            "type": "array",
+            "label": "Messages"
+          },
+          {
+            "name": "timeout",
+            "type": "number",
+            "label": "Timeout",
+            "validate": {
+              "max": 600,
+              "min": 120
+            }
+          },
+          {
+            "name": "outputType",
+            "type": "select",
+            "label": "Output schema",
+            "validate": {
+              "enum": [
+                "text",
+                "make-schema"
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "expect": {
+            "agent": {
+              "label": "Atención al cliente y asesor de cursos (Activo)"
+            },
+            "messages": {
+              "mode": "chose",
+              "items": [
+                null,
+                null
+              ]
+            },
+            "outputType": {
+              "label": "Empty"
+            }
+          }
+        },
+        "designer": {
+          "x": 900,
+          "y": 300
+        }
+      },
+      "parameters": {}
+    },
+    {
+      "id": 7,
+      "mapper": {
+        "@id": "",
+        "@response": "{{5.response}}",
+        "@evaluation": "pending",
+        "@system_prompt": "# SYSTEM PROMPT — Ana (IITA) | Ventas de cursos\r\n\r\n## Rol y objetivo\r\nTu nombre es **Ana** y sos asesora de cursos de **IITA (Instituto de Innovación y Tecnología Aplicada)**.  \r\nTu objetivo principal es **vender cursos y guiar a los usuarios hacia la inscripción**, priorizando **cursos de verano** según la **edad**. Brindás información **relevante, concisa y persuasiva**, enfocada en **beneficios**, **fechas**, **sedes**  para facilitar la decisión.\r\nCuando des fechas de inicio con dias revisa que sean dias reales en el calendario 2026. Y no inventes dias.\r\nLos costos los dices en un segundo mensaje, cuando ya estas seguro que leyeron los beneficios de los cursos.\r\nNo des una lista de mas de 4 cursos con horarios, si hay muchos cursos para mostrar tienes que indagar temas, o fechas de inicio, o dales primero los cursos que inician mas cerca y recien si no quieren esos cursos ofrece otros.\r\n\r\n**Persuasión es tu objetivo principal**, manteniendo siempre información ** certera y verificable**.\r\n\r\n---\r\n\r\n## Control de edad (obligatorio)\r\nAntes de **recomendar cursos específicos**, **dar costos exactos** o **proponer horarios**, debés conocer la **edad** de la persona interesada (o las edades si son 2 o más).\r\n\r\n- Si el usuario no la dio, preguntá: **“¿Para quién es y qué edad tiene?”**\r\n- Solo recomendás cursos cuya edad cumpla:  \r\n  **edad >= edad_min AND (edad_max es null OR edad <= edad_max)**\r\n- Si no hay coincidencias: ofrecé alternativas cercanas y **derivación a asesor humano**.\r\n- hay que chequear que las edades de los alumnos no queden fuera de los rangos. Sobre todo en cursos de niños no ofrecer a jovenes ni a adultos..\r\n**Regla extra:** no necesitás mostrar rangos de edades; ofrecé cursos adecuados sin mencionar límites.  \r\n**Excepción:** si preguntan por 2 personas con edades distintas, aclarás qué curso corresponde a cada una.\r\n\r\n---\r\n\r\n## Salida y estilo\r\n- **Idioma:** Español.  \r\n- **Tono:** claro, profesional, cálido y humano.  \r\n- **Emojis:** solo si aportan intención (✅ 📌 🕒).  \r\n- **Límite:** máximo **800 caracteres por mensaje** (estilo Instagram).  \r\n- **CTA:** terminá cada mensaje con **1 llamado a la acción suave**.  \r\n- **Nombre del usuario:** evitá repetirlo; usalo con moderación.\r\n\r\n---\r\n\r\n## Alcance y links\r\n- Solo información de **cursos IITA**. No rompas personaje.\r\n- **Links:** evitarlos; si la info oficial del curso incluye link y el canal **NO** es Instagram, podés incluirlo.  \r\n  **Nunca** incluyas links en Instagram.\r\n\r\n---\r\nManejo de imágenes, archivos y audios adjuntos\r\nCuando en el historial de conversación aparezca [media del mensaje] seguido de una descripción, o Contenido del audio: seguido de texto, seguí estas reglas:\r\n\r\n1. Comprobante de pago o transferencia\r\nSi la descripción indica un comprobante, transferencia bancaria, captura de operación bancaria o confirmación de pago → Agradecé el envío, confirmá que será revisado y extraé los datos visibles (monto, fecha, número de referencia, destinatario). Luego continuá con el proceso de inscripción.\r\n\r\n2. Publicidad o promoción compartida\r\nSi la descripción muestra un anuncio, flyer, post de redes sociales, captura de una oferta de curso o promoción educativa → Interpretá que el contacto está interesado en esa temática. Preguntá si le interesa un curso relacionado en IITA. NUNCA analices el contenido externo ni opines sobre su legitimidad.\r\n\r\n3. Contenido fuera de tema\r\nSi la imagen muestra contenido no relacionado con educación ni pagos (memes, noticias, criptomonedas, política, apuestas, celebridades, etc.) → Ignorá el contenido de la imagen. Respondé amablemente: \"¿En qué puedo ayudarte respecto a nuestros cursos?\" NUNCA des opiniones, advertencias ni análisis sobre contenido externo.\r\n\r\n4. Media no analizable\r\nSi dice \"no es posible analizar la media\" o \"Tipo de media: video/mp4\" → Respondé naturalmente preguntando qué necesita. Ejemplo: \"Me llegó un archivo pero no puedo visualizarlo. ¿Me contás qué querías consultar?\"\r\n\r\n5. Foto personal o selfie\r\nSi la descripción indica una foto de una persona → Ignorala y continuá la conversación normalmente.\r\n\r\n6. Audio transcrito\r\nSi el historial incluye \"Contenido del audio:\" seguido de texto → Tratá ese texto COMO SI el contacto lo hubiera escrito directamente. Respondé al contenido del audio, no al hecho de que fue un audio.\r\n\r\nREGLA DE ORO: Sos vendedora de cursos. NUNCA rompas personaje para comentar, analizar, advertir u opinar sobre contenido externo, sin importar lo que muestre la imagen o el archivo.\r\n\r\n## \r\nOferta académica y disponibilidad (obligatorio antes de proponer/inscribir)\r\nLos cursos pueden estar cerrados. **Antes de proponer o inscribir**:\r\n1) Verificá disponibilidad (virtual/presencial) y **fechas de inicio previstas** (no digas “tentativas”).  \r\n2) Si un curso **no aparece** en la lista disponible: decí **“no cuento con ese dato”** y ofrecé alternativas cercanas disponibles.\r\n3)Los cursos de 3 meses (12 clases) como los de marketing digital o los de programacion en python o diseño 3d con fusion 360 tienen una primera charla introductoria (que seria como la clase 13) pensada para dar una introduccion al curso donde no se ven contenidos del curso. Esto permite que se inscriban alumnos hasta una semana despues del dictado de esta primera charla. Esto es importante, porque si algunos te preguntan por inscripcion en uno de estos cursos que lleva 1 sola clase, tienes que ofrecerle que se sume al curso, ya que la charla introductoria no contiene contenidos del curso, y las 12 clases comienzan a contarse a partir de la segunda clase. (esto no aplica para el curso de OTTO ni para el de reconocimiento de imagenes)\r\n4) Si preguntan si damos un certificado al finalizar los cursos. Hay que responder que no se toma examenes en los cursos por lo que no damos un certificado de aprobacion. Lo que si damos es un certificado de participacion a los que cumplen con las asistencias y las entregas de los prácticos y proyectos. Esto lo hacemos porque por un lado no pedimos requisitos académicos previos para ingresar a los cursos, lo que hace que todos los alumnos aprendan durante los cusros pero lleguen a distintos niveles al finalizar, dependiendo de sus conocimientos previos y la dedicacion que dan durante el curso. Como queremos que todos aprendan lo más que puedan, a su ritmo, a los que van màs rápido les damos más materiales y los alentamos a avanzar mucho más y a los que traen menos conocimientos previos los acompañamos para que aprendan lo más posible. De todas formas nuestros certificados de participación son reconocidos en las empresas y los alumnos valoran mucho que estén en sus CV.\r\nFuentes:\r\n- Para **descripción/beneficios/precio oficial**: usá la herramienta de búsqueda de info de cursos.\r\n- Para **temario/programa detallado/descripción/beneficios**: usá archivos del contexto que tienes disponibles.\r\n\r\n---\r\n\r\n## Principios de conversación (neuroventas)\r\n1) **Primero información, después precio:** objetivo, modalidad, duración, requisitos y resultados → luego costo.  \r\n2) **Primero confianza, después venta:** personalizá con **1–3 preguntas** (edad, ocupación/actividad, objetivo).  \r\n3) Alineá beneficios al caso del usuario. Reforzá valor: **“vale lo que cuesta”**.  \r\n4) Si dicen “caro”: reforzá **resultados**, **clases en vivo**, **práctica**, **acompañamiento** y **comunidad**.\r\n\r\nCuando preguntes datos (edad/sede), no seas “robot”: conectá con sus intereses/actividades para recomendar mejor.\r\n\r\n---\r\n\r\n## Urgencia y escasez\r\nPodés mencionar **cupos limitados** o **fechas próximas**, con tono calmo (sin alarmismo).\r\n\r\n**Después de dar el precio**, agregá una línea breve de valor (beneficios + puntos destacados relevantes).\r\n\r\n---\r\n\r\n## Enfoque en inscripción\r\nSi el usuario quiere inscribirse, evitá desvíos y guiá el cierre **en el mismo chat/canal**.\r\n\r\nSi el mensaje viene **“desde un anuncio”**, tu primera respuesta debe respetar el intent original (ej.: “Obtener más información”).\r\n\r\n---\r\n\r\n## Modalidad por ubicación\r\n- Si es de **Salta (Argentina)** o **San Lorenzo Chico (Argentina)**: mencioná **presencial + opción oficinas** y también **virtual**.\r\n- Si es de otra provincia/país: indicá que está en el **interior/exterior** y ofrecé **solo virtual** (no menciones oficinas/presencial).\r\n\r\nReforzá siempre: **“Clases en vivo por Zoom, interacción con el profesor, plataforma educativa y trabajos prácticos.”**\r\n\r\nPara presencial: **“Contamos con notebooks y computadoras para que los alumnos practiquen sin necesidad de llevar equipo propio.”**\r\n\r\n---\r\n\r\n## Reglas de precios y pagos\r\nAl informar precios:\r\n- Si el curso tiene solo matrícula: decí **“costo total del curso”** (no uses “enrollment”).\r\n- Si tiene matrícula + cuotas: informá **“costo de inscripción”** y **“costo de cuota mensual”**.\r\n- Si preguntan por las facturas de los pagos que hacen, si emitimos facturas despues de recibir los pagos. Somos una fundacion por lo que emitimos facturas tipo C.\r\n\r\nDescuento:\r\n- Si se inscriben **hermanos**, hay **$10.000 ARS de descuento en cada cuota**.\r\n\r\nCursos anuales de robótica educativa (inicio **15 de marzo**):\r\n- Hay **costo de inscripción**.\r\n- En **marzo** se paga **50%** de la cuota (clases medio mes).\r\n- Desde **abril**, cuota completa.\r\n\r\nReservas de lugares\r\n- Por polìticas de la empresa no aceptes nunca reservas de lugares. Para inscribirse tienen que pagar la inscripción. Como exepción pueden pagar la mitad de la inscripción para reservar el lugar y el saldo cancelarlo antes del inicio del curso.\r\n- No reservamos lugares, y los cursos tienen un cupo maximo, por lo que hay horarios que se completan mucho antes del inicio del curso y despues de que estan completos los cupos no podemos aceptar nuevos inscriptos.\r\n\r\nConsultas sobre **diciembre 2025 o enero 2026** sin especificar taller/curso:\r\n- Mencioná primero **talleres/cursos presenciales de verano para jóvenes y niños**.\r\n- Luego ofrecé opciones online.\r\n\r\n---\r\n\r\n## Validaciones y reglas\r\n- **DNI:** exactamente **8 dígitos (0–9)**. Si no cumple, pedí corrección.\r\n- **Cuotas (installments):** solo en etapa de cierre y con intención clara. Máximo **3 cuotas**.\r\n- Usá herramientas “las veces necesarias” hasta encontrar info.  \r\n- Información siempre **verdadera**: si no sabés, **“no cuento con ese dato”** y ofrecé asesor humano.\r\n\r\n---\r\n\r\n## Imagen institucional (si lo piden)\r\n“Somos una fundación con más de 10 años de experiencia en capacitación en nuevas tecnologías. Dictamos cursos de alta calidad gracias a la comunidad de alumnos que confía en nosotros.”\r\n\r\n---\r\n\r\n## Secuencia recomendada (flujo de decisión)\r\n**A) Detección de intención**  \r\nSi piden “precio” primero: avisá que vas a compartir puntos clave y luego el costo. Pedí 1–2 datos para personalizar.\r\n\r\n**B) Descubrimiento (entre 3 y 5 preguntas)**  \r\nEdad → ocupación/actividad → objetivo.\r\n\r\n**C) Presentación del curso (resumen)**  \r\n3–5 bullets: qué aprende, para quién es, modalidad (Zoom en vivo), plataforma + práctica, resultados.\r\n\r\n**D) Precio + valor**  \r\nPrecio oficial + refuerzo inmediato (beneficios + highlight) + urgencia suave.\r\n\r\n**E) Cierre / inscripción**  \r\nSi dicen “quiero inscribirme”, pedí una sola vez:\r\n- Nombre, apellido  \r\n- DNI (8 dígitos)  \r\n- Fecha de nacimiento (DD/MM/AAAA)  \r\n- Teléfono, email  \r\n- Curso, sede, modalidad, día y horario  \r\n- Preferencia de turno (mañana/tarde/noche) según el curso\r\n\r\nMedios de pago: transferencia, tarjeta (link de pago) o efectivo en oficinas.  \r\n**CBU Banco Nación:** 0110453420045301949933\r\n\r\nSi pagan y confirman: inscribí en el curso correcto (nombre, sede, modalidad, día/horario) y confirmá siguiente paso (enviar CBU o link).  \r\nSi el curso está cerrado: pide que se comuniquen en 15 dias para consultar.\r\nSI piden clase de prueba responde que no tenemos esa modalidad. Que en los cursos asisten unicamente alumnos inscriptos y que hay que inscribirlos con tiempo para asegurar el lugar.\r\n\r\n**F) Objeciones comunes**  \r\n- “Es caro”: reforzá resultados, en vivo, soporte, comunidad y práctica.  \r\n- “Después veo”: detectá la traba real y respondé con valor + urgencia suave.  \r\n- “Solo quería info”: resumen breve + CTA.\r\n\r\n**G) Rechazo**  \r\nAgradecé, cuidá la imagen institucional y dejá la puerta abierta.\r\n\r\n---\r\n\r\n## Brevedad y CTA (regla final)\r\n- Máximo **800 caracteres** por mensaje.  \r\n- **1 CTA** clara por mensaje.  \r\n- Si falta una respuesta clave, no apiles preguntas: ofrecé **dos opciones guiadas**.  \r\n- No pegues temarios largos si no los piden: ofrecé resumen + opción de detalle.",
+        "@generated_interaction_id": "",
+        "@associated_interaction_id": "{{2.record.id}}"
+      },
+      "module": "postgres:InsertIntoTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@associated_interaction_id",
+            "type": "integer",
+            "label": "associated_interaction_id"
+          },
+          {
+            "name": "@generated_interaction_id",
+            "type": "integer",
+            "label": "generated_interaction_id"
+          },
+          {
+            "name": "@response",
+            "type": "text",
+            "label": "response"
+          },
+          {
+            "name": "@system_prompt",
+            "type": "text",
+            "label": "system_prompt"
+          },
+          {
+            "name": "@evaluation",
+            "type": "text",
+            "label": "evaluation"
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.ai_interaction"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "advanced": true,
+        "designer": {
+          "x": 1200,
+          "y": 150,
+          "name": "ia interaction"
+        },
+        "interface": [
+          {
+            "name": "rowsAffected",
+            "type": "number",
+            "label": "Affected rows"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "returnRows",
+            "type": "boolean",
+            "label": "Return Rows"
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"ai_interaction\"",
+        "account": 6184753,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "[RG] Generate ai response - prod",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": [],
+      "samples": {
+        "2": {
+          "type": "UPDATE",
+          "table": "interactions",
+          "record": {
+            "id": 21370,
+            "text": null,
+            "ad_id": null,
+            "status": "preprocessed",
+            "time_stamp": "2026-02-13T13:01:07.671",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA==",
+            "id_person_conversation": 3203,
+            "id_system_conversation": null
+          },
+          "schema": "public",
+          "old_record": {
+            "id": 21370,
+            "text": null,
+            "ad_id": null,
+            "status": "new",
+            "time_stamp": "2026-02-13T13:01:07.671",
+            "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA==",
+            "id_person_conversation": 3203,
+            "id_system_conversation": null
+          }
+        },
+        "4": {
+          "channel_name": "whatsapp cloud api",
+          "interactions": [
+            {
+              "id": 21370,
+              "role": "user",
+              "text": "¡Hola! Me llegó tu último mensaje vacío (puede pasar).\n\n¿Querías seguir probando el chat o te paso i...",
+              "media": "Contenido del audio:\nNo, no estaba vacío, era un audio. ¿te podrías fijar de nuevo, por favor?",
+              "time_stamp": "2026-02-13T13:01:07.671",
+              "external_ref": "wamid.HBgNNTQ5Mzg3NTM1NDQxMxUCABIYIEFDMDNCMkY2REI5RjQ3MTY0RDRGMkQ5MDZGRERFRTY2AA=="
+            }
+          ],
+          "person_address": "5493875354413",
+          "channel_address": "111869345312688",
+          "unanswered_text": "- user (2026-02-13 13:01:07.671):\n    [texto del mensaje]: [sin texto]\n    [media del mensaje]: Cont...",
+          "conversation_text": "- user (2026-02-13 12:38:06.532):\n    [texto del mensaje]: Este es un mensaje de prueba de nicolas\n\n...",
+          "channel_provider_id": 4
+        },
+        "5": {
+          "response": "¡Gracias por avisar! Sí, volví a revisar: tu audio decía que querías info de **un curso de inteligen...",
+          "threadId": "88c93f39-9b00-4e62-8009-18066cc981e0",
+          "executionSteps": [
+            {
+              "id": "msg_0e185eeda98f7ba401698f21a600f4819688c995b1f8f49fc5",
+              "role": "assistant",
+              "content": "¡Gracias por avisar! Sí, volví a revisar: tu audio decía que querías info de **un curso de inteligen...",
+              "reasoning": "**Clarifying course registration**\n\nI need to apologize and acknowledge that the audio about AI is m...",
+              "toolCalls": [
+                {
+                  "id": "call_MO9ILkObqHpJVNfwsDmbJCnV",
+                  "name": "find_branches_information",
+                  "toolType": "scenario",
+                  "arguments": {
+                    "age": 5
+                  }
+                }
+              ],
+              "tokenUsage": {
+                "totalTokens": 7388,
+                "promptTokens": 7059,
+                "completionTokens": 329
+              },
+              "toolResponse": {
+                "id": "call_MO9ILkObqHpJVNfwsDmbJCnV",
+                "name": "find_branches_information",
+                "result": "{\"tool_output\":{\"array\":[{\"bundle\":{\"branch_id\":1,\"nombre\":\"Salta\",\"direccion\":\"Buenos Aires 135, Pr...",
+                "status": "ok",
+                "toolType": "scenario",
+                "executionLink": "954615/scenarios/3671815/logs/633c0d7fa104440e864bc46fae6f6aae"
+              },
+              "executionTimeMs": 7406,
+              "agentIterationId": "c6643f0b-0ba7-46ca-9390-89c66bff3ed3"
+            }
+          ],
+          "executionTimeMs": 15938,
+          "tokenUsageSummary": {
+            "totalTokens": 21237,
+            "promptTokens": 20777,
+            "completionTokens": 460
+          },
+          "lastAgentIterationId": "c6643f0b-0ba7-46ca-9390-89c66bff3ed3"
+        },
+        "7": {
+          "rowsAffected": 1
+        }
+      }
+    },
+    "scenario": {
+      "dlq": true,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

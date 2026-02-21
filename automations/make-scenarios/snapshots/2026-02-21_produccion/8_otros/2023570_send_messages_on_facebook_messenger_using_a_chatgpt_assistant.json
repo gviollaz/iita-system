@@ -1,0 +1,283 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "facebook-messenger:watchMessages",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "mapper": {
+        "role": "user",
+        "message": "{{1.message.text}}",
+        "assistantId": "asst_jD4eoNvsfF6QLOFi3ZbpzX1C"
+      },
+      "module": "openai-gpt-3:messageAssistantAdvanced",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "assistantId",
+            "type": "select",
+            "label": "Assistant",
+            "required": true
+          },
+          {
+            "name": "role",
+            "type": "select",
+            "label": "Role",
+            "required": true,
+            "validate": {
+              "enum": [
+                "user",
+                "assistant"
+              ]
+            }
+          },
+          {
+            "name": "threadId",
+            "type": "text",
+            "label": "Thread ID"
+          },
+          {
+            "name": "model",
+            "type": "select",
+            "label": "Model"
+          },
+          {
+            "name": "tools",
+            "type": "select",
+            "label": "Tools",
+            "multiple": true,
+            "validate": {
+              "enum": [
+                "file_search",
+                "code_interpreter"
+              ]
+            }
+          },
+          {
+            "name": "file_search_resources",
+            "type": "select",
+            "label": "File Search Resources"
+          },
+          {
+            "name": "code_interpreter_resources",
+            "type": "select",
+            "label": "Code Interpreter Resources",
+            "multiple": true,
+            "validate": {
+              "maxItems": 20
+            }
+          },
+          {
+            "name": "tool_choice",
+            "type": "select",
+            "label": "Tool Choice",
+            "validate": {
+              "enum": [
+                "none",
+                "auto",
+                "required",
+                "file_search",
+                "code_interpreter",
+                "function"
+              ]
+            }
+          },
+          {
+            "name": "instructions",
+            "type": "text",
+            "label": "Instructions"
+          },
+          {
+            "name": "max_prompt_tokens",
+            "type": "uinteger",
+            "label": "Max Prompt Tokens"
+          },
+          {
+            "name": "max_completion_tokens",
+            "type": "uinteger",
+            "label": "Max Completion Tokens"
+          },
+          {
+            "name": "temperature",
+            "type": "number",
+            "label": "Temperature",
+            "validate": {
+              "max": 2,
+              "min": 0
+            }
+          },
+          {
+            "name": "top_p",
+            "type": "number",
+            "label": "Top P",
+            "validate": {
+              "max": 1,
+              "min": 0
+            }
+          },
+          {
+            "name": "response_format",
+            "type": "select",
+            "label": "Response Format",
+            "validate": {
+              "enum": [
+                "auto",
+                "json_object",
+                "text"
+              ]
+            }
+          },
+          {
+            "name": "truncation_strategy",
+            "type": "select",
+            "label": "Truncation Strategy",
+            "validate": {
+              "enum": [
+                "auto",
+                "last_messages"
+              ]
+            }
+          },
+          {
+            "name": "message",
+            "type": "text",
+            "label": "Message",
+            "required": true
+          },
+          {
+            "name": "image_files",
+            "type": "select",
+            "label": "Image Files",
+            "multiple": true
+          },
+          {
+            "name": "image_urls",
+            "spec": {
+              "name": "value",
+              "type": "url",
+              "label": "Image URL",
+              "required": true
+            },
+            "type": "array",
+            "label": "Image URLs"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "role": {
+              "label": "User"
+            },
+            "model": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "tools": {
+              "mode": "chose"
+            },
+            "image_urls": {
+              "mode": "chose"
+            },
+            "assistantId": {
+              "mode": "chose",
+              "label": "Dov Test (gpt-4o)",
+              "nested": []
+            },
+            "image_files": {
+              "mode": "chose"
+            },
+            "tool_choice": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "response_format": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "truncation_strategy": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "file_search_resources": {
+              "mode": "chose",
+              "label": "Empty"
+            },
+            "code_interpreter_resources": {
+              "mode": "chose"
+            }
+          },
+          "parameters": {
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "openai-gpt-3"
+              },
+              "label": "Make Ent GPT4"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:openai-gpt-3",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {}
+    },
+    {
+      "id": 3,
+      "mapper": {
+        "message": {
+          "text": "{{2.result}}"
+        },
+        "recipient": {
+          "id": "{{1.sender.id}}"
+        }
+      },
+      "module": "facebook-messenger:sendMessage",
+      "version": 2,
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      }
+    }
+  ],
+  "name": "Send messages on Facebook Messenger using a ChatGPT assistant",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

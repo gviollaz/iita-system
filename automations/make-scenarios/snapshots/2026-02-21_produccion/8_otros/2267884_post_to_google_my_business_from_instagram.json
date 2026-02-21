@@ -1,0 +1,190 @@
+{
+  "flow": [
+    {
+      "id": 1,
+      "mapper": {},
+      "module": "instagram-business:WatchMedia",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "accountId": {
+              "label": "IITA Salta / Instituto de Innovación y Tecnología Aplicada (Salta) (@iita_salta)"
+            },
+            "__IMTCONN__": {
+              "data": {
+                "scoped": "true",
+                "connection": "facebook"
+              },
+              "label": "My Facebook connection (Gustavo Viollaz)"
+            }
+          }
+        },
+        "designer": {
+          "x": -463,
+          "y": -15,
+          "name": "Wait for new publication"
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account:facebook",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "accountId",
+            "type": "select",
+            "label": "Page",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "type": "uinteger",
+            "label": "Limit",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "limit": 10,
+        "accountId": "17841404168256335",
+        "__IMTCONN__": 3644677
+      }
+    },
+    {
+      "id": 2,
+      "filter": {
+        "name": "Does the post have an image?",
+        "conditions": [
+          [
+            {
+              "a": "{{1.media_url}}",
+              "b": "",
+              "o": "exist"
+            }
+          ]
+        ]
+      },
+      "mapper": {},
+      "module": "google-my-business:uploadAMediaItem",
+      "version": 1,
+      "metadata": {
+        "expect": [
+          {
+            "name": "select",
+            "type": "select",
+            "label": "Enter a Location Name",
+            "required": true,
+            "validate": {
+              "enum": [
+                "map",
+                "list"
+              ]
+            }
+          },
+          {
+            "name": "url",
+            "type": "text",
+            "label": "URL address of media item",
+            "required": true
+          },
+          {
+            "name": "mediaFormat",
+            "type": "select",
+            "label": "Media format",
+            "required": true,
+            "validate": {
+              "enum": [
+                "PHOTO",
+                "VIDEO"
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "type": "select",
+            "label": "Category",
+            "required": true,
+            "validate": {
+              "enum": [
+                "COVER",
+                "PROFILE",
+                "LOGO",
+                "EXTERIOR",
+                "INTERIOR",
+                "PRODUCT",
+                "AT_WORK",
+                "FOOD_AND_DRINK",
+                "MENU",
+                "COMMON_AREA",
+                "ROOMS",
+                "TEAMS",
+                "ADDITIONAL"
+              ]
+            }
+          },
+          {
+            "name": "account",
+            "type": "select",
+            "label": "Account name",
+            "required": true
+          },
+          {
+            "name": "location",
+            "type": "select",
+            "label": "Location name",
+            "required": true
+          }
+        ],
+        "restore": {},
+        "designer": {
+          "x": -33,
+          "y": -14,
+          "name": "Upload image to GMB",
+          "messages": [
+            {
+              "message": "Value must not be empty.",
+              "category": "setup",
+              "severity": "error"
+            },
+            {
+              "message": "Value must not be empty.",
+              "category": "setup",
+              "severity": "error"
+            }
+          ]
+        },
+        "parameters": [
+          {
+            "name": "__IMTCONN__",
+            "type": "account",
+            "label": "Connection",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {}
+    }
+  ],
+  "name": "Post to Google My Business from Instagram",
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}

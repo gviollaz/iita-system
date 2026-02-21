@@ -1,0 +1,444 @@
+{
+  "flow": [
+    {
+      "id": 2,
+      "mapper": {},
+      "module": "gateway:CustomWebHook",
+      "version": 1,
+      "metadata": {
+        "restore": {
+          "parameters": {
+            "hook": {
+              "data": {
+                "editable": "true"
+              },
+              "label": "registrar-arpbacion-desde-iitacrm"
+            }
+          }
+        },
+        "designer": {
+          "x": 0,
+          "y": 0,
+          "name": "Webhook: Approve"
+        },
+        "parameters": [
+          {
+            "name": "hook",
+            "type": "hook:gateway-webhook",
+            "label": "Webhook",
+            "required": true
+          },
+          {
+            "name": "maxResults",
+            "type": "number",
+            "label": "Maximum number of results"
+          }
+        ]
+      },
+      "parameters": {
+        "hook": 1899489,
+        "maxResults": 1
+      }
+    },
+    {
+      "id": 5,
+      "filter": {
+        "name": "Within deadline (<=24h)",
+        "conditions": [
+          [
+            {
+              "a": "{{now}}",
+              "b": "{{addHours(2.created_at; 24)}}",
+              "o": "date:less"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "data": {
+          "text": "{{2.response}}",
+          "status": "pending_delivery",
+          "is_user": false,
+          "provider_name": "{{lower(2.provider_name)}}",
+          "person_address": "{{2.person_address}}",
+          "channel_address": "{{2.channel_address}}"
+        }
+      },
+      "module": "scenario-service:CallSubscenario",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "data",
+            "spec": [
+              {
+                "name": "external_ref",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "provider_name",
+                "type": "text",
+                "label": "",
+                "required": true
+              },
+              {
+                "name": "channel_address",
+                "type": "text",
+                "label": "",
+                "required": true
+              },
+              {
+                "name": "person_address",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "text",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "is_user",
+                "type": "boolean",
+                "label": ""
+              },
+              {
+                "name": "person_name",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "ad_id",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "media_external_id",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "media_data",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "media_extension",
+                "type": "text",
+                "label": ""
+              },
+              {
+                "name": "status",
+                "type": "select",
+                "label": "",
+                "validate": {
+                  "enum": [
+                    "new",
+                    "preprocessed",
+                    "processed",
+                    "pending_delivery",
+                    "sending",
+                    "send"
+                  ]
+                }
+              }
+            ],
+            "type": "collection",
+            "label": "Scenario Inputs"
+          }
+        ],
+        "restore": {
+          "expect": {
+            "data": {
+              "nested": {
+                "status": {
+                  "mode": "chose",
+                  "label": "pending_delivery"
+                },
+                "is_user": {
+                  "mode": "chose"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "scenario": {
+              "label": "Create new interaction"
+            }
+          }
+        },
+        "designer": {
+          "x": 300,
+          "y": 0,
+          "name": "Create pending_delivery"
+        },
+        "interface": [
+          {
+            "help": "",
+            "name": "id_interaction",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          },
+          {
+            "help": "",
+            "name": "id_person_conversation",
+            "type": "text",
+            "label": "",
+            "default": "",
+            "required": false,
+            "multiline": false
+          }
+        ],
+        "parameters": [
+          {
+            "name": "scenario",
+            "type": "scenario",
+            "label": "Scenario",
+            "required": true
+          },
+          {
+            "name": "shouldWaitForExecutionEnd",
+            "type": "boolean",
+            "label": "Wait for the scenario to finish",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "scenario": "SCN_3730125",
+        "shouldWaitForExecutionEnd": true
+      }
+    },
+    {
+      "id": 6,
+      "filter": {
+        "name": "is_AI",
+        "conditions": [
+          [
+            {
+              "a": "{{2.id_ai_interaction}}",
+              "o": "exist"
+            }
+          ]
+        ]
+      },
+      "mapper": {
+        "@id": "",
+        "where": [
+          [
+            {
+              "a": "id",
+              "b": "{{2.id_ai_interaction}}",
+              "o": "equal"
+            }
+          ]
+        ],
+        "@response": "",
+        "@evaluation": "approved",
+        "@system_prompt": "",
+        "@generated_interaction_id": "{{5.id_interaction}}",
+        "@associated_interaction_id": ""
+      },
+      "module": "postgres:UpdateTable",
+      "version": 2,
+      "metadata": {
+        "expect": [
+          {
+            "name": "@id",
+            "type": "integer",
+            "label": "id"
+          },
+          {
+            "name": "@associated_interaction_id",
+            "type": "integer",
+            "label": "associated_interaction_id"
+          },
+          {
+            "name": "@generated_interaction_id",
+            "type": "integer",
+            "label": "generated_interaction_id"
+          },
+          {
+            "name": "@response",
+            "type": "text",
+            "label": "response"
+          },
+          {
+            "name": "@system_prompt",
+            "type": "text",
+            "label": "system_prompt"
+          },
+          {
+            "name": "@evaluation",
+            "type": "text",
+            "label": "evaluation"
+          },
+          {
+            "name": "where",
+            "type": "filter",
+            "label": "Filter",
+            "options": {
+              "store": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "associated_interaction_id",
+                  "value": "associated_interaction_id"
+                },
+                {
+                  "label": "generated_interaction_id",
+                  "value": "generated_interaction_id"
+                },
+                {
+                  "label": "response",
+                  "value": "response"
+                },
+                {
+                  "label": "system_prompt",
+                  "value": "system_prompt"
+                },
+                {
+                  "label": "evaluation",
+                  "value": "evaluation"
+                }
+              ],
+              "operators": [
+                {
+                  "label": "Basic",
+                  "options": [
+                    {
+                      "label": "Is not null",
+                      "value": "exist"
+                    },
+                    {
+                      "label": "Is null",
+                      "value": "notexist"
+                    },
+                    {
+                      "label": "Equal to",
+                      "value": "equal"
+                    },
+                    {
+                      "label": "Not equal to",
+                      "value": "notequal"
+                    },
+                    {
+                      "label": "Greater than",
+                      "value": "greater"
+                    },
+                    {
+                      "label": "Greater than or equal to",
+                      "value": "greaterorequal"
+                    },
+                    {
+                      "label": "Less than",
+                      "value": "less"
+                    },
+                    {
+                      "label": "Less than or equal to",
+                      "value": "lessorequal"
+                    },
+                    {
+                      "label": "Contains",
+                      "value": "contain"
+                    },
+                    {
+                      "label": "Does not contain",
+                      "value": "notcontain"
+                    },
+                    {
+                      "label": "Starts with",
+                      "value": "startwith"
+                    },
+                    {
+                      "label": "Does not start with",
+                      "value": "notstartwith"
+                    },
+                    {
+                      "label": "Ends with",
+                      "value": "endwith"
+                    },
+                    {
+                      "label": "Does not end with",
+                      "value": "notendwith"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "restore": {
+          "parameters": {
+            "table": {
+              "label": "public.ai_interaction"
+            },
+            "account": {
+              "data": {
+                "scoped": "true",
+                "connection": "postgres"
+              },
+              "label": "IITA - Producción (Supabase) (postgres.cpkzzzwncpbzexpesock@aws-1-us-east-1.pooler.supabase.com:5432/postgres)"
+            }
+          }
+        },
+        "designer": {
+          "x": 600,
+          "y": 0,
+          "name": "Update ai_interaction"
+        },
+        "parameters": [
+          {
+            "name": "account",
+            "type": "account:postgres",
+            "label": "Connection",
+            "required": true
+          },
+          {
+            "name": "isToManageDataInSharedTransaction",
+            "type": "boolean",
+            "label": "Manage data within the shared transaction",
+            "required": true
+          },
+          {
+            "name": "table",
+            "type": "select",
+            "label": "Table",
+            "required": true
+          }
+        ]
+      },
+      "parameters": {
+        "table": "\"public\".\"ai_interaction\"",
+        "account": 6184753,
+        "isToManageDataInSharedTransaction": true
+      }
+    }
+  ],
+  "name": "IITA - Approve & Dispatch (Legacy ) desactivado GV 19 feb por duplicacion y cambio arquitectura",
+  "metadata": {
+    "instant": true,
+    "version": 1,
+    "designer": {
+      "orphans": []
+    },
+    "scenario": {
+      "dlq": false,
+      "slots": null,
+      "dataloss": false,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1,
+      "sequential": false,
+      "confidential": false,
+      "freshVariables": false,
+      "autoCommitTriggerLast": true
+    }
+  }
+}
