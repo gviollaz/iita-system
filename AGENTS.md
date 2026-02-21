@@ -7,6 +7,8 @@
 
 Sistema CRM multicanal para el **Instituto de Innovacion y Tecnologia Aplicada (IITA)** en Salta, Argentina. Gestiona comunicaciones con alumnos y leads a traves de WhatsApp, Instagram, Messenger y Email.
 
+Este sistema reemplazo en febrero 2026 al **Chatbot IITA 2.0** (Django + Flask en VM propia). Los datos actuales en Supabase fueron migrados desde ese sistema. Ver `docs/legacy-system/` para la documentacion tecnica completa del sistema anterior.
+
 ## Arquitectura
 
 ```
@@ -78,13 +80,14 @@ Ver diccionario completo: `docs/database/data-dictionary.md`
 
 ## Repositorios del proyecto
 
-El sistema IITA esta distribuido en 3 repositorios. `iita-system` es el hub central de documentacion y referencia:
+El sistema IITA esta distribuido en 3 repositorios activos + 1 legacy. `iita-system` es el hub central de documentacion y referencia:
 
-| Repositorio | Contenido | Quien lo modifica |
-|-------------|-----------|-------------------|
-| **`gviollaz/iita-system`** | Documentacion, schema SQL, Edge Functions, propuestas | Todas las IAs + humanos |
-| **`IITA-Proyectos/iitacrm`** | Codigo React del frontend CRM | Claude Code (acceso directo) + otras IAs via propuestas |
-| **`gviollaz/iita-make-scenarios`** | Escenarios JSON de Make.com | Claude Code (acceso directo) + otras IAs via propuestas |
+| Repositorio | Contenido | Estado |
+|-------------|-----------|--------|
+| **`gviollaz/iita-system`** | Documentacion, schema SQL, Edge Functions, propuestas | Activo — hub central |
+| **`IITA-Proyectos/iitacrm`** | Codigo React del frontend CRM | Activo |
+| **`gviollaz/iita-make-scenarios`** | Escenarios JSON de Make.com | Activo |
+| **`IITA-Proyectos/chatbot`** | Sistema anterior (Django + Flask) — **archivado** | Legacy (ultimo push: nov 2025). Doc en `docs/legacy-system/` |
 
 ### Donde van los cambios segun el tipo
 
@@ -223,6 +226,7 @@ Ademas de las propuestas de cambio de codigo (puntuales), hay **propuestas de me
 | Rollbacks | `docs/operations/ROLLBACK-PROCEDURES.md` |
 | Convenciones de nombres | `docs/policies/NAMING-CONVENTIONS.md` |
 | Como trabajar con IAs | `docs/policies/AI-COLLABORATION.md` |
+| Sistema legacy (anterior) | `docs/legacy-system/` — arquitectura, modelos, APIs del Chatbot IITA 2.0 |
 | Historial de cambios | `CHANGELOG.md` |
 
 ## Atribucion de cambios
