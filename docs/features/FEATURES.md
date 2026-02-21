@@ -525,3 +525,44 @@
   - Configuracion de sincronizacion Moodle (URL, token, frecuencia)
   - Indicador en perfil de persona: "Importado desde Moodle" / "Importado desde archivo X"
 - **Notas:** Moodle expone una API REST bien documentada (`/webservice/rest/server.php`). Las funciones mas relevantes son `core_user_get_users`, `core_enrol_get_users_courses`, `gradereport_user_get_grade_items`. Se necesita un token de servicio web configurado en Moodle con los permisos adecuados. Para archivos CSV/Excel, la importacion debe ser lo suficientemente flexible para aceptar distintos formatos (cada planilla puede tener columnas diferentes). La deduplicacion es critica: importar 200 alumnos de Moodle no debe crear 200 personas nuevas si muchos ya estan como leads en el CRM.
+
+---
+
+### FEAT-036 | Deteccion de Leads Duplicados y Unificacion de Perfiles Multi-Canal
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Frontend + Supabase + Scripts
+- **Descripcion:** Implementar un sistema de deteccion y unificacion de personas duplicadas en la base de datos. Actualmente un mismo lead puede existir como 2 o 3 registros separados si contacto por distintos canales (uno por WhatsApp, otro por Instagram, otro por Messenger). El sistema debe: (1) correr un proceso de deteccion que identifique posibles duplicados usando multiples criterios (nombre similar, mismo telefono, mismo email, mismo perfil social), (2) presentar al operador los duplicados encontrados para confirmar la unificacion, (3) mergear los registros: conservar un perfil principal y reasignar todas las conversaciones, interacciones, datos enriquecidos y relaciones del duplicado al perfil principal, (4) establecer un canal preferido por persona, (5) mostrar una vista unificada de todas las conversaciones de un lead independientemente del canal. Despues de la unificacion, el perfil de la persona muestra TODAS sus conversaciones (WA + IG + Messenger + etc.) en una sola linea temporal.
+- **Dependencias:** FEAT-003 (Gestion de Personas)
+- **Relacionado:** FEAT-035 (Importacion Moodle — comparte logica de deduplicacion)
+- **Backend requerido:**
+  - RPC `find_duplicate_persons()` que identifique posibles duplicados usando:
+    - Match por telefono normalizado (quitar prefijos, espacios, guiones)
+    - Match por email exacto (case insensitive)
+    - Match por nombre fuzzy (Levenshtein o trigram similarity con `pg_trgm`)
+    - Match por datos de `person_soft_data` (mismo perfil social, misma empresa)
+    - Retorna pares de posibles duplicados con score de confianza y motivo del match
+  - RPC `merge_persons(primary_id, duplicate_id)` que:
+    - Reasigna `person_conversation` del duplicado al primario
+    - Reasigna `person_soft_data` del duplicado al primario (sin sobreescribir datos existentes)
+    - Reasigna `course_members`, `payment_tickets`, y otras relaciones
+    - Mergea datos basicos: si el primario no tiene email pero el duplicado si, tomarlo
+    - Crea registro en `merge_log`: quien mergeo, cuando, que datos se movieron
+    - Soft-delete del duplicado (marcar como `merged_into = primary_id` en vez de borrar)
+  - Campo `preferred_channel_id` en `persons`: canal preferido para contactar a esta persona
+  - Campo `merged_into` en `persons`: si esta persona fue mergeada, apunta al perfil principal
+  - Cron de deteccion: correr periodicamente para detectar nuevos duplicados (ej: semanalmente)
+- **Frontend requerido:**
+  - Pagina/seccion de "Duplicados detectados":
+    - Lista de pares de posibles duplicados con score de confianza
+    - Comparacion lado a lado de los dos perfiles (datos, conversaciones, canales)
+    - Acciones: "Unificar" (elegir cual es el principal), "No es duplicado" (ignorar par), "Revisar despues"
+  - En perfil de persona unificado:
+    - Vista de timeline unificada de TODAS las conversaciones (WA + IG + Messenger + Email) ordenadas cronologicamente
+    - Indicador de canal en cada conversacion/mensaje
+    - Selector de canal preferido con fallback automatico
+    - Badge "Perfil unificado" si tiene conversaciones en multiples canales
+  - En el chat: poder cambiar de canal sin salir de la conversacion (ej: estoy viendo WA pero quiero enviar por IG)
+  - Estadisticas: cantidad de duplicados detectados, mergeados, pendientes
+- **Notas:** La deteccion de duplicados es especialmente importante porque el pipeline de Make.com crea personas por canal: si Juan Perez escribe por WA y luego por IG, `process_incoming_message` puede crear dos registros separados si no matchea por nombre/telefono/email. La extension `pg_trgm` de PostgreSQL permite busqueda por similitud de texto (ya disponible en Supabase). El merge debe ser cuidadoso con las FKs en cascada (WARNING: `persons` tiene dependencias en 5+ tablas). La vista unificada multi-canal es clave para que el operador vea toda la historia del lead en un solo lugar, sin importar por donde se comunico.
