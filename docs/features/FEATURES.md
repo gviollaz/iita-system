@@ -176,3 +176,71 @@
 - **Componente:** Make.com + Supabase Storage + Scripts de migracion
 - **Descripcion:** Migrar el almacenamiento de media de base64 en la columna `medias.content_dir` a URLs en Supabase Storage. Reducir el consumo actual de 654+ MB en la base de datos. Incluye migracion de datos existentes.
 - **Dependencias:** Ninguna
+
+---
+
+## Features Deseadas
+
+### FEAT-019 | Canal TikTok
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Make.com + Supabase
+- **Descripcion:** Agregar TikTok como canal de comunicacion. Recibir y responder mensajes directos de TikTok a traves del pipeline multicanal existente.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Notas:** Requiere evaluar disponibilidad de TikTok Messaging API y webhooks.
+
+---
+
+### FEAT-020 | Canal Discord
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Make.com + Supabase
+- **Descripcion:** Agregar Discord como canal de comunicacion. Recibir mensajes directos y/o mensajes de canales de un servidor Discord, procesarlos a traves del pipeline multicanal.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Notas:** Discord tiene API de bots bien documentada. Se puede integrar via webhook a Make.com.
+
+---
+
+### FEAT-021 | Canal Sitio Web (Widget de Chat)
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Make.com + Supabase + Frontend (widget embebible)
+- **Descripcion:** Agregar un canal de comunicacion via sitio web. Implementar un widget de chat embebible que se pueda insertar en el sitio web de IITA para que visitantes inicien conversaciones directamente. Los mensajes se procesan a traves del pipeline multicanal.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Notas:** Requiere desarrollar componente widget standalone (embebible via script tag o iframe).
+
+---
+
+### FEAT-022 | Canal YouTube (Mensajes Directos)
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Make.com + Supabase
+- **Descripcion:** Agregar YouTube como canal de comunicacion. Recibir y responder mensajes directos del canal de YouTube de IITA a traves del pipeline multicanal.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Notas:** Requiere evaluar YouTube Data API y limitaciones de mensajeria directa.
+
+---
+
+### FEAT-023 | Vista de Mapa para Leads y Clientes
+
+- **Estado:** Deseado
+- **Prioridad:** P3
+- **Componente:** Frontend + Supabase
+- **Descripcion:** Agregar una vista de mapa interactivo que muestre la ubicacion geografica de leads y clientes actuales. Permitir filtrar por tipo (lead/cliente), provincia, estado, etc. Util para visualizar distribucion geografica y planificar estrategias regionales.
+- **Dependencias:** FEAT-003 (Gestion de Personas), FEAT-009 (Personas Enriquecidas)
+- **Notas:** Requiere datos de ubicacion en `person_soft_data` (provincia, pais, ciudad). Evaluar libreria de mapas (Leaflet, Mapbox, Google Maps).
+
+---
+
+### FEAT-024 | Rate Limiting y Control de Consumo de IA
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Make.com + Supabase
+- **Descripcion:** Implementar un sistema de control de consumo de llamadas a APIs de IA (OpenAI, Claude, etc.) que administre rate limits por minuto, por hora y por dia. El sistema debe: (1) trackear el consumo en tiempo real, (2) suspender o ralentizar pedidos antes de alcanzar los limites de la API, (3) redirigir pedidos a un proveedor de IA alternativo cuando el principal esta cerca del limite (fallback automatico), (4) alertar cuando se acerque a umbrales criticos de gasto.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal), FEAT-014 (Evaluacion Automatica IA)
+- **Notas:** Considerar tabla de tracking `ai_usage_log` con contadores por proveedor/modelo/periodo. Make.com puede implementar la logica de routing entre proveedores. Evaluar si el throttling se hace en Make.com (antes de llamar a la API) o en una Edge Function dedicada.

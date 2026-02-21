@@ -109,6 +109,23 @@
 
 ---
 
+## Fase 8 - Nuevos Canales de Comunicacion
+
+**Objetivo:** Ampliar el alcance multicanal con nuevas plataformas.
+
+| # | Tarea | Componente | Prioridad | Ref |
+|---|-------|------------|-----------|-----|
+| 8.1 | Integrar canal TikTok (mensajes directos) | Make.com + DB | P3 | FEAT-019 |
+| 8.2 | Integrar canal Discord (bot + mensajes directos) | Make.com + DB | P3 | FEAT-020 |
+| 8.3 | Integrar canal Sitio Web (widget de chat embebible) | Make.com + DB + Frontend | P3 | FEAT-021 |
+| 8.4 | Integrar canal YouTube (mensajes directos) | Make.com + DB | P3 | FEAT-022 |
+| 8.5 | Vista de mapa para leads y clientes | Frontend + DB | P3 | FEAT-023 |
+| 8.6 | Rate limiting y control de consumo de IA | Make.com + DB | P2 | FEAT-024 |
+
+**Notas:** Cada canal nuevo requiere: crear registro en tabla `channels`, escenario de entrada en Make.com, mapeo de webhooks, y prueba end-to-end del pipeline. La vista de mapa requiere datos de ubicacion enriquecidos en `person_soft_data`. El rate limiting de IA puede implementarse antes que los nuevos canales, ya que es independiente.
+
+---
+
 ## Fase 7 - Separacion de Ambientes
 
 **Objetivo:** Dev y produccion completamente aislados.

@@ -4,6 +4,24 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## [2026-02-21] — Actualizacion CLAUDE.md + Features deseadas
+
+**Autor:** gviollaz | **IA:** Claude Opus 4.6 via Claude Code
+
+### Actualizado
+- CLAUDE.md ampliado con arquitectura, frontend, DB, Edge Functions, convenciones, checklist post-cambios
+
+### Agregado
+- FEAT-019: Canal TikTok (deseado)
+- FEAT-020: Canal Discord (deseado)
+- FEAT-021: Canal Sitio Web — widget de chat embebible (deseado)
+- FEAT-022: Canal YouTube — mensajes directos (deseado)
+- FEAT-023: Vista de mapa para leads y clientes (deseado)
+- FEAT-024: Rate limiting y control de consumo de IA (deseado)
+- Fase 8 en ROADMAP: Nuevos canales de comunicacion
+
+---
+
 ## [2026-02-20] — Repositorio unificado + Fix media
 
 **Autor:** gviollaz | **IA:** Claude Opus 4.6 via Claude Code
