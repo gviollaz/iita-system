@@ -306,3 +306,28 @@
   - En campanas: opcion "Enviar en horario optimo" vs "Enviar ahora"
   - Estadisticas de engagement por franja horaria
 - **Notas:** Empezar con reglas globales simples (no enviar antes de 8am ni despues de 10pm, zona horaria Argentina). Luego agregar analisis por persona cuando haya suficiente historial. El heatmap de actividad puede calcularse con un query sobre `interactions` agrupado por hora del dia y dia de la semana.
+
+---
+
+### FEAT-028 | Silenciar IA por Persona — Modo "Canal Manual"
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Frontend + Supabase + Make.com
+- **Descripcion:** Agregar la posibilidad de silenciar la generacion de respuestas de IA para una persona especifica, de forma temporal o permanente, directamente desde el flujo de aprobacion de respuestas. Ademas de las acciones actuales (aceptar, editar, rechazar), el operador debe poder marcar a esa persona como "canal manual": la IA deja de generar respuestas completamente para ese contacto, ahorrando tiempo de procesamiento y costo de API. Opciones: (1) silenciar IA temporalmente (ej: 1h, 24h, 1 semana), (2) silenciar IA permanentemente para esa persona, (3) reactivar IA cuando sea necesario. Cuando la IA esta silenciada, el sistema no debe gastar recursos generando respuestas que nadie va a usar.
+- **Dependencias:** FEAT-005 (Pipeline Multicanal)
+- **Relacionado:** RFC-003 (Control de generacion de respuestas — diseno tecnico completo con funcion `should_generate_ai_response()`)
+- **Frontend requerido:**
+  - En el panel de aprobacion de respuestas IA: nueva accion "Silenciar IA" junto a aceptar/editar/rechazar
+  - Opciones de silenciamiento: temporal (1h, 24h, 1 semana) o permanente
+  - Campo de motivo (ej: "alumno inscripto", "gestion manual", "pidio no recibir automaticos")
+  - Indicador visual en la conversacion y en el listado de personas cuando la IA esta silenciada
+  - En el perfil de persona: toggle de IA con estado visible y motivo
+  - Filtro en listado de personas: "Personas con IA silenciada"
+- **Backend requerido:**
+  - Campos en `persons`: `ai_enabled`, `ai_disabled_reason`, `ai_disabled_at`, `ai_disabled_by` (ver RFC-003)
+  - Campos en `conversations`: `ai_enabled`, `ai_paused_until`, `ai_paused_reason` (ver RFC-003)
+  - RPC `should_generate_ai_response(conversation_id)` — Make.com la consulta antes de generar IA
+  - Make.com debe verificar el flag ANTES de llamar a la API de IA (ahorro real de costo y tiempo)
+  - Al silenciar, cancelar automaticamente respuestas IA pendientes (`pending`) para esa persona
+- **Notas:** RFC-003 tiene el diseno tecnico completo incluyendo SQL, endpoints y cambios en Make.com. El punto clave del usuario es que esta accion debe ser accesible directamente desde el flujo de aprobacion (no solo desde un menu separado), y que al marcar "canal manual" el sistema no desperdicie recursos generando respuestas. Considerar que las respuestas `pending` existentes se cancelen automaticamente al silenciar.
