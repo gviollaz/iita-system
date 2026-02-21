@@ -108,6 +108,7 @@
 | 6.6 | Limpieza de 74 escenarios inactivos en Make.com | Make.com | P3 | - |
 | 6.7 | Control de ventanas de tiempo por canal + alertas + estadisticas de vencimiento | Frontend + DB + Make.com | P1 | FEAT-025, RFC-005 |
 | 6.8 | Silenciar IA por persona — modo "canal manual" desde flujo de aprobacion | Frontend + DB + Make.com | P1 | FEAT-028, RFC-003 |
+| 6.9 | Composicion de mensajes con asistente IA on-demand + adjuntos | Frontend + EF + Make.com | P1 | FEAT-029 |
 
 ---
 

@@ -331,3 +331,26 @@
   - Make.com debe verificar el flag ANTES de llamar a la API de IA (ahorro real de costo y tiempo)
   - Al silenciar, cancelar automaticamente respuestas IA pendientes (`pending`) para esa persona
 - **Notas:** RFC-003 tiene el diseno tecnico completo incluyendo SQL, endpoints y cambios en Make.com. El punto clave del usuario es que esta accion debe ser accesible directamente desde el flujo de aprobacion (no solo desde un menu separado), y que al marcar "canal manual" el sistema no desperdicie recursos generando respuestas. Considerar que las respuestas `pending` existentes se cancelen automaticamente al silenciar.
+
+---
+
+### FEAT-029 | Composicion de Mensajes con Asistente IA y Adjuntos
+
+- **Estado:** Deseado
+- **Prioridad:** P1
+- **Componente:** Frontend + Supabase + Edge Functions
+- **Descripcion:** Mejorar la pantalla de envio de mensajes en el chat para que el operador pueda: (1) escribir texto libre y enviarlo directamente, (2) adjuntar archivos (imagenes, PDFs, documentos), (3) solicitar a la IA que genere un borrador de mensaje a partir de un prompt escrito en el momento (ej: "dar informacion sobre cursos de marketing"). La IA genera el mensaje usando como contexto: el historial de la conversacion, los datos conocidos del cliente (`person_soft_data`), el catalogo de cursos, y el prompt del operador. El borrador generado se muestra en el editor para que el operador lo edite, apruebe o rechace antes de enviarlo. Esto convierte la IA de reactiva (solo responde a mensajes entrantes) a proactiva (el operador la invoca cuando la necesita).
+- **Dependencias:** FEAT-002 (Chat de Conversaciones), FEAT-005 (Pipeline Multicanal)
+- **Frontend requerido:**
+  - Caja de composicion mejorada en el panel de chat con tres modos:
+    - **Texto libre:** escribir y enviar directamente (input basico actual mejorado)
+    - **Adjuntar archivo:** boton para subir imagenes, PDFs, documentos a Supabase Storage y adjuntar al mensaje
+    - **Generar con IA:** campo de prompt donde el operador describe que quiere decir, boton "Generar", la IA produce un borrador que aparece en el editor de texto para revisar/editar antes de enviar
+  - El borrador de IA debe mostrarse claramente como "borrador" (diferenciado visualmente) hasta que el operador lo apruebe
+  - Historial de prompts recientes o prompts frecuentes sugeridos (ej: "informar sobre curso X", "seguimiento de inscripcion", "responder consulta de precio")
+- **Backend requerido:**
+  - Endpoint `generate_draft` en Edge Function o Make.com que reciba: `conversation_id`, `person_id`, `prompt` del operador
+  - La generacion debe incluir como contexto: ultimos N mensajes de la conversacion, datos del cliente de `person_soft_data` (nombre, interes, provincia, historial), catalogo de cursos relevantes
+  - El borrador generado NO se envia automaticamente, se retorna al frontend para edicion
+  - Endpoint para enviar mensaje con adjuntos (subir a Storage + crear interaccion saliente)
+- **Notas:** Actualmente la IA solo genera respuestas reactivas (ante mensaje entrante). Esta feature le da al operador el poder de invocar la IA on-demand, con contexto completo, para componer mensajes proactivos personalizados. Es especialmente util para seguimiento de leads, informacion de cursos, y recontacto. La IA puede usar el mismo modelo que ya se usa en el pipeline (GPT-4o o Claude) pero con un prompt distinto orientado a composicion asistida.

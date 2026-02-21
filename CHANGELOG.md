@@ -22,6 +22,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-026: Mensajeria alternativa fuera de ventana — fallback a email/SMS, terceros, automatizacion (deseado)
 - FEAT-027: Optimizacion inteligente de horarios de envio — analisis de patrones por persona y global (deseado)
 - FEAT-028: Silenciar IA por persona — modo "canal manual" desde flujo de aprobacion (deseado, P1)
+- FEAT-029: Composicion de mensajes con asistente IA on-demand y adjuntos (deseado, P1)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---
