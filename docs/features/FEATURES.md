@@ -566,3 +566,34 @@
   - En el chat: poder cambiar de canal sin salir de la conversacion (ej: estoy viendo WA pero quiero enviar por IG)
   - Estadisticas: cantidad de duplicados detectados, mergeados, pendientes
 - **Notas:** La deteccion de duplicados es especialmente importante porque el pipeline de Make.com crea personas por canal: si Juan Perez escribe por WA y luego por IG, `process_incoming_message` puede crear dos registros separados si no matchea por nombre/telefono/email. La extension `pg_trgm` de PostgreSQL permite busqueda por similitud de texto (ya disponible en Supabase). El merge debe ser cuidadoso con las FKs en cascada (WARNING: `persons` tiene dependencias en 5+ tablas). La vista unificada multi-canal es clave para que el operador vea toda la historia del lead en un solo lugar, sin importar por donde se comunico.
+
+---
+
+### FEAT-037 | Modulo de Newsletters / Email Marketing Centralizado
+
+- **Estado:** Deseado
+- **Prioridad:** P2
+- **Componente:** Frontend + Supabase + Make.com + Proveedor de email (Mailchimp/Resend/SendGrid)
+- **Descripcion:** Implementar un modulo centralizado de newsletters y email marketing dentro del CRM. Permitir gestionar multiples newsletters por tematica (ej: newsletter general de IITA, newsletter de programacion, newsletter de marketing digital) con frecuencia configurable (ej: mensual). El sistema debe: (1) administrar listas de suscriptores por tematica — alimentadas automaticamente desde los datos del CRM (personas con interes en X tema se agregan a la lista correspondiente), (2) crear y enviar campanas de email usando un editor integrado o conectando con un proveedor externo (Mailchimp, Resend, SendGrid), (3) gestionar opt-in/opt-out (suscripcion/desuscripcion) conforme a normas anti-spam, (4) trackear metricas (aperturas, clicks, desuscripciones, bounces), (5) programar envios automaticos (ej: primer lunes de cada mes), (6) administrar todo desde el CRM sin necesidad de ir a la interfaz del proveedor de email.
+- **Dependencias:** FEAT-003 (Gestion de Personas)
+- **Relacionado:** RFC-004 (Campanas de marketing — newsletters son un tipo de campana), FEAT-027 (Horarios optimos)
+- **Backend requerido:**
+  - Tabla `newsletters`: `(id, name, topic, description, frequency, status, subscriber_filter_criteria, template_id_external, created_at)`
+  - Tabla `newsletter_editions`: `(id, newsletter_id, subject, content_html, content_text, status, scheduled_at, sent_at, total_recipients, opens, clicks, bounces, unsubscribes)`
+  - Tabla `newsletter_subscriptions`: `(person_id, newsletter_id, status, subscribed_at, unsubscribed_at, source)` — status: `active`, `unsubscribed`, `bounced`
+  - Campo `email_opt_in` en `persons` (global opt-in/opt-out para email marketing)
+  - Integracion con proveedor de email via Make.com:
+    - Sincronizar listas de suscriptores CRM → Mailchimp/SendGrid
+    - Crear y enviar campanas via API del proveedor
+    - Recibir webhooks de metricas (opens, clicks, bounces, unsubscribes) y actualizar DB
+  - Auto-suscripcion: cuando una persona se enriquece con tag de interes "marketing", agregarla automaticamente a la newsletter de marketing (con opt-in implicito desde la conversacion)
+  - Cron mensual: para cada newsletter activa con frecuencia mensual, crear edition borrador con audiencia actualizada
+- **Frontend requerido:**
+  - Pagina "Newsletters" con:
+    - Lista de newsletters activas (general, programacion, marketing, etc.)
+    - Para cada una: suscriptores, ultima edicion enviada, proxima programada
+  - Crear/editar newsletter: nombre, tematica, frecuencia, criterios de audiencia (filtros de personas)
+  - Crear edicion: asunto, contenido (editor basico o vinculo a Mailchimp), programar envio
+  - Dashboard de metricas por edicion: abiertos, clicks, desuscripciones, bounces
+  - En perfil de persona: mostrar a que newsletters esta suscripta, permitir suscribir/desuscribir
+- **Notas:** Evaluar proveedores: (a) Mailchimp — gratis hasta 500 contactos, API madura, editor de email integrado, pero la interfaz es compleja; (b) Resend — moderno, barato ($0.003/email), API simple, sin editor visual; (c) SendGrid — robusto, 100 emails/dia gratis. La recomendacion es empezar con un proveedor simple (Resend o SendGrid) manejando el contenido desde el CRM, y evaluar Mailchimp si se necesita un editor visual avanzado. La frecuencia sugerida de 1/mes evita fatiga del suscriptor. Los newsletters por tematica permiten enviar contenido relevante segmentado (no todo a todos).

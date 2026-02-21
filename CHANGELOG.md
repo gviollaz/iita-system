@@ -30,6 +30,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/).
 - FEAT-034: Enriquecimiento de datos desde fuentes externas — LinkedIn, APIs, web scraping (deseado)
 - FEAT-035: Importacion de datos desde Moodle y archivos CSV/Excel — alumnos, cursos, deduplicacion (deseado, P1)
 - FEAT-036: Deteccion de leads duplicados y unificacion multi-canal — merge de perfiles, vista unificada, canal preferido (deseado, P1)
+- FEAT-037: Modulo de newsletters / email marketing centralizado — multiples newsletters por tematica, Mailchimp/Resend/SendGrid (deseado)
 - Fase 8 en ROADMAP: Nuevos canales de comunicacion
 
 ---
